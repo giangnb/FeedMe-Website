@@ -5,6 +5,7 @@
  */
 package com.feedme.global;
 
+import java.util.Date;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ApplicationScoped;
 
@@ -22,4 +23,15 @@ public class GlobalBean {
     public GlobalBean() {
     }
     
+    public String doFormatPrice(double price){
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public String doFormatTime(Date d) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public String doFormatDate(Date d) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

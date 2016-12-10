@@ -66,30 +66,87 @@
                 </div>
             </div>
             <div class="box-header">
-                <ui:insert name="top">
-                    <div class="main">
+                <div class="container">
+                    <ui:insert name="top">
                         <h1>Top bar</h1>
-                    </div>
-                </ui:insert>
+                    </ui:insert>
+                </div>
             </div>
         </div>
-        
-        <div class="container">
+
+        <div class="container" id="main-content">
             <div class="row">
                 <div id="left" class="col-sm-2">
-                    <ui:insert name="left">Left</ui:insert>
-                </div>
-                <h:form id="content" class="col-sm-7">
-                    <ui:insert class="container" name="content">Content
-                        
+                    <ui:insert name="left">
+                        <h3>CATEGORIES</h3>
+                        <h:form>
+                            <ul>
+                                <li>One</li>
+                                <li>Two</li>
+                                <li>Three</li>
+                                <li>Four</li>
+                                <li>Five</li>
+                            </ul>
+                        </h:form>
                     </ui:insert>
+                </div>
+
+                <h:form id="content" class="col-sm-7">
+                    <h3 class="title-line">
+                        <ui:insert name="title-line">
+                            &nbsp;
+                        </ui:insert>
+                    </h3>
+                    <div class="container">
+                        <ui:insert name="content">
+                            Content
+                        </ui:insert>
+                    </div>
                 </h:form>
+
                 <div id="right" class="col-sm-3">
-                    <ui:insert name="right">Right</ui:insert>
+                    <ui:insert name="right">
+                        <h3>CART</h3>
+                        <h:form class="cart-context" rendered="#{cartBean.doGetCart().size()>0}">
+                            <ui:repeat value="#{cartBean.doGetCart()}" var="item">
+                                <div class="cart-item">
+                                    <div class="row">
+                                        <h:outputText class="col-sm-5 cart-product"
+                                                      value="#{item.name}"/>
+                                        <h:outputText class="col-md-2 cart-quantity"
+                                                      value="x !!get quatity here!!"/>
+                                        <h:outputText class="col-sm-5 cart-price"
+                                                      value="!!formatted!!"/>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5"></div>
+                                        <div class="col-sm-3 cart-button">
+                                            <h:commandLink class="glyphicon glyphicon-plus-sign"/>
+                                            &nbsp;
+                                            <h:commandLink class="glyphicon glyphicon-minus-sign"/>
+                                        </div>
+                                        <div class="col-sm-4 cart-price">$10.40</div>
+                                    </div>
+                                    <div class="cart-separator"></div>
+                                </div>
+                            </ui:repeat>
+                        </h:form>
+                        <div class="row cart-total">
+                            <h:form rendered="#{cartBean.doGetCart().size()>0}">
+                                <div class="col-sm-4">Total</div>
+                                <div class="col-sm-8 cart-price">$11.00</div>
+                            </h:form>
+                            <h:form rendered="#{!(cartBean.doGetCart().size()>0)}">
+                                <div class="col-sm-12">
+                                    Your cart is empty,<br/>please add some products!
+                                </div>
+                            </h:form>
+                        </div>
+                    </ui:insert>
                 </div>
             </div>
         </div>
-        
+
         <div id="bottom">
             <div class="main">
                 <ui:insert name="bottom">

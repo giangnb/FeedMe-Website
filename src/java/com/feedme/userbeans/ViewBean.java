@@ -22,4 +22,7 @@ public class ViewBean {
     public ViewBean() {
     }
     
+    public String doNavigate(String page) {
+        return page;
+    }
 }

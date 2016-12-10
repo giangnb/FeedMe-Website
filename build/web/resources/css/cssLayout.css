@@ -158,12 +158,60 @@ body {
 
 #left {
     background-color: #ece3a5;
-    padding: 15px 5px;
+    padding: 0;
+    margin: 0;
+    background: #b68903;
+}
+#left > * {
+    padding: 15px 0px;
+    color: #fff;
+}
+#left > h3 {
+    padding: 20px 10px;
+    background: #c69703;
+    color: #fafafa;
+    text-align: center;
+    margin-top: 0px !important;
+}
+#left ul {
+    list-style-type: none;
+    padding: 10px 0px;
+}
+#left ul > li {
+    padding: 5px 10px;
+    border-bottom: thin solid #c69703;
+    transition: ease 0.25s;
+}
+#left ul > li:last-child {
+    border-bottom: none;
+}
+#left ul > li:hover {
+    background: #c69703
+}
+#left ul a {
+    display: block;
+    color: inherit;
+    text-decoration: inherit;
+    margin: 0;
+    padding: 0;
 }
 
 #right {
     background-color: #ece3a5;
-    padding: 15px 5px;
+    margin: 0;
+    padding: 0;
+    background: #0e0e0e;
+    color: #ece3a5;
+}
+#right > h3 {
+    padding: 20px 5px;
+    background: #242424;
+    color: #9c9c9c;
+    text-align: center;
+    margin-top: 0px !important;
+}
+#right>form {
+    padding: 10px 5px;
 }
 
 .center_content {
@@ -196,4 +244,65 @@ body {
     text-decoration : underline;
 }
 
+#main-content {
+    width: 100%;
+    margin: auto;
+}
 
+/* Style for cart section */
+.cart-context {
+    transition: ease 0.25s;
+}
+.cart-context .cart-item:hover {
+    background: rgba(255,255,255,0.1);
+}
+.cart-product, .cart-quantity {
+    font-weight: bold;
+}
+.cart-quantity {
+    text-align: center;
+}
+.cart-button {
+    text-align: center !important;
+    padding-left: 5px;
+}
+.cart-button > a {
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #fff;
+    text-decoration: none;
+    text-align: center !important;
+}
+.cart-button > a:hover {
+    color: #c69703;
+}
+.cart-price {
+    text-align: right;
+}
+.cart-separator {
+    border-bottom: thin solid #4f4f4f;
+    margin: 5px -5px;
+}
+.cart-total {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px 0px;
+}
+.cart-total .cart-price {
+    font-size: larger;
+}
+
+/* Content style */
+#content {
+    padding: 0;
+}
+#content .title-line {
+    padding: 20px 15px;
+    background: #ededed;
+    color: #4e4e4e;
+    margin-top: 0px !important;
+}
+#content .main-context {
+    padding: 5px;
+}

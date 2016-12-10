@@ -41,7 +41,11 @@ body {
 .nav-top {
     display: block;
 }
+.nav-top > li {
+    color: #333;
+}
 .nav-top > li a {
+    transition: ease 0.2s;
     color: #333 !important;
 }
 #menu-header {
@@ -72,15 +76,18 @@ body {
         border-right: none;
     }
 }
-.nav-top>li a:hover {
+.nav-top>li:hover {
     background: #141414;
+    color: #c69703;
+}
+.nav-top>li a:hover {
     color: #c69703 !important;
 }
 .box-header {
     height: 100%;
     width: 100%;
     padding: 25px 0;
-    background: url(../img/cont-top-bg1.jpg.xhtml) center top no-repeat;
+    background: url(../img/cont-top-bg1.jpg.xhtml) center top no-repeat fixed;
     color: #fff;
 }
 .box-header>.main {
@@ -263,9 +270,11 @@ body {
     text-decoration : underline;
 }
 
-#main-content {
-    width: 100%;
-    margin: auto;
+@media screen and (min-width: 767px) {
+    #main-content {
+        width: 90%;
+        margin: auto;
+    }
 }
 
 /* Style for cart section */

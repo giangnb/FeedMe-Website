@@ -40,16 +40,16 @@
                         <h:form>
                             <ul class="nav-top nav navbar-nav">
                                 <li class="">
-                                    <h:commandLink value="Online Store" action="#{viewBean.doNavigate('index')}"/>
+                                    <h:commandLink value="Gian hàng" action="#{viewBean.doNavigate('index')}"/>
                                 </li>
                                 <li class="">
-                                    Delivery
+                                    <h:commandLink value="Vận chuyển" action="#{viewBean.doNavigate('delivery')}"/>
                                 </li>
                                 <li class="">
-                                    Introduction
+                                    <h:commandLink value="Giới thiệu" action="#{viewBean.doNavigate('introduction')}"/>
                                 </li>
                                 <li class="">
-                                    Order tracking
+                                    <h:commandLink value="Đơn hàng" action="#{viewBean.doNavigate('tracking')}"/>
                                 </li>
                             </ul>
                         </h:form>
@@ -80,11 +80,11 @@
             <div class="row">
                 <div id="left" class="col-sm-2">
                     <ui:insert name="left">
-                        <h3 class="hidden-sm hidden-xs" onclick="$('#category-toggle').show(200);">CATEGORIES</h3>
-                        <h3 class="hidden-lg hidden-md" onclick="$('#category-toggle').toggle(200);"><span class="glyphicon glyphicon-menu-hamburger">&nbsp;</span>CATEGORIES</h3>
+                        <h3 class="hidden-sm hidden-xs" onclick="$('#category-toggle').show(200);">DANH MỤC</h3>
+                        <h3 class="hidden-lg hidden-md" onclick="$('#category-toggle').toggle(200);"><span class="glyphicon glyphicon-menu-hamburger">&nbsp;</span>DANH MỤC</h3>
                         <h:form>
                             <ul id="category-toggle">
-                                <li><h:commandLink value="All products" action="#{productsBean.doResetFilters()}"/></li>
+                                <li><h:commandLink value="Tất cả sản phẩm" action="#{productsBean.doResetFilters()}"/></li>
                                 <ui:repeat value="#{productsBean.doGetCategories()}" var="cat">
                                     <li><h:commandLink value="#{cat.name}" action="#{productsBean.doSelectCategory(cat)}"/></li>
                                 </ui:repeat>
@@ -109,11 +109,11 @@
                 <div id="right" class="col-sm-3">
                     <ui:insert name="right">
                         <div id="right-responsive">
-                            <h3 class="hidden-sm hidden-xs" onclick="$('#cart-float').show(200);"><span class="glyphicon glyphicon-shopping-cart">&nbsp;</span>CART</h3>
+                            <h3 class="hidden-sm hidden-xs" onclick="$('#cart-float').show(200);"><span class="glyphicon glyphicon-shopping-cart">&nbsp;</span>GIỎ HÀNG</h3>
                             <h3 class="hidden-lg hidden-md" onclick="$('#cart-float, #cart-up, #cart-down').toggle(250); $(this).toggleClass('right-up');">
                                 <span class="glyphicon glyphicon-chevron-up" id="cart-up">&nbsp;</span>
                                 <span class="glyphicon glyphicon-chevron-down" id="cart-down">&nbsp;</span>
-                                CART
+                                GIỎ HÀNG
                             </h3>
                             <div id="cart-float">
                                 <h:form class="cart-context" rendered="#{cartBean.doGetCart().size()>0}">
@@ -130,9 +130,9 @@
                                             <div class="row">
                                                 <div class="col-sm-5"></div>
                                                 <div class="col-sm-3 cart-button">
-                                                    <h:commandLink class="glyphicon glyphicon-plus-sign"/>
+                                                    <h:commandLink class="glyphicon glyphicon-plus-sign" title="Thêm SP"/>
                                                     &nbsp;
-                                                    <h:commandLink class="glyphicon glyphicon-minus-sign"/>
+                                                    <h:commandLink class="glyphicon glyphicon-minus-sign" title="Bớt SP"/>
                                                 </div>
                                                 <div class="col-sm-4 cart-price">$10.40</div>
                                             </div>
@@ -142,12 +142,18 @@
                                 </h:form>
                                 <div class="row cart-total">
                                     <h:form rendered="#{cartBean.doGetCart().size()>0}">
-                                        <div class="col-sm-4">Total</div>
+                                        <div class="col-sm-4">Tạm tính</div>
                                         <div class="col-sm-8 cart-price">$11.00</div>
+                                        <div class="col-sm-2"></div>
+                                        <div class="col-sm-8">
+                                            <h:commandButton value="&raquo; THANH TOÁN &raquo;" 
+                                                             class="btn btn-warning form-control"/>
+                                        </div>
+                                        <div class="col-sm-2"></div>
                                     </h:form>
                                     <h:form rendered="#{!(cartBean.doGetCart().size()>0)}">
                                         <div class="col-sm-12">
-                                            Your cart is empty,<br/>please add some products!
+                                            Giỏ hàng đang trống,<br/>hãy chọn sản phẩm bạn muốn!
                                         </div>
                                     </h:form>
                                 </div>

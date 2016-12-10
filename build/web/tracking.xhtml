@@ -6,23 +6,23 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
     <body>
-
-        <h:form class="hidden">
-            <h:outputText value="#{viewBean.doSetPage('index')}"/>
-        </h:form>
         
+        <h:form class="hidden">
+            <h:outputText value="#{viewBean.doSetPage('tracking')}"/>
+        </h:form>
+
         <ui:composition template="./UserTemplate.xhtml">
 
-            <ui:define name="title-line">
-                <h:outputText value="#{productsBean.doGetFilterContext()}" escape="false"/>
+            <ui:define name="top">
+                <h3>Dịch vụ Khách hàng</h3>
             </ui:define>
 
-            <ui:define name="top">
-                <h3>Sản phẩm nổi bật</h3>
+            <ui:define name="title-line">
+                Theo dõi &amp; Đánh giá Đơn hàng
             </ui:define>
 
             <ui:define name="content">
-                content
+                load form here
             </ui:define>
 
         </ui:composition>

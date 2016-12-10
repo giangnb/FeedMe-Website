@@ -15,14 +15,32 @@ import javax.faces.bean.RequestScoped;
 @ManagedBean
 @RequestScoped
 public class ViewBean {
-
+    private String currentPage;
+    
     /**
      * Creates a new instance of ViewBean
      */
     public ViewBean() {
+        currentPage = "";
     }
     
+    /**
+     * Inform the bean where is user's location
+     * @param page
+     * @return 
+     */
+    public String doSetPage(String page) {
+        currentPage = page.trim();
+        return page;
+    }
+    
+    /**
+     * Navigate to page (request a redirection)
+     * @param page
+     * @return 
+     */
     public String doNavigate(String page) {
+        currentPage = page.trim();
         return page;
     }
 }

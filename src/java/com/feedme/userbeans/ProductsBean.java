@@ -12,7 +12,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 /**
- *
+ * Managed bean for processing the Category and Products sections
  * @author Giang
  */
 @ManagedBean

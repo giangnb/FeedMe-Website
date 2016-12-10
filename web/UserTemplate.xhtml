@@ -78,9 +78,10 @@
             <div class="row">
                 <div id="left" class="col-sm-2">
                     <ui:insert name="left">
-                        <h3>CATEGORIES</h3>
+                        <h3 class="hidden-sm hidden-xs" onclick="$('#category-toggle').show(200);">CATEGORIES</h3>
+                        <h3 class="hidden-lg hidden-md" onclick="$('#category-toggle').toggle(200);"><span class="glyphicon glyphicon-menu-hamburger">&nbsp;</span>CATEGORIES</h3>
                         <h:form>
-                            <ul>
+                            <ul id="category-toggle">
                                 <li>One</li>
                                 <li>Two</li>
                                 <li>Three</li>
@@ -106,41 +107,48 @@
 
                 <div id="right" class="col-sm-3">
                     <ui:insert name="right">
-                        <h3>CART</h3>
-                        <h:form class="cart-context" rendered="#{cartBean.doGetCart().size()>0}">
-                            <ui:repeat value="#{cartBean.doGetCart()}" var="item">
-                                <div class="cart-item">
-                                    <div class="row">
-                                        <h:outputText class="col-sm-5 cart-product"
-                                                      value="#{item.name}"/>
-                                        <h:outputText class="col-md-2 cart-quantity"
-                                                      value="x !!get quatity here!!"/>
-                                        <h:outputText class="col-sm-5 cart-price"
-                                                      value="!!formatted!!"/>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-5"></div>
-                                        <div class="col-sm-3 cart-button">
-                                            <h:commandLink class="glyphicon glyphicon-plus-sign"/>
-                                            &nbsp;
-                                            <h:commandLink class="glyphicon glyphicon-minus-sign"/>
+                            <h3 class="hidden-sm hidden-xs" onclick="$('#cart-float').show(200);">CART</h3>
+                            <h3 class="hidden-lg hidden-md" onclick="$('#cart-float, #cart-up, #cart-down').toggle(250); $(this).toggleClass('right-up');">
+                                <span class="glyphicon glyphicon-chevron-up" id="cart-up">&nbsp;</span>
+                                <span class="glyphicon glyphicon-chevron-down" id="cart-down">&nbsp;</span>
+                                CART
+                            </h3>
+                        <div id="cart-float">
+                            <h:form class="cart-context" rendered="#{cartBean.doGetCart().size()>0}">
+                                <ui:repeat value="#{cartBean.doGetCart()}" var="item">
+                                    <div class="cart-item">
+                                        <div class="row">
+                                            <h:outputText class="col-sm-5 cart-product"
+                                                          value="#{item.name}"/>
+                                            <h:outputText class="col-md-2 cart-quantity"
+                                                          value="x !!get quatity here!!"/>
+                                            <h:outputText class="col-sm-5 cart-price"
+                                                          value="!!formatted!!"/>
                                         </div>
-                                        <div class="col-sm-4 cart-price">$10.40</div>
+                                        <div class="row">
+                                            <div class="col-sm-5"></div>
+                                            <div class="col-sm-3 cart-button">
+                                                <h:commandLink class="glyphicon glyphicon-plus-sign"/>
+                                                &nbsp;
+                                                <h:commandLink class="glyphicon glyphicon-minus-sign"/>
+                                            </div>
+                                            <div class="col-sm-4 cart-price">$10.40</div>
+                                        </div>
+                                        <div class="cart-separator"></div>
                                     </div>
-                                    <div class="cart-separator"></div>
-                                </div>
-                            </ui:repeat>
-                        </h:form>
-                        <div class="row cart-total">
-                            <h:form rendered="#{cartBean.doGetCart().size()>0}">
-                                <div class="col-sm-4">Total</div>
-                                <div class="col-sm-8 cart-price">$11.00</div>
+                                </ui:repeat>
                             </h:form>
-                            <h:form rendered="#{!(cartBean.doGetCart().size()>0)}">
-                                <div class="col-sm-12">
-                                    Your cart is empty,<br/>please add some products!
-                                </div>
-                            </h:form>
+                            <div class="row cart-total">
+                                <h:form rendered="#{cartBean.doGetCart().size()>0}">
+                                    <div class="col-sm-4">Total</div>
+                                    <div class="col-sm-8 cart-price">$11.00</div>
+                                </h:form>
+                                <h:form rendered="#{!(cartBean.doGetCart().size()>0)}">
+                                    <div class="col-sm-12">
+                                        Your cart is empty,<br/>please add some products!
+                                    </div>
+                                </h:form>
+                            </div>
                         </div>
                     </ui:insert>
                 </div>

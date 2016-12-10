@@ -9,7 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
 /**
- *
+ * Managed bean for processing the Order tracking function
  * @author Giang
  */
 @ManagedBean

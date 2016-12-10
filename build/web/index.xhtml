@@ -7,6 +7,10 @@
 
     <body>
 
+        <h:form class="hidden">
+            <h:outputText value="#{viewBean.doSetPage('index')}"/>
+        </h:form>
+        
         <ui:composition template="./UserTemplate.xhtml">
 
             <ui:define name="title-line">

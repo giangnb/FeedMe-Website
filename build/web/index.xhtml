@@ -14,11 +14,11 @@
         <ui:composition template="./UserTemplate.xhtml">
 
             <ui:define name="title-line">
-                hello world
+                <h:outputText value="#{productsBean.doGetFilterContext()}" escape="false"/>
             </ui:define>
 
             <ui:define name="top">
-                <h3>Our products</h3>
+                <h3>Featured products</h3>
             </ui:define>
 
             <ui:define name="content">

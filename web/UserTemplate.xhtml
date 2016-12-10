@@ -37,20 +37,22 @@
                         </div>
                     </div>
                     <div id="menu-header" class="collapse navbar-collapse">
-                        <ul class="nav-top nav navbar-nav">
-                            <li class="">
-                                Online Store
-                            </li>
-                            <li class="">
-                                Delivery
-                            </li>
-                            <li class="">
-                                Introduction
-                            </li>
-                            <li class="">
-                                Order tracking
-                            </li>
-                        </ul>
+                        <h:form>
+                            <ul class="nav-top nav navbar-nav">
+                                <li class="">
+                                    <h:commandLink value="Online Store" action="#{viewBean.doNavigate('index')}"/>
+                                </li>
+                                <li class="">
+                                    Delivery
+                                </li>
+                                <li class="">
+                                    Introduction
+                                </li>
+                                <li class="">
+                                    Order tracking
+                                </li>
+                            </ul>
+                        </h:form>
                     </div>
                     <div class="contact-header hidden-sm hidden-xs">
                         <strong>43 Kim Dong St</strong>, Hoang Mai, Hanoi
@@ -59,7 +61,7 @@
                     </div>
                     <div id="search">
                         <h:form>
-                            <h:inputText style="width: 165px; position: relative; top: 0; left: 0;" class="inputbox"/>
+                            <h:inputText style="width: 165px; position: relative; top: 0; left: 0;" class="inputbox" value="#{productsBean.search}"/>
                             <h:commandButton class="button" value="Search"/>
                         </h:form>
                     </div>
@@ -82,11 +84,10 @@
                         <h3 class="hidden-lg hidden-md" onclick="$('#category-toggle').toggle(200);"><span class="glyphicon glyphicon-menu-hamburger">&nbsp;</span>CATEGORIES</h3>
                         <h:form>
                             <ul id="category-toggle">
-                                <li>One</li>
-                                <li>Two</li>
-                                <li>Three</li>
-                                <li>Four</li>
-                                <li>Five</li>
+                                <li><h:commandLink value="All products" action="#{productsBean.doResetFilters()}"/></li>
+                                <ui:repeat value="#{productsBean.doGetCategories()}" var="cat">
+                                    <li><h:commandLink value="#{cat.name}" action="#{productsBean.doSelectCategory(cat)}"/></li>
+                                </ui:repeat>
                             </ul>
                         </h:form>
                     </ui:insert>
@@ -107,47 +108,49 @@
 
                 <div id="right" class="col-sm-3">
                     <ui:insert name="right">
-                            <h3 class="hidden-sm hidden-xs" onclick="$('#cart-float').show(200);">CART</h3>
+                        <div id="right-responsive">
+                            <h3 class="hidden-sm hidden-xs" onclick="$('#cart-float').show(200);"><span class="glyphicon glyphicon-shopping-cart">&nbsp;</span>CART</h3>
                             <h3 class="hidden-lg hidden-md" onclick="$('#cart-float, #cart-up, #cart-down').toggle(250); $(this).toggleClass('right-up');">
                                 <span class="glyphicon glyphicon-chevron-up" id="cart-up">&nbsp;</span>
                                 <span class="glyphicon glyphicon-chevron-down" id="cart-down">&nbsp;</span>
                                 CART
                             </h3>
-                        <div id="cart-float">
-                            <h:form class="cart-context" rendered="#{cartBean.doGetCart().size()>0}">
-                                <ui:repeat value="#{cartBean.doGetCart()}" var="item">
-                                    <div class="cart-item">
-                                        <div class="row">
-                                            <h:outputText class="col-sm-5 cart-product"
-                                                          value="#{item.name}"/>
-                                            <h:outputText class="col-md-2 cart-quantity"
-                                                          value="x !!get quatity here!!"/>
-                                            <h:outputText class="col-sm-5 cart-price"
-                                                          value="!!formatted!!"/>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-5"></div>
-                                            <div class="col-sm-3 cart-button">
-                                                <h:commandLink class="glyphicon glyphicon-plus-sign"/>
-                                                &nbsp;
-                                                <h:commandLink class="glyphicon glyphicon-minus-sign"/>
+                            <div id="cart-float">
+                                <h:form class="cart-context" rendered="#{cartBean.doGetCart().size()>0}">
+                                    <ui:repeat value="#{cartBean.doGetCart()}" var="item">
+                                        <div class="cart-item">
+                                            <div class="row">
+                                                <h:outputText class="col-sm-5 cart-product"
+                                                              value="#{item.name}"/>
+                                                <h:outputText class="col-md-2 cart-quantity"
+                                                              value="x !!get quatity here!!"/>
+                                                <h:outputText class="col-sm-5 cart-price"
+                                                              value="!!formatted!!"/>
                                             </div>
-                                            <div class="col-sm-4 cart-price">$10.40</div>
+                                            <div class="row">
+                                                <div class="col-sm-5"></div>
+                                                <div class="col-sm-3 cart-button">
+                                                    <h:commandLink class="glyphicon glyphicon-plus-sign"/>
+                                                    &nbsp;
+                                                    <h:commandLink class="glyphicon glyphicon-minus-sign"/>
+                                                </div>
+                                                <div class="col-sm-4 cart-price">$10.40</div>
+                                            </div>
+                                            <div class="cart-separator"></div>
                                         </div>
-                                        <div class="cart-separator"></div>
-                                    </div>
-                                </ui:repeat>
-                            </h:form>
-                            <div class="row cart-total">
-                                <h:form rendered="#{cartBean.doGetCart().size()>0}">
-                                    <div class="col-sm-4">Total</div>
-                                    <div class="col-sm-8 cart-price">$11.00</div>
+                                    </ui:repeat>
                                 </h:form>
-                                <h:form rendered="#{!(cartBean.doGetCart().size()>0)}">
-                                    <div class="col-sm-12">
-                                        Your cart is empty,<br/>please add some products!
-                                    </div>
-                                </h:form>
+                                <div class="row cart-total">
+                                    <h:form rendered="#{cartBean.doGetCart().size()>0}">
+                                        <div class="col-sm-4">Total</div>
+                                        <div class="col-sm-8 cart-price">$11.00</div>
+                                    </h:form>
+                                    <h:form rendered="#{!(cartBean.doGetCart().size()>0)}">
+                                        <div class="col-sm-12">
+                                            Your cart is empty,<br/>please add some products!
+                                        </div>
+                                    </h:form>
+                                </div>
                             </div>
                         </div>
                     </ui:insert>

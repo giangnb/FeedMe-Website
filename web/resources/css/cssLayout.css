@@ -41,6 +41,9 @@ body {
 .nav-top {
     display: block;
 }
+.nav-top > li a {
+    color: #333 !important;
+}
 #menu-header {
     background: none;
     border: none;
@@ -69,9 +72,9 @@ body {
         border-right: none;
     }
 }
-.nav-top>li:hover {
+.nav-top>li a:hover {
     background: #141414;
-    color: #c69703;
+    color: #c69703 !important;
 }
 .box-header {
     height: 100%;
@@ -189,7 +192,9 @@ body {
     border-bottom: none;
 }
 #left ul > li:hover {
-    background: #c69703
+    background: #c69703;
+    padding-left: 10px;
+    border-left: thick solid #c69703;
 }
 #left ul a {
     display: block;
@@ -217,7 +222,7 @@ body {
     background: #0e0e0e;
     color: #ece3a5;
 }
-#right > h3 {
+#right h3:first-child {
     padding: 20px 5px;
     background: #242424;
     color: #9c9c9c;
@@ -307,7 +312,12 @@ body {
     font-size: larger;
 }
 @media screen and (max-width:767px) {
-    #right {
+    #right-responsive {
+        background-color: #ece3a5;
+        margin: 0;
+        padding: 0;
+        background: #0e0e0e;
+        color: #ece3a5;
         position: fixed;
         bottom: 0;
         left: 0;
@@ -315,8 +325,12 @@ body {
         height: 10%;
         z-index: 99;
     }
-    #right > h3 {
+    #right-responsive > h3 {
         padding: 15px 5px;
+        background: #242424;
+        color: #9c9c9c;
+        text-align: center;
+        margin-top: 0px !important;
     }
     #cart-float {
         position: fixed;

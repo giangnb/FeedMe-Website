@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="left">
+            </ui:define>
+
+            <ui:define name="content">
+                <div class="jumbotron">
+                    <h:form rendered="#{accountBean.manager==null}">
+                        <h1>Đăng nhập &raquo;</h1>
+                        <p>Vui lòng đăng nhập để truy cập trang quản lý</p>
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8">
+                                <h:messages class="text-warning"/>
+                                <div class="form-group">
+                                    <label class="control-label" for="focusedInput">Tên đăng nhập</label>
+                                    <h:inputText value="#{accountBean.user}" class="form-control"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="focusedInput">Mật khẩu</label>
+                                    <h:inputSecret value="#{accountBean.pass}" class="form-control"/>
+                                </div>
+                                <h:commandButton action="#{accountBean.doLogin()}" value="Đăng nhập &gt;" class="btn btn-lg btn-warning"/>
+                            </div>
+                        </div>
+                    </h:form>
+                </div>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

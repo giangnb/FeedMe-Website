@@ -6,6 +6,14 @@
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
+    <filter>
+        <filter-name>adminFilter</filter-name>
+        <filter-class>com.feedme.manabeans.AdminFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>adminFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
     <servlet>
         <servlet-name>WebsiteFaces</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -22,8 +30,8 @@
     </session-config>
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
+        <welcome-file>admin/index.xhtml</welcome-file>
     </welcome-file-list>
-    
     <mime-mapping>
         <extension>svg</extension>
         <mime-type>image/svg+xml</mime-type>

@@ -5,10 +5,17 @@
  */
 package com.feedme.global;
 
+import com.feedme.service.PropertyDTO;
+import com.feedme.ws.Methods;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.stream.Collectors;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ApplicationScoped;
 
@@ -20,15 +27,16 @@ import javax.faces.bean.ApplicationScoped;
 @ApplicationScoped
 public class GlobalBean {
 
-    private DecimalFormat number;
-    private SimpleDateFormat date, time;
-    private String money;
+    private static DecimalFormat number;
+    private static SimpleDateFormat date, time;
+    private static String money;
+    private static final Timer TIMER = new Timer();
+    private static final HashMap<String, String> PROP = new HashMap<>();
 
     /**
      * Creates a new instance of GlobalBean
      */
     public GlobalBean() {
-        doLoadProperties();
         startTimer();
     }
 
@@ -57,7 +65,7 @@ public class GlobalBean {
     public String doFormatDate(Date d) {
         return date.format(d);
     }
-    
+
     public Double doParsePrice(String price) {
         for (String s : money.split("\\?")) {
             price = price.replace(s.trim(), "");
@@ -75,7 +83,7 @@ public class GlobalBean {
 
     public Date doParseDateTime(String d) {
         try {
-            return new SimpleDateFormat(date.toPattern()+" "+time.toPattern()).parse(d);
+            return new SimpleDateFormat(date.toPattern() + " " + time.toPattern()).parse(d);
         } catch (ParseException ex) {
             return null;
         }
@@ -89,15 +97,25 @@ public class GlobalBean {
         }
     }
     
-    private void doLoadProperties() {
-        // Demo data
-        number = new DecimalFormat("#,###.##");
-        date = new SimpleDateFormat("dd/MM/yyyy");
-        time = new SimpleDateFormat("hh:mm a");
-        money = " ?đ ";
+    public String doGetProperty(String key) {
+        return PROP.get(key);
     }
 
-    private void startTimer() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void startTimer() {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                new Thread(() -> {
+                    Methods.fetchProperties().forEach((p) -> {
+                        PROP.put(p.getKey(), p.getValue());
+                    });
+                    number = new DecimalFormat(PROP.get("format_number"));
+                    date = new SimpleDateFormat(PROP.get("format_date"));
+                    time = new SimpleDateFormat(PROP.get("format_time"));
+                    money = PROP.get("format_currency");
+                }).start();
+            }
+        };
+        TIMER.schedule(task, 0, 60 * 1000);
     }
 }

@@ -7,6 +7,7 @@ package com.feedme.userbeans;
 
 import com.feedme.service.OrderDetailDTO;
 import com.feedme.service.ProductDTO;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -106,7 +107,7 @@ public class CartBean {
     /**
      * Class stores Products and its quantity
      */
-    public class Cart extends HashMap<ProductDTO, Integer>{
+    public class Cart extends HashMap<ProductDTO, Integer> implements Serializable{
 
         public void put(ProductDTO product) {
             Integer value = get(product);

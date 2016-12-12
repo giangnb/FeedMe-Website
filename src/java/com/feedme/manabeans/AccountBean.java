@@ -8,8 +8,11 @@ package com.feedme.manabeans;
 import com.feedme.service.ManagerDTO;
 import com.feedme.service.PriviledgeDTO;
 import com.feedme.ws.Methods;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -23,7 +26,6 @@ public class AccountBean {
     private String pass;
     private ManagerDTO manager;
     private PriviledgeDTO priv;
-    private short id;
 
     /**
      * Creates a new instance of AccountBean
@@ -59,62 +61,79 @@ public class AccountBean {
         this.priv = priv;
     }
 
-    public short getId() {
-        return id;
-    }
-
-    public void setId(short id) {
-        this.id = id;
-    }
-    
-    public String doLoginManager() {
+    public String doLogin() {
         manager = Methods.loginManager(user, pass);
+        FacesContext ctx = FacesContext.getCurrentInstance();
         if (manager == null) {
-            return "page_login";  //Manager login page
+            user = "";
+            pass = "";
+            ctx.addMessage("", new FacesMessage("Đăng nhập thất bại"));
+            return "login";  //Manager login page
         }
-        return "manager_page";  //Manager page
+        priv = manager.getPriviledge();
+        if (priviledgeNone()) {
+            ctx.addMessage("", new FacesMessage("Tài khoản bị vô hiệu hóa"));
+            return "login";
+        }
+        // Create session
+        HttpSession session = (HttpSession) ctx.getExternalContext().getSession(true);
+        session.setAttribute("isLoggedIn", "1");
+        return "index";  //Manager page
     }
 
-    public String doLogoutManager() {
+    public String doLogout() {
         manager = null;
-        return "page_login";
+        // Invalidate session
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        ctx.getExternalContext().getSessionMap().clear();
+        HttpSession session = (HttpSession) ctx.getExternalContext().getSession(false);
+        session.setAttribute("isLoggedIn", "0");
+        return "login";
     }
-    
-    public String changePassword() {
+
+    public String doChangePassword() {
         try {
             Methods.updateManagerPassword(manager);
-            return "success";  
+            return "success";
         } catch (Exception e) {
             return "fail";
         }
     }
-    
-    public String changeInfo() {
-      return"";
+
+    public String doChangeInfo() {
+        boolean result = Methods.updateManager(manager);
+        if (!result) {
+            FacesContext ctx = FacesContext.getCurrentInstance();
+            ctx.addMessage("failed", new FacesMessage("Không thể sửa thông tin. Vui lòng thử lại!"));
+        }
+        return "#";
     }
 
-    public boolean checkIsAdmin() {
-        priv = Methods.fetchPriviledgeById(id);
+    public boolean priviledgeAdmin() {
         return priv.isAdmin();
     }
 
-    public boolean checkIsManager() {
-        priv = Methods.fetchPriviledgeById(id);
+    public boolean priviledgeManager() {
         return priv.isManager();
     }
 
-    public boolean checkIsView() {
-        priv = Methods.fetchPriviledgeById(id);
+    public boolean priviledgeView() {
         return priv.isView();
     }
 
-    public boolean checkIsHr() {
-        priv = Methods.fetchPriviledgeById(id);
+    public boolean priviledgeHR() {
         return priv.isHr();
     }
-    
-    public boolean checkIsEditor() {
-        priv = Methods.fetchPriviledgeById(id);
+
+    public boolean priviledgeEditor() {
         return priv.isEditor();
-    }  
+    }
+
+    public boolean priviledgeNone() {
+        return !(priviledgeAdmin() || priviledgeEditor() || priviledgeHR() || priviledgeManager() || priviledgeView());
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 }

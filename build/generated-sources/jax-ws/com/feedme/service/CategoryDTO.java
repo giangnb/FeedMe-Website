@@ -1,6 +1,7 @@
 
 package com.feedme.service;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -33,7 +34,7 @@ import javax.xml.bind.annotation.XmlType;
     "description",
     "name"
 })
-public class CategoryDTO {
+public class CategoryDTO implements Serializable{
 
     protected Category category;
     protected String description;

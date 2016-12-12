@@ -6,26 +6,165 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <h:outputStylesheet name="./css/default.css"/>
-        <h:outputStylesheet name="./css/cssLayout.css"/>
-        <title>Facelets Template</title>
+        <h:outputStylesheet name="./css/bootstrap.min.css"/>
+        <h:outputStylesheet name="./css/bootstrap-theme.min.css"/>
+        <h:outputStylesheet name="./css/admin-layout.css"/>
+        <h:outputScript name="./js/jquery.min.js"/>
+        <h:outputScript name="./js/bootstrap.min.js"/>
+        <title>FeedMe - Manager</title>
     </h:head>
 
     <h:body>
 
-        <div id="top">
-            <ui:insert name="top">Top</ui:insert>
-        </div>
         <div>
-            <div id="left">
-                <ui:insert name="left">Left</ui:insert>
+            <h:form>
+                <ui:insert name="top">
+                    <nav class="navbar navbar-inverse">
+                        <div class="container">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+                                    <span class="sr-only">MENU</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <span class="navbar-brand">
+                                    <h:form>
+                                        <h:graphicImage library="img" name="logo.png" style="height: 100px;"
+                                                        alt="FeedMe Logo" class="img-responsive img-thumbnail"/>
+                                    </h:form>
+                                </span>
+                            </div>
+
+                            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+                                <ul class="nav navbar-nav">
+                                    <li class="active"><h:commandLink value="Trang quản lý" action="#{adminBean.doNavigate('index')}" rendered="#{accountBean.manager!=null}"/></li>
+                                    <li><h:commandLink value="Cửa hàng" action="/index" target="_blank"/></li>
+                                </ul>
+                                <ui:fragment rendered="#{accountBean.manager!=null}">
+                                    <ul class="nav navbar-nav navbar-right">
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                                <h:outputText value="#{accountBean.manager.username}"/> <span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a href="#">Tài khoản</a></li>
+                                                <li class="divider"></li>
+                                                <li><a href="#">Đổi mật khẩu</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><h:commandLink value="Đăng xuất" action="#{accountBean.doLogout()}"/></li>
+                                    </ul>
+                                </ui:fragment>
+                            </div>
+                        </div>
+                    </nav>
+                </ui:insert>
+            </h:form>
+        </div>
+
+        <div class="container">
+            <div class="col-sm-3"><br/></div>
+            <div class="col-sm-9">
+                <h3>
+                    <ui:insert name="title">Trang quản lý</ui:insert>
+                </h3>
             </div>
-            <div id="content" class="left_content">
-                <ui:insert name="content">Content</ui:insert>
+        </div>
+
+        <div class="container">
+            <h:form class="col-sm-3 well">
+                <ui:insert name="left">
+                    <button type="button" class="navbar-toggle collapsed form-control" data-toggle="collapse" data-target="#sidebar">
+                        <span class="glyphicon glyphicon-menu-hamburger">&nbsp;</span> MENU
+                    </button>
+                    <ui:fragment class="collapse navbar-collapse" id="sidebar" rendered="#{accountBean.manager!=null}">
+                        <ul class="nav nav-pills nav-stacked">
+                            <ui:fragment rendered="#{accountBean.priviledgeEditor()}">
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                        Hàng hóa <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">Danh mục</a></li>
+                                        <li><a href="#">Sản phẩm</a></li>
+                                    </ul>
+                                </li>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{accountBean.priviledgeView()}">
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                        Bán hàng <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">Hóa đơn</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Doanh số</a></li>
+                                        <li><a href="#">Phản hồi</a></li>
+                                    </ul>
+                                </li>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{accountBean.priviledgeHR()}">
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                        Nhân sự <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">Nhân viên</a></li>
+                                        <li><a href="#">Quản lý cửa hàng</a></li>
+                                    </ul>
+                                </li>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{accountBean.priviledgeManager()}">
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                        Quản lý <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">Nội dung website</a></li>
+                                        <li><a href="#">Tài khoản</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Cài đặt nâng cao</a></li>
+                                    </ul>
+                                </li>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{accountBean.priviledgeAdmin()}">
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                        Hệ thống <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">Bật/Tắt chức năng</a></li>
+                                        <li><a href="#">Định dạng</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Phân quyền</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Cài đặt nâng cao</a></li>
+                                    </ul>
+                                </li>
+                            </ui:fragment>
+                        </ul>
+                    </ui:fragment>
+                </ui:insert>
+            </h:form>
+
+            <div class="col-sm-9">
+                <ui:insert name="content">
+                    <!-- Content goes here -->
+                </ui:insert>
             </div>
+            <div class="increment">&nbsp;</div>
         </div>
         <div id="bottom">
-            <ui:insert name="bottom">Bottom</ui:insert>
+            <footer>
+                <ui:insert name="bottom">
+                    Provided by <strong>FeedMe Team</strong>
+                </ui:insert>
+            </footer>
         </div>
 
     </h:body>

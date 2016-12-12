@@ -1,6 +1,7 @@
 
 package com.feedme.service;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -37,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
     "priviledge",
     "username"
 })
-public class ManagerDTO {
+public class ManagerDTO implements Serializable{
 
     protected String info;
     protected Manager manager;

@@ -11,7 +11,7 @@ import com.feedme.ws.Methods;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
@@ -19,7 +19,7 @@ import javax.faces.context.FacesContext;
  * @author Giang
  */
 @ManagedBean(name = "productManaBean")
-@RequestScoped
+@ViewScoped
 public class ProductManagerBean {
    private CategoryDTO category;
    private ProductDTO product;

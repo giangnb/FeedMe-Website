@@ -22,4 +22,5 @@ public class ManagerBean {
     public ManagerBean() {
     }
     
+    
 }

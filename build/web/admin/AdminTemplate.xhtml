@@ -87,7 +87,7 @@
                                         Hàng hóa <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="#">Danh mục</a></li>
+                                        <li><h:commandLink value="Danh mục" action="#{adminBean.doNavigate('category')}"/></li>
                                         <li><a href="#">Sản phẩm</a></li>
                                     </ul>
                                 </li>
@@ -168,7 +168,21 @@
             </footer>
         </div>
 
-        <p:dialog header="this forces prime faces render jquery lib" modal="true"/>
+        <p:growl id="alertBox" showDetail="true" sticky="true" />
+        <p:ajaxStatus onstart="PF('ajaxStatusDialog').show()" onsuccess="PF('ajaxStatusDialog').hide(); addBtnClass();" />
+        <p:dialog widgetVar="ajaxStatusDialog" modal="true" showHeader="false" resizable="false" 
+                  draggable="false" closable="false" style="background:none;border:none;box-shadow: none;">
+            <div class="loader loader-border is-active" data-text="Xin chờ..."></div>
+        </p:dialog>
+        <script type="text/javascript">
+            "use strict";
+            $(document).ready(function() {
+                $("input[type='button'], input[type='submit'], input[type='reset'], button").addClass("btn");
+            });
+            function addBtnClass() {
+                $("input[type='button'], input[type='submit'], input[type='reset'], button").addClass("btn");
+            }
+        </script>
     </h:body>
 
 </html>

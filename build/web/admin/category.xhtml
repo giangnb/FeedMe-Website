@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                Danh mục
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form">
+                    <p:growl id="msgs" showDetail="true" />
+
+                    <p:commandButton value="Thêm danh mục" icon="ui-icon-plus" oncomplete="PF('dlgAddCategory').show();"
+                                     update=":form:categoryInsert">
+                        <f:setPropertyActionListener value="#{null}" target="#{productManaBean.category}" />
+                    </p:commandButton>
+                    <br/>
+                    
+                    <p:dataTable id="categoryDT" var="item" value="#{productManaBean.doLoadCategories()}"
+                                 paginator="true" rows="10"
+                                 paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="10,15,20">
+                        <p:column headerText="#">
+                            <h:outputText value="#{item.category.id}" />
+                        </p:column>
+                        <p:column headerText="Tên">
+                            <h:outputText value="#{item.name}" />
+                        </p:column>
+                        <p:column headerText="Mô tả">
+                            <h:outputText value="#{adminBean.doSubString(item.description, 45, '...')}" />
+                        </p:column>
+                        <p:column style="/*width:32px;*/text-align: center">
+                            <p:commandButton update=":form:categoryDetail" oncomplete="PF('dlgCategory').show();"
+                                             icon="ui-icon-search" title="Chi tiết">
+                                <f:setPropertyActionListener value="#{item}" target="#{productManaBean.category}" />
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+
+                    <p:dialog header="Danh mục sản phẩm" widgetVar="dlgCategory" modal="true" showEffect="fade" hideEffect="fade" width="650">
+                        <p:outputPanel id="categoryDetail">
+                            <p:fragment rendered="#{not empty productManaBean.category}">
+                                <h:outputText value="ID" class="control-label"/>
+                                <h:inputText value="#{productManaBean.category.category.id}" readonly="true" class="form-control"/>
+
+                                <h:outputText value="Tên" class="control-label"/>
+                                <h:inputText value="#{productManaBean.category.name}" class="form-control"/>
+
+                                <h:outputText value="Mô tả" class="control-label"/>
+                                <p:editor value="#{productManaBean.category.description}"/>
+
+                                <p:commandButton value="Lưu thông tin" class="btn btn-primary"
+                                                 update="categoryDT,alertBox" actionListener="#{productManaBean.doUpdateCategory()}"/>
+                            </p:fragment>
+                        </p:outputPanel>
+                    </p:dialog>
+
+                    <p:dialog header="Thêm danh mục" widgetVar="dlgAddCategory" modal="true" showEffect="fade" hideEffect="fade" width="650">
+                        <p:outputPanel id="categoryInsert">
+                            <p:fragment rendered="#{not empty productManaBean.category}">
+                                <h:outputText value="Tên" class="control-label"/>
+                                <h:inputText value="#{productManaBean.category.name}" class="form-control"/>
+
+                                <h:outputText value="Mô tả" class="control-label"/>
+                                <p:editor value="#{productManaBean.category.description}"/>
+
+                                <p:commandButton value="Thêm mới" class="btn btn-primary"
+                                                 update="categoryDT,alertBox" actionListener="#{productManaBean.doAddCategory()}"/>
+                            </p:fragment>
+                        </p:outputPanel>
+                    </p:dialog>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

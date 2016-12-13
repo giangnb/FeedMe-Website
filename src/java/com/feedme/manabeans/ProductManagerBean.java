@@ -8,6 +8,7 @@ package com.feedme.manabeans;
 import com.feedme.service.CategoryDTO;
 import com.feedme.service.ProductDTO;
 import com.feedme.ws.Methods;
+import java.io.Serializable;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -16,14 +17,16 @@ import javax.faces.context.FacesContext;
 
 /**
  * For products and categories managements
+ *
  * @author Giang
  */
 @ManagedBean(name = "productManaBean")
 @ViewScoped
-public class ProductManagerBean {
-   private CategoryDTO category;
-   private ProductDTO product;
-  
+public class ProductManagerBean implements Serializable {
+
+    private CategoryDTO category;
+    private ProductDTO product;
+
     /**
      * Creates a new instance of ProductManagerBean
      */
@@ -35,6 +38,9 @@ public class ProductManagerBean {
     }
 
     public void setCategory(CategoryDTO category) {
+        if (category==null) {
+            category = new CategoryDTO();
+        }
         this.category = category;
     }
 
@@ -46,69 +52,93 @@ public class ProductManagerBean {
         this.product = product;
     }
     
+    public String doNewCategory() {
+        category = new CategoryDTO();
+        return "category";
+    }
+
     public List<CategoryDTO> doLoadCategories() {
-       List<CategoryDTO> list = Methods.fetchCategories();
-       if (list==null) {
-           return null;
-       }
-       return list;
+        List<CategoryDTO> list = Methods.fetchCategories();
+        if (list == null) {
+            return null;
+        }
+        return list;
     }
-    
+
     public CategoryDTO doLoadCategory() {
-      category = Methods.fetchCategoryById(category.getCategory().getId());
-      if (category==null) {
-        return null;
-      }
-       return category;
+        category = Methods.fetchCategoryById(category.getCategory().getId());
+        if (category == null) {
+            return null;
+        }
+        return category;
     }
-    
+
     public String doAddCategory() {
-      boolean result = Methods.addCategory(category);
-       if (!result) {
-           FacesContext ctx = FacesContext.getCurrentInstance();
-           ctx.addMessage("", new FacesMessage("Không thể thêm danh mục"));
-       }
-        return "";
+        boolean result = Methods.addCategory(category);
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (!result) {
+            ctx.addMessage("", new FacesMessage("Không thể thêm danh mục"));
+        } else {
+            ctx.addMessage("", new FacesMessage("Thêm danh mục thành công"));
+        }
+        return "category";
     }
-    
-    public String doUpdateCategiry() {
-       boolean result = Methods.updateCategory(category);
-       if (!result) {
-           FacesContext ctx = FacesContext.getCurrentInstance();
-           ctx.addMessage("", new FacesMessage("Không thể sửa danh mục"));
-       }
-       return"ok";
+
+    public String doUpdateCategory() {
+        boolean result = Methods.updateCategory(category);
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (!result) {
+            ctx.addMessage("", new FacesMessage("Không thể sửa danh mục"));
+        } else {
+            ctx.addMessage("", new FacesMessage("Sửa danh mục thành công"));
+        }
+        return "category";
     }
-    
+
     public List<ProductDTO> doLoadProducts() {
-      List<ProductDTO> list = null;
-      return list;
+        List<ProductDTO> list = null;
+        return list;
     }
-    
+
     public ProductDTO doGetProduct(String name) {
         product = Methods.fetchProductsByName(name);
-        if (product==null) {
-           FacesContext ctx = FacesContext.getCurrentInstance();
-           ctx.addMessage("", new FacesMessage("Khong tim thay san pham"));
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (product == null) {
+            ctx.addMessage("", new FacesMessage("Không tìm thấy sản phẩm"));
         }
         return product;
     }
-    
+
+    public String doAddProduct() {
+        boolean result = Methods.addProduct(product);
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (!result) {
+            ctx.addMessage("", new FacesMessage("Không thể thêm sản phẩm"));
+        } else {
+            ctx.addMessage("", new FacesMessage("Thêm sản phẩm thành công"));
+        }
+        return "product";
+    }
+
     public String doUpdateProduct() {
         boolean result = Methods.updateProduct(product);
-       if (!result) {
-           FacesContext ctx = FacesContext.getCurrentInstance();
-           ctx.addMessage("", new FacesMessage("Không thể sửa san pham"));
-       }
-       return"ok";
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (!result) {
+            ctx.addMessage("", new FacesMessage("Không thể sửa sản phẩm"));
+        } else {
+            ctx.addMessage("", new FacesMessage("Sửa sản phẩm thành công"));
+        }
+        return "product";
     }
-    
-     public String doRemoveProduct() {
+
+    public String doRemoveProduct() {
         boolean result = Methods.removeProduct(product.getId());
-       if (!result) {
-           FacesContext ctx = FacesContext.getCurrentInstance();
-           ctx.addMessage("", new FacesMessage("Không thể xoa san pham"));
-       }
-       return"ok";
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (!result) {
+            ctx.addMessage("", new FacesMessage("Không thể xóa sản phẩm"));
+        } else {
+            ctx.addMessage("", new FacesMessage("Xóa sản phẩm thành công"));
+        }
+        return "product";
     }
 }

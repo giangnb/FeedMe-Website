@@ -36,14 +36,15 @@ public class AdminFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
 
-        HttpSession httpSession = req.getSession(true);
-        Object loginSession = httpSession.getAttribute("isLoggedIn");
-        System.out.println(loginSession);
+        HttpSession session = req.getSession(true);
+        Object loginSession = session.getAttribute("isLoggedIn");
 
         if (loginSession=="1") {
+            session.setMaxInactiveInterval(10*60);
             String url = ((HttpServletRequest) request).getRequestURL().toString();
             chain.doFilter(request, response);
         } else {
+            session.setMaxInactiveInterval(90*60);
             RequestDispatcher requestDispatcher = req.getRequestDispatcher("/admin/login.xhtml?faces-redirect=true");
             requestDispatcher.forward(request, response);
         }

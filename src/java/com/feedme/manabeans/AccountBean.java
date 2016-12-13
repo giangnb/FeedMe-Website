@@ -15,7 +15,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 /**
- *
+ * For current manager's account
  * @author Giang
  */
 @ManagedBean

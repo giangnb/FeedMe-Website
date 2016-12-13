@@ -9,24 +9,17 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
 /**
- * Utilities for manager's site
+ * For manager's management and configuration sections
  * @author Giang
  */
 @ManagedBean
 @RequestScoped
-public class AdminBean {
+public class ManagerBean {
 
     /**
-     * Creates a new instance of AdminBean
+     * Creates a new instance of ManagerBean
      */
-    public AdminBean() {
+    public ManagerBean() {
     }
     
-    public String doNavigate(String section) {
-        return section;
-    }
-    
-    public String doGetOut() {
-        return "../index";
-    }
 }

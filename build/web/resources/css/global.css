@@ -1,0 +1,34 @@
+.ui-widget-header {
+    background: #f0f0f0 !important;
+    border-bottom: thin solid #dedede;
+}
+.ui-dialog-title {
+    color: #333 !important;
+}
+
+.ui-widget-header .ui-icon {
+    border-radius: 0 !important;
+    color: #fff !important;
+}
+
+.ui-widget-header .ui-icon:hover, .ui-widget-header .ui-icon:focus {
+    background-color: #c69703 !important;
+}
+
+.ui-widget-overlay {
+    background: rgb(50,50,50) !important;
+    filter: blur(50px);
+    opacity: 0.7 !important;
+}
+
+.ui-widget-overlay:before {
+    background: rgb(50,50,50) !important;
+    filter: blur(150px);
+    transform: translateY(100%) translateY(-7rem);
+}
+
+.ui-widget-overlay:after {
+    background: rgb(50,50,50) !important;
+    filter: blur(150px);
+    transform: translateY(100%) translateY(-7rem);
+}

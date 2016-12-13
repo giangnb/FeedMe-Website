@@ -8,6 +8,8 @@ package com.feedme.manabeans;
 import com.feedme.service.ManagerDTO;
 import com.feedme.service.PriviledgeDTO;
 import com.feedme.ws.Methods;
+import java.io.Serializable;
+import java.util.Timer;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -16,16 +18,18 @@ import javax.servlet.http.HttpSession;
 
 /**
  * For current manager's account
+ *
  * @author Giang
  */
 @ManagedBean
 @SessionScoped
-public class AccountBean {
+public class AccountBean implements Serializable{
 
     private String user;
     private String pass;
     private ManagerDTO manager;
     private PriviledgeDTO priv;
+    private Timer tmr;
 
     /**
      * Creates a new instance of AccountBean
@@ -64,15 +68,19 @@ public class AccountBean {
     public String doLogin() {
         manager = Methods.loginManager(user, pass);
         FacesContext ctx = FacesContext.getCurrentInstance();
+        if (user.length()<5 || pass.length()<5) {
+            ctx.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Lỗi đăng nhập", "Tên người dùng hoặc mật khẩu quá ngắn"));
+            return "login";
+        }
         if (manager == null) {
             user = "";
             pass = "";
-            ctx.addMessage("", new FacesMessage("Đăng nhập thất bại"));
+            ctx.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Đăng nhập thất bại", "Người dùng hoặc mật khẩu sai"));
             return "login";  //Manager login page
         }
         priv = manager.getPriviledge();
         if (priviledgeNone()) {
-            ctx.addMessage("", new FacesMessage("Tài khoản bị vô hiệu hóa"));
+            ctx.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Đăng nhập thất bại", "Tài khoản bị vô hiệu hóa"));
             return "login";
         }
         // Create session
@@ -85,6 +93,7 @@ public class AccountBean {
         manager = null;
         // Invalidate session
         FacesContext ctx = FacesContext.getCurrentInstance();
+        ctx.addMessage("", new FacesMessage("Đã đăng xuất"));
         ctx.getExternalContext().getSessionMap().clear();
         HttpSession session = (HttpSession) ctx.getExternalContext().getSession(false);
         session.setAttribute("isLoggedIn", "0");

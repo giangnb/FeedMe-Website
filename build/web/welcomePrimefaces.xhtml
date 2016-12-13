@@ -40,6 +40,10 @@
 
                 <p:layoutUnit position="center">
                     Welcome to PrimeFaces
+                    <p:commandButton value="Quên mật khẩu?" type="button" class="btn btn-link btn-sm" onclick="PF('dlg1').show();"/>
+                                <p:dialog header="Quên mật khẩu" widgetVar="dlg1" modal="true" height="100">
+                                    <h:outputText value="This is a Modal Dialog." />
+                                </p:dialog> 
                 </p:layoutUnit>
 
             </p:layout>

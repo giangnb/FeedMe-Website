@@ -1,17 +1,20 @@
 <?xml version='1.0' encoding='UTF-8' ?> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <h:outputStylesheet name="./css/bootstrap.min.css"/>
         <h:outputStylesheet name="./css/bootstrap-theme.min.css"/>
         <h:outputStylesheet name="./css/admin-layout.css"/>
-        <h:outputScript name="./js/jquery.min.js"/>
+        <h:outputStylesheet name="./css/global.css"/>
+<!--        <h:outputScript name="./js/jquery.min.js" target="body"/>-->
         <h:outputScript name="./js/bootstrap.min.js"/>
-        <title>FeedMe - Manager</title>
+        <title>FeedMe - Quản lý</title>
     </h:head>
 
     <h:body>
@@ -111,7 +114,7 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a href="#">Nhân viên</a></li>
-                                        <li><a href="#">Quản lý cửa hàng</a></li>
+                                        <li><a href="#">Quản lý</a></li>
                                     </ul>
                                 </li>
                             </ui:fragment>
@@ -123,9 +126,9 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a href="#">Nội dung website</a></li>
-                                        <li><a href="#">Tài khoản</a></li>
+                                        <li><a href="#">Tài khoản đăng nhập</a></li>
                                         <li class="divider"></li>
-                                        <li><a href="#">Cài đặt nâng cao</a></li>
+                                        <li><a href="#">Cài đặt cửa hàng</a></li>
                                     </ul>
                                 </li>
                             </ui:fragment>
@@ -165,6 +168,7 @@
             </footer>
         </div>
 
+        <p:dialog header="this forces prime faces render jquery lib" modal="true"/>
     </h:body>
 
 </html>

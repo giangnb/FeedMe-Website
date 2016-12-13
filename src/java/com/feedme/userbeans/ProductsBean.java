@@ -8,6 +8,7 @@ package com.feedme.userbeans;
 import com.feedme.service.CategoryDTO;
 import com.feedme.service.ProductDTO;
 import com.feedme.ws.Methods;
+import java.io.Serializable;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -18,7 +19,7 @@ import javax.faces.bean.SessionScoped;
  */
 @ManagedBean
 @SessionScoped
-public class ProductsBean {
+public class ProductsBean implements Serializable{
     private CategoryDTO category; // Selected category
     private String search="";
 

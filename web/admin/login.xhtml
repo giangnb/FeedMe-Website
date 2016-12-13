@@ -2,7 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
 
     <body>
 
@@ -19,19 +21,27 @@
                         <div class="row">
                             <div class="col-md-2"></div>
                             <div class="col-md-8">
-                                <h:messages class="text-warning"/>
+                                <p:messages showDetail="false" autoUpdate="true" closable="true" />
                                 <div class="form-group">
                                     <label class="control-label" for="focusedInput">Tên đăng nhập</label>
-                                    <h:inputText value="#{accountBean.user}" class="form-control"/>
+                                    <h:inputText id="user" value="#{accountBean.user}" class="form-control" required="true" requiredMessage="Chưa nhập tên đăng nhập"/>
+                                    <p:message for="user"/>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label" for="focusedInput">Mật khẩu</label>
-                                    <h:inputSecret value="#{accountBean.pass}" class="form-control"/>
+                                    <h:inputSecret id="pass" value="#{accountBean.pass}" class="form-control" required="true" requiredMessage="Chưa nhập mật khẩu"/>
+                                    <p:message for="pass"/>
                                 </div>
                                 <h:commandButton action="#{accountBean.doLogin()}" value="Đăng nhập &gt;" class="btn btn-lg btn-warning"/>
+                                &nbsp;&nbsp;&nbsp;
+                                <p:commandButton value="Quên mật khẩu?" type="button" class="btn btn-link btn-sm" onclick="PF('dlg1').show();"/>
                             </div>
                         </div>
                     </h:form>
+                    <p:dialog header="Quên mật khẩu" widgetVar="dlg1" modal="true" height="150">
+                        Vui lòng liên hệ quản trị hệ thống để đặt lại mật khẩu:<br/>
+                        <h:outputText value="#{globalBean.doGetProperty('contact_admin')}" />
+                    </p:dialog> 
                 </div>
             </ui:define>
 

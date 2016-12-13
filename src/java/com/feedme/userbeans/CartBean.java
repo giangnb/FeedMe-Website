@@ -20,7 +20,7 @@ import javax.faces.bean.SessionScoped;
  */
 @ManagedBean
 @SessionScoped
-public class CartBean {
+public class CartBean implements Serializable{
     private OrderDetailDTO order;
     private Cart cart;
 

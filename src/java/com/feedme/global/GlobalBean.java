@@ -10,6 +10,7 @@ import com.feedme.ws.Methods;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.TimerTask;
 import java.util.stream.Collectors;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ApplicationScoped;
+import javax.xml.ws.WebServiceException;
 
 /**
  *
@@ -96,7 +98,7 @@ public class GlobalBean {
             return null;
         }
     }
-    
+
     public String doGetProperty(String key) {
         return PROP.get(key);
     }
@@ -105,15 +107,35 @@ public class GlobalBean {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                new Thread(() -> {
-                    Methods.fetchProperties().forEach((p) -> {
+                //new Thread(() -> {
+                List<PropertyDTO> props = new ArrayList<>();
+                try {
+                    props = Methods.fetchProperties();
+                } catch (Exception ex) {
+                }
+                try {
+                    for (PropertyDTO p : props) {
                         PROP.put(p.getKey(), p.getValue());
-                    });
+                    }
+                } catch (NullPointerException ex) {
+                }
+                try {
                     number = new DecimalFormat(PROP.get("format_number"));
+                } catch (NullPointerException ex) {
+                }
+                try {
                     date = new SimpleDateFormat(PROP.get("format_date"));
+                } catch (NullPointerException ex) {
+                }
+                try {
                     time = new SimpleDateFormat(PROP.get("format_time"));
+                } catch (NullPointerException ex) {
+                }
+                try {
                     money = PROP.get("format_currency");
-                }).start();
+                } catch (NullPointerException ex) {
+                }
+                //}).start();
             }
         };
         TIMER.schedule(task, 0, 60 * 1000);

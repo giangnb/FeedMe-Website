@@ -5,7 +5,10 @@
  */
 package com.feedme.manabeans;
 
+import com.feedme.service.EmployeeDTO;
 import com.feedme.service.OrderDetailDTO;
+import com.feedme.service.ProductDTO;
+import com.feedme.utils.Json;
 import com.feedme.ws.Methods;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +27,7 @@ public class OrderManagerBean {
   
   private Date fromTime;
   private Date toTime;
+  
     /**
      * Creates a new instance of OrderManagerBean
      */
@@ -44,14 +48,32 @@ public class OrderManagerBean {
     public void setToTime(Date toTime) {
         this.toTime = toTime;
     }
- 
+    
+  
     public List<OrderDetailDTO> doLoadOrderByTime() {
        List<OrderDetailDTO> list = Methods.fetchOrders(toTime.getTime(), fromTime.getTime());
        if(list==null) {
            FacesContext ctx = FacesContext.getCurrentInstance();
-           ctx.addMessage("", new FacesMessage("Khong co hoa don trong khoang thoi gian tu " + toTime.toString()+ " den " + fromTime.toString()));
+           ctx.addMessage("", new FacesMessage("Không tìm thấy hóa đơn từ " + toTime.toString()+ " đến " + fromTime.toString()));
        }
        return list;
     }
     
+    public List<OrderDetailDTO> doLoadOrderByEmployee (EmployeeDTO employee) {
+        List<OrderDetailDTO> list = Methods.fetchOrdersByEmployee(toTime.getTime(), fromTime.getTime(), employee.getEmployee().getId());
+        if(list==null) {
+           FacesContext ctx = FacesContext.getCurrentInstance();
+           ctx.addMessage("", new FacesMessage("Không tìm thấy hóa đơn được xử lý bởi nhân viên " + employee.getEmployee().getUsername()));
+       }
+        return list;
+    }
+    
+    public String doLoadFoodSales () {
+      
+         List<OrderDetailDTO> list = Methods.fetchOrders(toTime.getTime(), fromTime.getTime());
+         list.forEach((food) -> {
+           // Json.DeserializeObject(food, ProductDTO.class);
+         });
+         return"";
+    }
 }

@@ -8,11 +8,13 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <h:outputStylesheet name="./css/bootstrap.min.css"/>
-        <h:outputStylesheet name="./css/bootstrap-theme.min.css"/>
-        <h:outputStylesheet name="./css/admin-layout.css"/>
-        <h:outputStylesheet name="./css/global.css"/>
-<!--        <h:outputScript name="./js/jquery.min.js" target="body"/>-->
+        <f:facet name="last">
+            <h:outputStylesheet name="./css/bootstrap.min.css"/>
+            <h:outputStylesheet name="./css/bootstrap-theme.min.css"/>
+            <h:outputStylesheet name="./css/admin-layout.css"/>
+            <h:outputStylesheet name="./css/global.css"/>
+        </f:facet>
+        <!--        <h:outputScript name="./js/jquery.min.js" target="body"/>-->
         <h:outputScript name="./js/bootstrap.min.js"/>
         <title>FeedMe - Quản lý</title>
     </h:head>
@@ -83,22 +85,22 @@
                         <ul class="nav nav-pills nav-stacked">
                             <ui:fragment rendered="#{accountBean.priviledgeEditor()}">
                                 <li class="dropdown">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                    <a class="dropdown-toggle" data-toggle="collapse" data-target="#sidenav-0" href="#" aria-expanded="false">
                                         Hàng hóa <span class="caret"></span>
                                     </a>
-                                    <ul class="dropdown-menu">
-                                        <li><h:commandLink value="Danh mục" action="#{adminBean.doNavigate('category')}"/></li>
-                                        <li><a href="#">Sản phẩm</a></li>
+                                    <ul  id="sidenav-0" class="submenu collapse">
+                                        <li><h:commandLink value="Danh mục" action="#{adminBean.doNavigate('category')}" onclick="PF('ajaxStatusDialog').show();"/></li>
+                                        <li><h:commandLink value="Sản phẩm" action="#{adminBean.doNavigate('product')}" onclick="PF('ajaxStatusDialog').show();"/></li>
                                     </ul>
                                 </li>
                             </ui:fragment>
 
                             <ui:fragment rendered="#{accountBean.priviledgeView()}">
                                 <li class="dropdown">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                    <a class="dropdown-toggle" data-toggle="collapse" data-target="#sidenav-1" href="#" aria-expanded="false">
                                         Bán hàng <span class="caret"></span>
                                     </a>
-                                    <ul class="dropdown-menu">
+                                    <ul id="sidenav-1" class="submenu collapse">
                                         <li><a href="#">Hóa đơn</a></li>
                                         <li class="divider"></li>
                                         <li><a href="#">Doanh số</a></li>
@@ -109,10 +111,10 @@
 
                             <ui:fragment rendered="#{accountBean.priviledgeHR()}">
                                 <li class="dropdown">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                    <a class="dropdown-toggle" data-toggle="collapse" data-target="#sidenav-2" href="#" aria-expanded="false">
                                         Nhân sự <span class="caret"></span>
                                     </a>
-                                    <ul class="dropdown-menu">
+                                    <ul id="sidenav-2" class="submenu collapse">
                                         <li><a href="#">Nhân viên</a></li>
                                         <li><a href="#">Quản lý</a></li>
                                     </ul>
@@ -121,10 +123,10 @@
 
                             <ui:fragment rendered="#{accountBean.priviledgeManager()}">
                                 <li class="dropdown">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                    <a class="dropdown-toggle" data-toggle="collapse" data-target="#sidenav-3" href="#" aria-expanded="false">
                                         Quản lý <span class="caret"></span>
                                     </a>
-                                    <ul class="dropdown-menu">
+                                    <ul id="sidenav-3" class="submenu collapse">
                                         <li><a href="#">Nội dung website</a></li>
                                         <li><a href="#">Tài khoản đăng nhập</a></li>
                                         <li class="divider"></li>
@@ -135,10 +137,10 @@
 
                             <ui:fragment rendered="#{accountBean.priviledgeAdmin()}">
                                 <li class="dropdown">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                    <a class="dropdown-toggle" data-toggle="collapse" data-target="#sidenav-4" href="#" aria-expanded="false">
                                         Hệ thống <span class="caret"></span>
                                     </a>
-                                    <ul class="dropdown-menu">
+                                    <ul id="sidenav-4" class="submenu collapse">
                                         <li><a href="#">Bật/Tắt chức năng</a></li>
                                         <li><a href="#">Định dạng</a></li>
                                         <li class="divider"></li>
@@ -169,19 +171,27 @@
         </div>
 
         <p:growl id="alertBox" showDetail="true" sticky="true" />
-        <p:ajaxStatus onstart="PF('ajaxStatusDialog').show()" onsuccess="PF('ajaxStatusDialog').hide(); addBtnClass();" />
+        <p:ajaxStatus onstart="PF('ajaxStatusDialog').show()" onsuccess="PF('ajaxStatusDialog').hide(); addBtnClass();" onerror="PF('ajaxStatusDialog').hide(); alert('Vui lòng tải lại trang web hoặc kiểm tra kết nối Internet!');" />
         <p:dialog widgetVar="ajaxStatusDialog" modal="true" showHeader="false" resizable="false" 
                   draggable="false" closable="false" style="background:none;border:none;box-shadow: none;">
             <div class="loader loader-border is-active" data-text="Xin chờ..."></div>
         </p:dialog>
         <script type="text/javascript">
-            "use strict";
-            $(document).ready(function() {
-                $("input[type='button'], input[type='submit'], input[type='reset'], button").addClass("btn");
-            });
+//            "use strict";
+//            $(document).ready(function () {
+//                $("input[type='button'], input[type='submit'], input[type='reset'], button").addClass("btn").removeClass("ui-widget ui-state-default ui-corner-all");
+//            });
             function addBtnClass() {
-                $("input[type='button'], input[type='submit'], input[type='reset'], button").addClass("btn");
+//                $("input[type='button'], input[type='submit'], input[type='reset'], button").addClass("btn").removeClass("ui-widget ui-state-default ui-corner-all");
             }
+//            $("input[type='button'], input[type='submit'], input[type='reset'], button").hover(
+//                    function () {
+//                        $(this).removeClass("ui-state-hover");
+//                    },
+//                    function () {
+//                        $(this).removeClass("ui-state-hover");
+//                    }
+//            );
         </script>
     </h:body>
 

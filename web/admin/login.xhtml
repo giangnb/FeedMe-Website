@@ -24,12 +24,12 @@
                                 <p:messages showDetail="false" autoUpdate="true" closable="true" />
                                 <div class="form-group">
                                     <label class="control-label" for="focusedInput">Tên đăng nhập</label>
-                                    <h:inputText id="user" value="#{accountBean.user}" class="form-control" required="true" requiredMessage="Chưa nhập tên đăng nhập" autocomplete="false"/>
+                                    <h:inputText id="user" value="#{accountBean.user}" class="form-control" required="true" requiredMessage="Chưa nhập tên đăng nhập" autocomplete="off"/>
                                     <p:message for="user"/>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label" for="focusedInput">Mật khẩu</label>
-                                    <h:inputSecret id="pass" value="#{accountBean.pass}" class="form-control" required="true" requiredMessage="Chưa nhập mật khẩu" autocomplete="false"/>
+                                    <h:inputSecret id="pass" value="#{accountBean.pass}" class="form-control" required="true" requiredMessage="Chưa nhập mật khẩu" autocomplete="off"/>
                                     <p:message for="pass"/>
                                 </div>
                                 <h:commandButton action="#{accountBean.doLogin()}" value="Đăng nhập &gt;" class="btn btn-lg btn-warning"/>

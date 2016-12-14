@@ -49,6 +49,9 @@ public class ProductManagerBean implements Serializable {
     }
 
     public void setProduct(ProductDTO product) {
+        if (product==null) {
+            product = new ProductDTO();
+        }
         this.product = product;
     }
     
@@ -92,6 +95,17 @@ public class ProductManagerBean implements Serializable {
             ctx.addMessage("", new FacesMessage("Không thể sửa danh mục"));
         } else {
             ctx.addMessage("", new FacesMessage("Sửa danh mục thành công"));
+        }
+        return "category";
+    }
+    
+    public String doRemoveCategory() {
+        boolean result = Methods.removeCategory(category.getCategory().getId());
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (!result) {
+            ctx.addMessage("", new FacesMessage("Không thể xóa danh mục"));
+        } else {
+            ctx.addMessage("", new FacesMessage("Xóa danh mục thành công"));
         }
         return "category";
     }

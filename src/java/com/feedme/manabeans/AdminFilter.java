@@ -32,10 +32,10 @@ public class AdminFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
 
         HttpSession session = req.getSession(true);
-        Object loginSession = session.getAttribute("isLoggedIn");
+        String loginSession = session.getAttribute("isLoggedIn")+"";
 
-        if (loginSession=="1") {
-            session.setMaxInactiveInterval(10*60);
+        if (loginSession.equals("1")) {
+            session.setMaxInactiveInterval(30*60);
             String url = ((HttpServletRequest) request).getRequestURL().toString();
             chain.doFilter(request, response);
         } else {

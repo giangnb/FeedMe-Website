@@ -16,10 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.stream.Collectors;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ApplicationScoped;
-import javax.xml.ws.WebServiceException;
 
 /**
  *

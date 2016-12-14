@@ -1,3 +1,11 @@
+body {
+    font-size: 13px;
+}
+
+.nav {
+    font-size: 15px;
+}
+
 .ui-widget-header {
     background: #f0f0f0 !important;
     border-bottom: thin solid #dedede;
@@ -31,6 +39,10 @@
     background: rgb(50,50,50) !important;
     filter: blur(150px);
     transform: translateY(100%) translateY(-7rem);
+}
+
+.ui-growl {
+    top: 60px;
 }
 
 .loader{

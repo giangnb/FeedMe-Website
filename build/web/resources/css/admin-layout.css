@@ -62,3 +62,30 @@ footer {
     line-height: 45px;
     text-align: center;
 }
+
+ul.submenu {
+    list-style-type: none;
+    padding: 10px 0;
+    background: rgba(255,255,255,0.75);
+}
+ul.submenu > li {
+    line-height: 35px;
+    padding-left: 25px;
+    border-bottom: thin solid #f3f3f3;
+}
+ul.submenu > li > a {
+    display: block;
+}
+ul.submenu > li > a:hover {
+    font-weight: bold;
+    text-decoration: inherit;
+}
+ul.submenu > li:hover {
+    background: #dfdfdf;
+}
+ul.submenu > li.divider {
+    border-bottom: thin dashed #333;
+}
+ul.submenu > li:last-child {
+    border-bottom: none;
+}

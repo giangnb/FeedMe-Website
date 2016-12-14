@@ -5,6 +5,9 @@
  */
 package com.feedme.manabeans;
 
+import com.feedme.service.PropertyDTO;
+import com.feedme.ws.Methods;
+import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
@@ -15,12 +18,20 @@ import javax.faces.bean.RequestScoped;
 @ManagedBean
 @RequestScoped
 public class ManagerBean {
-
+   
     /**
      * Creates a new instance of ManagerBean
      */
     public ManagerBean() {
     }
     
-    
+   public List<PropertyDTO> doLoadProperties() {
+     List<PropertyDTO> list = Methods.fetchProperties();
+     return list;
+   }
+   
+   public String doAddProperty() {
+       
+      return "";
+   }
 }

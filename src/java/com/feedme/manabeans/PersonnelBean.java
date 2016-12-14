@@ -16,16 +16,19 @@ import javax.faces.context.FacesContext;
 
 /**
  * For personnel management sections
+ *
  * @author Giang
  */
 @ManagedBean
 @RequestScoped
 public class PersonnelBean {
- private EmployeeDTO employee;
- private ManagerDTO manager;
+
+    private EmployeeDTO employee;
+    private ManagerDTO manager;
+
     /**
-     * Creates a new instance of PersonnelBean
-     *  Note: Add new bean: loadOrderByEmployee
+     * Creates a new instance of PersonnelBean Note: Add new bean:
+     * loadOrderByEmployee
      */
     public PersonnelBean() {
     }
@@ -45,57 +48,72 @@ public class PersonnelBean {
     public void setManager(ManagerDTO manager) {
         this.manager = manager;
     }
-    
-    
-    public List<EmployeeDTO> doLoadEmployees () {
+
+    public List<EmployeeDTO> doLoadEmployees() {
         List<EmployeeDTO> list = Methods.fetchEmployees();
-        if(list==null) {return null;}
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (list.isEmpty()) {
+            ctx.addMessage("", new FacesMessage("Không có nhân viên."));
+            return null;
+        }
         return list;
     }
-    
-    public EmployeeDTO doGetEmployee () {
-        
-       return employee;
+
+    public EmployeeDTO doGetEmployee() {
+
+        return employee;
     }
-    
+
     public String doAddEmployee() {
-      boolean result = Methods.addEmployee(employee);
-      if (!result) {
-          FacesContext ctx = FacesContext.getCurrentInstance();
-          ctx.addMessage("", new FacesMessage("Khong them duoc nhan vien moi."));
-      }
-      return "success";
-    }
-    
-    public String doEditEmployee()  {
-        boolean result = Methods.updateEmployee(employee);
-        if (!result){
-          FacesContext ctx = FacesContext.getCurrentInstance();
-          ctx.addMessage("", new FacesMessage("Khong sua duoc nhan vien."));
+        boolean result = Methods.addEmployee(employee);
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (!result) {
+            ctx.addMessage("", new FacesMessage("Thêm mới nhân viên thất bại."));
+        } else {
+            ctx.addMessage("", new FacesMessage("Thêm mới nhân viên thành công."));
         }
         return "success";
     }
-    
+
+    public String doEditEmployee() {
+        boolean result = Methods.updateEmployee(employee);
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (!result) {
+            ctx.addMessage("", new FacesMessage("Không sửa được nhân viên."));
+        } else {
+            ctx.addMessage("", new FacesMessage("Sửa nhân viên thành công."));
+        }
+        return "success";
+    }
+
     public String doRemoveEmployee() {
         boolean result = Methods.removeEmployee(employee.getEmployee().getId());
-        if (!result){
-          FacesContext ctx = FacesContext.getCurrentInstance();
-          ctx.addMessage("", new FacesMessage("Khong xoa duoc nhan vien."));
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (!result) {
+            ctx.addMessage("", new FacesMessage("Không xóa được nhân viên"));
+        } else {
+            ctx.addMessage("", new FacesMessage("Xóa nhân viên thành công"));
         }
         return "success";
     }
-    
+
     public List<ManagerDTO> doLoadManagers() {
-       List<ManagerDTO> list = Methods.fetchManagers();
-        if(list==null) {return null;}
+        List<ManagerDTO> list = Methods.fetchManagers();
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (list.isEmpty()) {
+            ctx.addMessage("", new FacesMessage("Không có quản lý."));
+            return null;
+        }
         return list;
     }
 
     public String doEditManager() {
-       boolean result = Methods.updateManager(manager);
-        if (!result){
-          FacesContext ctx = FacesContext.getCurrentInstance();
-          ctx.addMessage("", new FacesMessage("Khong sua duoc quan ly."));
+        boolean result = Methods.updateManager(manager);
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (!result) {
+            ctx.addMessage("", new FacesMessage("Sửa quản lý thất bại."));
+        } else {
+            ctx.addMessage("", new FacesMessage("Sửa quản lý thành công."));
         }
         return "success";
     }

@@ -59,8 +59,9 @@ public class ProductManagerBean implements Serializable {
 
     public List<CategoryDTO> doLoadCategories() {
         List<CategoryDTO> list = Methods.fetchCategories();
-        if (list == null) {
-            return null;
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (list.isEmpty()) {
+            ctx.addMessage("", new FacesMessage("Không có danh mục "));
         }
         return list;
     }
@@ -96,7 +97,11 @@ public class ProductManagerBean implements Serializable {
     }
 
     public List<ProductDTO> doLoadProducts() {
-        List<ProductDTO> list = null;
+        List<ProductDTO> list = Methods.fetchProducts();
+        FacesContext ctx = FacesContext.getCurrentInstance();
+         if (list.isEmpty()) {
+            ctx.addMessage("", new FacesMessage("Không có sản phẩm"));
+        }
         return list;
     }
 

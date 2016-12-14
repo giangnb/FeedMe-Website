@@ -8,8 +8,8 @@ package com.feedme.manabeans;
 import com.feedme.service.EmployeeDTO;
 import com.feedme.service.OrderDetailDTO;
 import com.feedme.service.ProductDTO;
-import com.feedme.utils.Json;
 import com.feedme.ws.Methods;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.faces.application.FacesMessage;
@@ -68,12 +68,32 @@ public class OrderManagerBean {
         return list;
     }
     
-    public String doLoadFoodSales () {
-      
-         List<OrderDetailDTO> list = Methods.fetchOrders(toTime.getTime(), fromTime.getTime());
-         list.forEach((food) -> {
-           // Json.DeserializeObject(food, ProductDTO.class);
-         });
-         return"";
+    
+    public List<ProductDTO> doLoadFoodSales () {
+      List<ProductDTO> listProduct = new ArrayList<>();
+      List<OrderDetailDTO> list = Methods.fetchOrders(toTime.getTime(), fromTime.getTime());
+       for (OrderDetailDTO order:list) {
+          listProduct = order.getFoods();
+       }
+       if (listProduct.isEmpty()) {
+          FacesContext ctx = FacesContext.getCurrentInstance();
+           ctx.addMessage("", new FacesMessage("Không tìm thấy doanh số sản phẩm từ" + fromTime.toString() + " đến " + toTime.toString()));
+                   
+       }
+      return listProduct;
+    }
+    
+    public List<String> doLoadComments() {
+       List<String> comments = new ArrayList<>();
+       List<OrderDetailDTO> list = Methods.fetchOrders(toTime.getTime(), fromTime.getTime());
+       list.stream().forEach((order) -> {
+           comments.add(order.getComment());
+      });
+       if (list.isEmpty()) {
+          FacesContext ctx = FacesContext.getCurrentInstance();
+           ctx.addMessage("", new FacesMessage("Không tìm thấy phản hồi từ" + fromTime.toString() + " đến " + toTime.toString()));
+                   
+       }
+       return comments;
     }
 }

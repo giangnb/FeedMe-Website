@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./ErrorTemplate.xhtml">
+            
+            <ui:define name="title">
+                500 Error
+            </ui:define>
+
+            <ui:define name="cause">
+                Trang web bạn truy cập đang gặp sự cố hoặc chưa hoàn tất
+            </ui:define>
+
+            <ui:define name="explain">
+                Hãy quay lại sau hoặc <br/>
+                <h:commandLink value="liên hệ chúng tôi" action="/introduction"/> nếu bạn tin rằng đó là một lỗi
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

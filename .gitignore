@@ -65,3 +65,4 @@ $RECYCLE.BIN/
 # Netbeans
 /nbproject/private/*
 /dist/
+/build/

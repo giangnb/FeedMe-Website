@@ -6,6 +6,10 @@
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>bootstrap</param-value>
+    </context-param>
     <filter>
         <filter-name>adminFilter</filter-name>
         <filter-class>com.feedme.manabeans.AdminFilter</filter-class>
@@ -31,6 +35,7 @@
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
         <welcome-file>admin/index.xhtml</welcome-file>
+        <welcome-file>errors/400x.xhtml</welcome-file>
     </welcome-file-list>
     <mime-mapping>
         <extension>svg</extension>
@@ -52,4 +57,24 @@
         <extension>eot</extension>
         <mime-type>application/vnd.ms-fontobject</mime-type>
     </mime-mapping>
+    <error-page>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/errors/expired.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/errors/40x.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/errors/40x.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>400</error-code>
+        <location>/errors/40x.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/errors/500.xhtml</location>
+    </error-page>
 </web-app>

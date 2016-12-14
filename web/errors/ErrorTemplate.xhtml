@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/bootstrap.min.css"/>
+        <h:outputStylesheet name="./css/bootstrap-theme.min.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <h:outputStylesheet name="./css/global.css"/>
+        <h:outputScript name="./js/bootstrap.min.js"/>
+        <title><h:outputText value="#{globalBean.doGetProperty('context_title')}"/></title>
+    </h:head>
+
+    <h:body>
+
+        <h:form class="container">
+            <div class="jumbotron">
+                <div class="row">
+                    <h:commandLink class="col-sm-3" action="/index"><h:graphicImage library="img" name="logo.png" alt="Logo" class="img-thumbnail"/>
+                    </h:commandLink>
+                    <h1 class="text-warning col-sm-9"><span class="glyphicon glyphicon-warning-sign"></span> Ooops!</h1>
+                </div>
+                <br/><br/>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <ui:insert name="title"/>
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                <ui:insert name="cause"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+                        <p>
+                            <ui:insert name="explain">&nbsp;</ui:insert>
+                        </p>
+                        <h:commandLink class="btn btn-primary" value="Trang chủ" action="/index"/> | 
+                        <a class="btn btn-link" onclick="PF('errorTrace').show();">Báo lỗi</a>
+                    </div>
+                </div>
+            </div>
+
+            <p:dialog header="Mã lỗi" modal="true" width="450" closable="true" widgetVar="errorTrace" showEffect="fade">
+                <p class="control-label">
+                    Vui lòng gửi đoạn mã dưới đây tới chúng tôi nếu bạn tin rằng 
+                    trang này hiển thị do một lỗi nào đó của website.
+                </p>
+                <textarea rows="4" class="form-control" readonly="true" style="font-family: Consolas, Courier, monospace;">
+                    <h:outputText value="#{requestScope['javax.servlet.error.exception']}"/>
+                </textarea>
+                <p class="control-label text-muted">
+                    Nếu ô phía trên không có nội dung, đây có thể là lỗi do người dùng 
+                    (truy cập trang không tồn tại/bị chặn, chưa đăng nhâp...)
+                </p>
+            </p:dialog>
+        </h:form>
+    </h:body>
+
+</html>

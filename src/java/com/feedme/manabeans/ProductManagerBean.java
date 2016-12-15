@@ -5,6 +5,7 @@
  */
 package com.feedme.manabeans;
 
+import com.feedme.service.Category;
 import com.feedme.service.CategoryDTO;
 import com.feedme.service.ProductDTO;
 import com.feedme.ws.Methods;
@@ -45,13 +46,13 @@ public class ProductManagerBean implements Serializable {
     }
 
     public ProductDTO getProduct() {
+        if (product==null) {
+            product = new ProductDTO();
+        }
         return product;
     }
 
     public void setProduct(ProductDTO product) {
-        if (product==null) {
-            product = new ProductDTO();
-        }
         this.product = product;
     }
     
@@ -62,6 +63,18 @@ public class ProductManagerBean implements Serializable {
 
     public List<CategoryDTO> doLoadCategories() {
         List<CategoryDTO> list = Methods.fetchCategories();
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (list.isEmpty()) {
+            ctx.addMessage("", new FacesMessage("Không có danh mục "));
+        }
+        return list;
+    }
+
+    public List<Category> doLoadCategoryEntities() {
+        List<Category> list = new java.util.ArrayList<>();
+        for (CategoryDTO c : Methods.fetchCategories()) {
+            list.add(c.getCategory());
+        }
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (list.isEmpty()) {
             ctx.addMessage("", new FacesMessage("Không có danh mục "));
@@ -119,13 +132,13 @@ public class ProductManagerBean implements Serializable {
         return list;
     }
 
-    public ProductDTO doGetProduct(String name) {
-        product = Methods.fetchProductsByName(name);
+    public List<ProductDTO> doGetProduct(String name) {
+        List<ProductDTO> prods = Methods.fetchProductsByName(name);
         FacesContext ctx = FacesContext.getCurrentInstance();
-        if (product == null) {
+        if (prods.isEmpty()) {
             ctx.addMessage("", new FacesMessage("Không tìm thấy sản phẩm"));
         }
-        return product;
+        return prods;
     }
 
     public String doAddProduct() {

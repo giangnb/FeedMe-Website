@@ -203,7 +203,7 @@ public class Methods {
         return port.fetchProductsById(productId);
     }
 
-    public static ProductDTO fetchProductsByName(java.lang.String productName) {
+    public static java.util.List<ProductDTO> fetchProductsByName(java.lang.String productName) {
         com.feedme.service.ApplicationSevice_Service service = new com.feedme.service.ApplicationSevice_Service();
         com.feedme.service.ApplicationSevice port = service.getApplicationSevicePort();
         return port.fetchProductsByName(productName);

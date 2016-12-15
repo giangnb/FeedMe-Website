@@ -29,7 +29,7 @@ public class GlobalBean {
 
     private static DecimalFormat number;
     private static SimpleDateFormat date, time;
-    private static String money;
+    private static String money = "::đ";
     private static final Timer TIMER = new Timer();
     private static final HashMap<String, String> PROP = new HashMap<>();
 
@@ -39,19 +39,15 @@ public class GlobalBean {
     public GlobalBean() {
         startTimer();
     }
-
-    public String doFormatPrice(String formattedNumber) {
-        String result = "";
+    
+    public String doFormatPrice(double price) {
+        String result = doFormatNumber(price);
         try {
-            String[] str = money.split("\\?");
-            result = str[0] + formattedNumber + str[1];
+            String[] str = money.split("::");
+            result = str[0] + result + str[1];
         } catch (Exception ex) {
         }
         return result.trim();
-    }
-
-    public String doFormatPrice(double price) {
-        return doFormatPrice(doFormatNumber(price));
     }
 
     public String doFormatNumber(double num) {
@@ -67,7 +63,7 @@ public class GlobalBean {
     }
 
     public Double doParsePrice(String price) {
-        for (String s : money.split("\\?")) {
+        for (String s : money.split("::")) {
             price = price.replace(s.trim(), "");
         }
         return doParseNumber(price);

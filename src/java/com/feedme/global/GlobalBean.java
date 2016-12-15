@@ -96,6 +96,10 @@ public class GlobalBean {
     public String doGetProperty(String key) {
         return PROP.get(key);
     }
+    
+    public static String getPropertyValue(String key) {
+        return PROP.get(key);
+    }
 
     private static void startTimer() {
         TimerTask task = new TimerTask() {

@@ -18,8 +18,8 @@
                 <h:form id="form">
                     <p:growl id="msgs" showDetail="true" />
 
-                    <p:commandButton value="Thêm danh mục" icon="ui-icon-plus" oncomplete="PF('dlgAddCategory').show();"
-                                     update=":form:categoryInsert">
+                    <p:commandButton value="Thêm sản phẩm" icon="ui-icon-plus" oncomplete="PF('dlgAddProduct').show();"
+                                     update=":form:productInsert">
                         <f:setPropertyActionListener value="#{null}" target="#{productManaBean.product}" />
                     </p:commandButton> | 
                     <h:commandButton class="btn btn-link" value="Xuất Excel">
@@ -31,70 +31,108 @@
                                  paginator="true" rows="15" emptyMessage="Không có sản phẩm nào"
                                  paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}"
                                  rowsPerPageTemplate="15,20,30,50">
-                        <p:column headerText="#" style="width:10%">
-                            <h:outputText value="#{item.id}" />
+                        <p:column headerText="#" style="width:10%" sortBy="#{item.id}">
+                            <h:outputText value="#{item.id}"/>
                         </p:column>
-                        <p:column headerText="Tên">
+                        <p:column headerText="Tên" sortBy="#{item.name}">
                             <h:outputText value="#{item.name}" />
                         </p:column>
-                        <p:column headerText="Danh mục">
+                        <p:column headerText="Danh mục" sortBy="#{item.category.name}">
                             <h:outputText value="#{item.category.name}"/>
                         </p:column>
-                        <p:column headerText="Giá">
-                            <h:outputText value="#{globalBean.doParsePrice(item.price)}"/>
+                        <p:column headerText="Giá" sortBy="#{item.price}">
+                            <h:outputText value="#{globalBean.doFormatPrice(item.price)}"/>
                         </p:column>
-                        <p:column headerText="Hiện" style="width: 6%">
+                        <p:column headerText="Hiện" style="width: 6%" sortBy="#{item.isActive?1:0}">
                             <p:selectBooleanCheckbox value="#{item.isActive}" disabled="true"/>
                         </p:column>
                         <p:column style="width:10%;text-align: center">
-                            <p:commandButton update=":form:categoryDetail" onsuccess="PF('dlgCategory').show();"
+                            <p:commandButton update=":form:productDetail" onsuccess="PF('dlgProduct').show();"
                                              icon="ui-icon-search" title="Chi tiết">
-                                <f:setPropertyActionListener value="#{item}" target="#{productManaBean.category}" />
+                                <f:setPropertyActionListener value="#{item}" target="#{productManaBean.product}" />
                             </p:commandButton>
                         </p:column>
                     </p:dataTable>
 
-                    <p:dialog header="Sửa sản phẩm" widgetVar="dlgCategory" modal="true" showEffect="fade" hideEffect="fade" width="650">
-                        <p:outputPanel id="categoryDetail">
-                            <p:fragment rendered="#{not empty productManaBean.category}">
+                    <p:dialog header="Sửa sản phẩm" widgetVar="dlgProduct" modal="true" showEffect="fade"
+                              hideEffect="fade" width="650" position="top">
+                        <p:outputPanel id="productDetail">
+                            <p:fragment rendered="#{not empty productManaBean.product}">
                                 <h:outputText value="ID: " class="control-label"/>
-                                <strong><h:outputText value="#{productManaBean.category.category.id}" class="text-primary"/></strong><br/>
+                                <strong><h:outputText value="#{productManaBean.product.id}" class="text-primary"/></strong><br/>
 
                                 <h:outputText value="Tên" class="control-label"/>
-                                <h:inputText value="#{productManaBean.category.name}" class="form-control"/>
+                                <p:inputText value="#{productManaBean.product.name}" class="form-control" required="true" requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ">
+                                    <f:validateLength minimum="3" maximum="58"/>
+                                </p:inputText>
+
+                                <h:outputText value="Danh mục" class="control-label"/>
+                                <p:selectOneMenu value="#{productManaBean.product.category}" style="width: 100%"
+                                                 filter="true" filterMatchMode="startsWith"
+                                                 converter="categoryConv" class="form-control">
+                                    <f:selectItems value="#{productManaBean.doLoadCategories()}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat.category.id}" />
+                                </p:selectOneMenu>
+
+                                <h:outputText value="Giá" class="control-label"/>
+                                <p:inputNumber value="#{productManaBean.product.price}" class="row" required="true" style="width: 100%"
+                                               requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ" thousandSeparator=",">
+                                    <f:validateDoubleRange minimum="0.001"/>
+                                </p:inputNumber>
 
                                 <h:outputText value="Mô tả" class="control-label"/>
-                                <p:editor value="#{productManaBean.category.description}"
+                                <p:editor value="#{productManaBean.product.description}" height="150"
                                           controls="bold italic underline | color highlight | 
-                                          bullets numbering | alignleft center alignright justify | 
-                                          undo redo | rule image link unlink | outdent indent"/>
+                                          bullets numbering | alignleft center alignright justify | image link unlink"/>
+                                
+                                <h:outputText value="Chi tiết" class="control-label"/>
+                                <p:editor value="#{productManaBean.product.info}" height="150"
+                                          controls="bold italic underline | color highlight"/>
 
                                 <p:commandButton value="Cập nhật" styleClass="btn btn-primary"
-                                                 update="categoryDT,alertBox" actionListener="#{productManaBean.doUpdateCategory()}"/>
+                                                 update="productDT,alertBox" actionListener="#{productManaBean.doUpdateProduct()}"/>
                                 | &nbsp;&nbsp;&nbsp;
                                 <p:commandLink styleClass="btn btn-link" value="Xóa danh mục"
-                                               update="categoryDT,alertBox" actionListener="#{productManaBean.doRemoveCategory()}"
-                                               oncomplete="PF('dlgCategory').hide();">
-                                    <p:confirm header="Xóa danh mục" message="Xóa danh mục đồng nghĩa với việc xóa tất cả các sản phẩm trong nó. Bạn chắc chứ?" icon="ui-icon-alert"/>
+                                               update="productDT,alertBox" actionListener="#{productManaBean.doRemoveProduct()}"
+                                               oncomplete="PF('dlgProduct').hide();">
+                                    <p:confirm header="Xóa sản phẩm" message="Bạn chắc chắn muốn xóa '#{productManaBean.product.name}'?" icon="ui-icon-alert"/>
                                 </p:commandLink>
                             </p:fragment>
                         </p:outputPanel>
                     </p:dialog>
 
-                    <p:dialog header="Sửa danh mục" widgetVar="dlgAddCategory" modal="true" showEffect="fade" hideEffect="fade" width="650">
-                        <p:outputPanel id="categoryInsert">
-                            <p:fragment rendered="#{not empty productManaBean.category}">
+                    <p:dialog header="Thêm sản phẩm" widgetVar="dlgAddProduct" modal="true" showEffect="fade"
+                              hideEffect="fade" width="650" position="top">
+                        <p:outputPanel id="productInsert">
+                            <p:fragment rendered="#{not empty productManaBean.product}">
                                 <h:outputText value="Tên" class="control-label"/>
-                                <h:inputText value="#{productManaBean.category.name}" class="form-control"/>
+                                <p:inputText value="#{productManaBean.product.name}" class="form-control" required="true" requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ">
+                                    <f:validateLength minimum="3" maximum="58"/>
+                                </p:inputText>
+
+                                <h:outputText value="Danh mục" class="control-label"/>
+                                <p:selectOneMenu value="#{productManaBean.product.category}" style="width: 100%"
+                                                 filter="true" filterMatchMode="startsWith"
+                                                 converter="categoryConv" class="form-control">
+                                    <f:selectItems value="#{productManaBean.doLoadCategories()}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat.category.id}" />
+                                </p:selectOneMenu>
+
+                                <h:outputText value="Giá" class="control-label"/>
+                                <p:inputNumber value="#{productManaBean.product.price}" class="row" required="true" style="width: 100%"
+                                               requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ" thousandSeparator=",">
+                                    <f:validateDoubleRange minimum="0.001"/>
+                                </p:inputNumber>
 
                                 <h:outputText value="Mô tả" class="control-label"/>
-                                <p:editor value="#{productManaBean.category.description}"
+                                <p:editor value="#{productManaBean.product.description}"
                                           controls="bold italic underline | color highlight | 
-                                          bullets numbering | alignleft center alignright justify | 
-                                          undo redo | image link unlink | outdent indent"/>
+                                          bullets numbering | alignleft center alignright justify | image link unlink" height="150"/>
+                                
+                                <h:outputText value="Chi tiết" class="control-label"/>
+                                <p:editor value="#{productManaBean.product.info}" height="150"
+                                          controls="bold italic underline | color highlight"/>
 
-                                <p:commandButton value="Thêm mới" class="btn btn-primary"
-                                                 update="categoryDT,alertBox" actionListener="#{productManaBean.doAddCategory()}"/>
+                                <p:commandButton value="Thêm sản phẩm" styleClass="btn btn-primary"
+                                                 update="productDT,alertBox" actionListener="#{productManaBean.doAddProduct()}"/>
                             </p:fragment>
                         </p:outputPanel>
                     </p:dialog>

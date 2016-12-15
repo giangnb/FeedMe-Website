@@ -5,9 +5,12 @@
  */
 package com.feedme.manabeans;
 
+import com.feedme.global.GlobalBean;
+import com.feedme.info.Information;
 import com.feedme.service.Category;
 import com.feedme.service.CategoryDTO;
 import com.feedme.service.ProductDTO;
+import com.feedme.utils.Json;
 import com.feedme.ws.Methods;
 import java.io.Serializable;
 import java.util.List;
@@ -28,9 +31,9 @@ public class ProductManagerBean implements Serializable {
     private CategoryDTO category;
     private ProductDTO product;
 
-    /**
-     * Creates a new instance of ProductManagerBean
-     */
+    private List<CategoryDTO> categoryList;
+    private List<ProductDTO> productList;
+
     public ProductManagerBean() {
     }
 
@@ -39,35 +42,40 @@ public class ProductManagerBean implements Serializable {
     }
 
     public void setCategory(CategoryDTO category) {
-        if (category==null) {
+        if (category == null) {
             category = new CategoryDTO();
         }
         this.category = category;
     }
 
     public ProductDTO getProduct() {
-        if (product==null) {
-            product = new ProductDTO();
-        }
         return product;
     }
 
     public void setProduct(ProductDTO product) {
+        if (product == null) {
+            product = new ProductDTO();
+            product.setInfo(doGetProductInfo());
+        } else {
+            product.setInfo(doUpdateProductInfo(product.getInfo()));
+        }
         this.product = product;
     }
-    
+
     public String doNewCategory() {
         category = new CategoryDTO();
         return "category";
     }
 
     public List<CategoryDTO> doLoadCategories() {
-        List<CategoryDTO> list = Methods.fetchCategories();
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        if (list.isEmpty()) {
-            ctx.addMessage("", new FacesMessage("Không có danh mục "));
+        if (categoryList == null || categoryList.isEmpty()) {
+            categoryList = Methods.fetchCategories();
+            FacesContext ctx = FacesContext.getCurrentInstance();
+            if (categoryList.isEmpty()) {
+                ctx.addMessage("", new FacesMessage("Không có danh mục "));
+            }
         }
-        return list;
+        return categoryList;
     }
 
     public List<Category> doLoadCategoryEntities() {
@@ -111,7 +119,7 @@ public class ProductManagerBean implements Serializable {
         }
         return "category";
     }
-    
+
     public String doRemoveCategory() {
         boolean result = Methods.removeCategory(category.getCategory().getId());
         FacesContext ctx = FacesContext.getCurrentInstance();
@@ -124,12 +132,15 @@ public class ProductManagerBean implements Serializable {
     }
 
     public List<ProductDTO> doLoadProducts() {
-        List<ProductDTO> list = Methods.fetchProducts();
-        FacesContext ctx = FacesContext.getCurrentInstance();
-         if (list.isEmpty()) {
-            ctx.addMessage("", new FacesMessage("Không có sản phẩm"));
+        if (productList == null || productList.isEmpty()) {
+            productList = Methods.fetchProducts();
+            FacesContext ctx = FacesContext.getCurrentInstance();
+            if (productList.isEmpty()) {
+                ctx.addMessage("", new FacesMessage("Không có sản phẩm"));
+            }
+            return productList;
         }
-        return list;
+        return productList;
     }
 
     public List<ProductDTO> doGetProduct(String name) {
@@ -172,5 +183,27 @@ public class ProductManagerBean implements Serializable {
             ctx.addMessage("", new FacesMessage("Xóa sản phẩm thành công"));
         }
         return "product";
+    }
+    
+    public String doGetProductInfo() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<table class='table table-border table-hover'>");
+        sb.append("</table>");
+        return doUpdateProductInfo(sb.toString());
+    }
+    
+    public String doUpdateProductInfo(String info) {
+        StringBuilder sb = new StringBuilder(info);
+        int offset = sb.length()-"</table>".length();
+        String[] props = GlobalBean.getPropertyValue("info_product").split(";");
+        for (String p : props) {
+            if (sb.toString().contains("<th>"+p+"</th>")) {
+                sb.append("<tr><th>")
+                        .append(p)
+                        .append("</th>")
+                        .append("<td>&nbsp;</td></tr>");
+            }
+        }
+        return info;
     }
 }

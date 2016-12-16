@@ -52,7 +52,6 @@
                     <p:dialog header="Sửa nhân viên bán hàng" widgetVar="dlgEmployee" position="top"
                               modal="true" showEffect="fade" hideEffect="fade" width="650">
                         <p:outputPanel id="employeeDetail">
-                            <h:outputText value="#{personnelBean.employee==null?1:0}"/>
                             <p:fragment rendered="#{not empty personnelBean.employee}">
                                 <h:outputText value="ID: " class="control-label"/>
                                 <strong><h:outputText value="#{personnelBean.employee.employee.id}" class="text-primary"/></strong><br/>

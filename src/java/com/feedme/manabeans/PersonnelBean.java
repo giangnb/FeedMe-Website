@@ -186,7 +186,7 @@ public class PersonnelBean {
         StringBuilder sb = new StringBuilder(info);
         if (!(sb.toString().contains("<table border='1' cellpacing='0' width='100%'>") && sb.toString().contains("</table>"))) {
             sb = new StringBuilder();
-            sb.append("<table border='1' width='100%' cellpacing='0' cellspacing='0'>");
+            sb.append("<table border='1' cellpacing='0' width='100%'>");
             sb.append("</table>");
         }
         int offset = sb.length() - "</table>".length();
@@ -209,9 +209,9 @@ public class PersonnelBean {
 
     private String updateManagerInfo(String info) {
         StringBuilder sb = new StringBuilder(info);
-        if (!(sb.toString().contains("<table border='1' width='100%'>") && sb.toString().contains("</table>"))) {
+        if (!(sb.toString().contains("<table border='1' cellspacing='0' width='100%'>") && sb.toString().contains("</table>"))) {
             sb = new StringBuilder();
-            sb.append("<table border='1' width='100%' cellspacing='0'>");
+            sb.append("<table border='1' cellspacing='0' width='100%'>");
             sb.append("</table>");
         }
         int offset = sb.length() - "</table>".length();

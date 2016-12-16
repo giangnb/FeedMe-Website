@@ -18,9 +18,8 @@
                 <h:form id="form">
                     <p:growl id="msgs" showDetail="true" />
 
-                    <p:commandButton value="Thêm danh mục" icon="ui-icon-plus" oncomplete="PF('dlgAddCategory').show();"
-                                     update=":form:categoryInsert">
-                        <f:setPropertyActionListener value="#{null}" target="#{productManaBean.category}" />
+                    <p:commandButton value="Thêm danh mục" icon="ui-icon-plus" oncomplete="PF('dlgAddCategory').show();PF('dlgAddCategory').content.scrollTop('0');"
+                                     update=":form:categoryInsert" actionListener="#{productManaBean.doNewCategory()}">
                     </p:commandButton> | 
                     <h:commandButton class="btn btn-link" value="Xuất Excel">
                         <p:dataExporter type="xls" target="categoryDT" fileName="danh-muc" pageOnly="false"/>
@@ -41,7 +40,7 @@
                             <h:outputText value="#{adminBean.doSubString(item.description, 45, '...')}"/>
                         </p:column>
                         <p:column style="width:10%;text-align: center">
-                            <p:commandButton update=":form:categoryDetail" oncomplete="PF('dlgCategory').show();"
+                            <p:commandButton update=":form:categoryDetail" oncomplete="PF('dlgCategory').show();PF('dlgCategory').content.scrollTop('0');"
                                              icon="ui-icon-search" title="Chi tiết">
                                 <f:setPropertyActionListener value="#{item}" target="#{productManaBean.category}" />
                             </p:commandButton>
@@ -51,47 +50,52 @@
                     <p:dialog header="Sửa danh mục" widgetVar="dlgCategory" modal="true" showEffect="fade" hideEffect="fade" width="650">
                         <p:outputPanel id="categoryDetail">
                             <p:fragment rendered="#{not empty productManaBean.category}">
-                                <h:outputText value="ID: " class="control-label"/>
-                                <strong><h:outputText value="#{productManaBean.category.category.id}" class="text-primary"/></strong><br/>
+                                <p:fragment rendered="#{not empty productManaBean.category.category.id}">
+                                    <h:outputText value="ID: " class="control-label"/>
+                                    <strong><h:outputText value="#{productManaBean.category.category.id}" class="text-primary"/></strong><br/>
 
-                                <h:outputText value="Tên" class="control-label"/>
-                                <p:inputText value="#{productManaBean.category.name}" class="form-control" required="true" requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ">
-                                    <f:validateLength minimum="3" maximum="58"/>
-                                </p:inputText>
+                                    <h:outputText value="Tên" class="control-label"/>
+                                    <p:inputText value="#{productManaBean.category.name}" class="form-control" required="true" requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ">
+                                        <f:validateLength minimum="3" maximum="58"/>
+                                    </p:inputText>
 
-                                <h:outputText value="Mô tả" class="control-label"/>
-                                <p:editor value="#{productManaBean.category.description}"
-                                          controls="bold italic underline | color highlight | 
-                                          bullets numbering | alignleft center alignright justify | 
-                                          undo redo | rule image link unlink | outdent indent"/>
+                                    <h:outputText value="Mô tả" class="control-label"/>
+                                    <p:editor value="#{productManaBean.category.description}"
+                                              controls="bold italic underline | color highlight | 
+                                              bullets numbering | alignleft center alignright justify | 
+                                              undo redo | rule image link unlink | outdent indent"/>
 
-                                <p:commandButton value="Cập nhật" styleClass="btn btn-primary"
-                                                 update="categoryDT,alertBox" actionListener="#{productManaBean.doUpdateCategory()}"/>
-                                | &nbsp;&nbsp;&nbsp;
-                                <p:commandLink styleClass="btn btn-link" value="Xóa danh mục"
-                                               update="categoryDT,alertBox" actionListener="#{productManaBean.doRemoveCategory()}"
-                                               oncomplete="PF('dlgCategory').hide();">
-                                    <p:confirm header="Xóa danh mục" message="Xóa danh mục đồng nghĩa với việc xóa tất cả các sản phẩm trong nó. Bạn chắc chứ?" icon="ui-icon-alert"/>
-                                </p:commandLink>
+                                    <p:commandButton value="Cập nhật" styleClass="btn btn-primary"
+                                                     update="categoryDT,alertBox" actionListener="#{productManaBean.doUpdateCategory()}"/>
+                                    | &nbsp;&nbsp;&nbsp;
+                                    <p:commandLink styleClass="btn btn-link" value="Xóa danh mục"
+                                                   update="categoryDT,alertBox" actionListener="#{productManaBean.doRemoveCategory()}"
+                                                   oncomplete="PF('dlgCategory').hide();">
+                                        <p:confirm header="Xóa danh mục" message="Xóa danh mục đồng nghĩa với việc xóa tất cả các sản phẩm trong nó. Bạn chắc chứ?" icon="ui-icon-alert"/>
+                                    </p:commandLink>
+                                </p:fragment>
+                                <p:fragment rendered="#{empty productManaBean.category.category.id}">
+                                    <h:link value="Vui lòng tải lại trang" outcome="#{view.viewId}" class="btn btn-warning"/>
+                                </p:fragment>
                             </p:fragment>
                         </p:outputPanel>
                     </p:dialog>
 
                     <p:dialog header="Thêm danh mục" widgetVar="dlgAddCategory" modal="true" showEffect="fade" hideEffect="fade" width="650">
                         <p:outputPanel id="categoryInsert">
-                            <p:fragment rendered="#{not empty productManaBean.category}">
+                            <p:fragment rendered="#{not empty productManaBean.newCategory}">
                                 <h:outputText value="Tên" class="control-label"/>
-                                <p:inputText value="#{productManaBean.category.name}" class="form-control" required="true" requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ">
+                                <p:inputText value="#{productManaBean.newCategory.name}" class="form-control" required="true" requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ">
                                     <f:validateLength minimum="3" maximum="58"/>
                                 </p:inputText>
 
                                 <h:outputText value="Mô tả" class="control-label"/>
-                                <p:editor value="#{productManaBean.category.description}"
+                                <p:editor value="#{productManaBean.newCategory.description}"
                                           controls="bold italic underline | color highlight | 
                                           bullets numbering | alignleft center alignright justify | 
                                           undo redo | image link unlink | outdent indent"/>
 
-                                <p:commandButton value="Thêm mới" class="btn btn-primary"
+                                <p:commandButton value="Thêm mới" class="btn btn-primary" oncomplete="PF('dlgAddCategory').hide();"
                                                  update="categoryDT,alertBox" actionListener="#{productManaBean.doAddCategory()}"/>
                             </p:fragment>
                         </p:outputPanel>

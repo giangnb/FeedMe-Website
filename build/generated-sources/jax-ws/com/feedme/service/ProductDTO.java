@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="category" type="{http://webservice.feedme.com/}categoryDTO" minOccurs="0"/>
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}short" minOccurs="0"/>
+ *         &lt;element name="imageUrl" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="info" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="isActive" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -38,6 +39,7 @@ import javax.xml.bind.annotation.XmlType;
     "category",
     "description",
     "id",
+    "imageUrl",
     "info",
     "isActive",
     "name",
@@ -50,6 +52,7 @@ public class ProductDTO {
     protected CategoryDTO category;
     protected String description;
     protected Short id;
+    protected String imageUrl;
     protected String info;
     protected boolean isActive;
     protected String name;
@@ -127,6 +130,30 @@ public class ProductDTO {
      */
     public void setId(Short value) {
         this.id = value;
+    }
+
+    /**
+     * Gets the value of the imageUrl property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    /**
+     * Sets the value of the imageUrl property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setImageUrl(String value) {
+        this.imageUrl = value;
     }
 
     /**

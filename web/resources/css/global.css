@@ -49,26 +49,26 @@ body {
     position: fixed !important;
     max-height: 100%;
     max-width: 100%;
-/*    overflow-x: auto !important;*/
+    overflow-y: auto !important;
 }
 .ui-dialog-title {
     font-size: 14px !important;
-/*    padding: 0 !important;*/
     position: absolute !important;
-    width: 100%;
+    width: auto;
 }
 .ui-dialog-content {
     width: 100% !important;
     height: 85% !important;
-}
-.ui-dialog-title {
-    width: auto;
+    overflow-y: visible !important;
 }
 .ui-dialog.ui-widget-content .ui-dialog-titlebar-close {
     margin-top: 0;
 }
 .ui-inputfield {
     width: 100%;
+}
+.ui-corner-all {
+    border-radius: 0 !important;
 }
 
 .loader{

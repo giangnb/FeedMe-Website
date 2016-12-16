@@ -22,6 +22,7 @@ public class CategoryConverter implements Converter {
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String string) {
         try {
+            System.out.println(Methods.fetchCategoryById(Short.parseShort(string)).getName());
             return Methods.fetchCategoryById(Short.parseShort(string));
         } catch (NumberFormatException ex) {
             return null;

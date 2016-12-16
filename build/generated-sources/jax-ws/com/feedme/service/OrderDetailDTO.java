@@ -1,7 +1,6 @@
 
 package com.feedme.service;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -51,7 +50,7 @@ import javax.xml.bind.annotation.XmlType;
     "status",
     "subtotal"
 })
-public class OrderDetailDTO implements Serializable{
+public class OrderDetailDTO {
 
     protected String comment;
     @XmlElement(nillable = true)

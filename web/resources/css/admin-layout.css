@@ -48,7 +48,8 @@ a:hover, a:focus {
 }
 
 .increment {
-    height: 45px;
+    display: block;
+    height: 65px;
 }
 
 footer {

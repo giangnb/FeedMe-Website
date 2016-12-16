@@ -71,6 +71,10 @@
             <div class="col-sm-9">
                 <h3>
                     <ui:insert name="title">Trang quản lý</ui:insert>
+                    &nbsp;&nbsp;&nbsp;
+                    <p:link outcome="#{view.viewId}" class="btn btn-sm btn-default" onclick="PF('ajaxStatusDialog').show();">
+                        <span class="glyphicon glyphicon-refresh"></span>
+                    </p:link>
                 </h3>
             </div>
         </div>
@@ -115,7 +119,7 @@
                                         Nhân sự <span class="caret"></span>
                                     </a>
                                     <ul id="sidenav-2" class="submenu collapse">
-                                        <li><a href="#">Nhân viên</a></li>
+                                        <li><h:commandLink value="Nhân viên" action="#{adminBean.doNavigate('employee')}" onclick="PF('ajaxStatusDialog').show();"/></li>
                                         <li><a href="#">Quản lý</a></li>
                                     </ul>
                                 </li>
@@ -160,8 +164,8 @@
                     <!-- Content goes here -->
                 </ui:insert>
             </div>
-            <div class="increment">&nbsp;</div>
         </div>
+        <div class="increment">&nbsp;</div>
         <div id="bottom">
             <footer>
                 <ui:insert name="bottom">
@@ -177,6 +181,9 @@
             <div class="loader loader-border is-active" data-text="Xin chờ..."></div>
         </p:dialog>
         <script type="text/javascript">
+            $(".ui-dialog-content").click(function () {
+                $(this).scrollTop();
+            });
 //            "use strict";
 //            $(document).ready(function () {
 //                $("input[type='button'], input[type='submit'], input[type='reset'], button").addClass("btn").removeClass("ui-widget ui-state-default ui-corner-all");

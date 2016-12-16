@@ -6,18 +6,19 @@
 package com.feedme.manabeans;
 
 import com.feedme.global.GlobalBean;
-import com.feedme.info.Information;
 import com.feedme.service.Category;
 import com.feedme.service.CategoryDTO;
 import com.feedme.service.ProductDTO;
-import com.feedme.utils.Json;
 import com.feedme.ws.Methods;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 
 /**
  * For products and categories managements
@@ -28,13 +29,31 @@ import javax.faces.context.FacesContext;
 @ViewScoped
 public class ProductManagerBean implements Serializable {
 
-    private CategoryDTO category;
-    private ProductDTO product;
+    private CategoryDTO category, newCategory;
+    private ProductDTO product, newProduct;
 
     private List<CategoryDTO> categoryList;
     private List<ProductDTO> productList;
 
+    private short selectedCategoryId;
+
     public ProductManagerBean() {
+    }
+
+    public CategoryDTO getNewCategory() {
+        return newCategory;
+    }
+
+    public void setNewCategory(CategoryDTO newCategory) {
+        this.newCategory = newCategory;
+    }
+
+    public ProductDTO getNewProduct() {
+        return newProduct;
+    }
+
+    public void setNewProduct(ProductDTO newProduct) {
+        this.newProduct = newProduct;
     }
 
     public CategoryDTO getCategory() {
@@ -42,9 +61,6 @@ public class ProductManagerBean implements Serializable {
     }
 
     public void setCategory(CategoryDTO category) {
-        if (category == null) {
-            category = new CategoryDTO();
-        }
         this.category = category;
     }
 
@@ -52,18 +68,23 @@ public class ProductManagerBean implements Serializable {
         return product;
     }
 
-    public void setProduct(ProductDTO product) {
-        if (product == null) {
-            product = new ProductDTO();
-            product.setInfo(doGetProductInfo());
-        } else {
-            product.setInfo(doUpdateProductInfo(product.getInfo()));
-        }
-        this.product = product;
+    public void setProduct(ProductDTO p) {
+        System.out.println("set" + p);
+        this.product = p;
+        product.setInfo(doUpdateProductInfo(product.getInfo()));
+        selectedCategoryId = product.getCategory().getCategory().getId();
+    }
+
+    public short getSelectedCategoryId() {
+        return selectedCategoryId;
+    }
+
+    public void setSelectedCategoryId(short selectedCategoryId) {
+        this.selectedCategoryId = selectedCategoryId;
     }
 
     public String doNewCategory() {
-        category = new CategoryDTO();
+        newCategory = new CategoryDTO();
         return "category";
     }
 
@@ -99,13 +120,15 @@ public class ProductManagerBean implements Serializable {
     }
 
     public String doAddCategory() {
-        boolean result = Methods.addCategory(category);
+        boolean result = Methods.addCategory(newCategory);
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (!result) {
             ctx.addMessage("", new FacesMessage("Không thể thêm danh mục"));
         } else {
             ctx.addMessage("", new FacesMessage("Thêm danh mục thành công"));
         }
+        newCategory=null;
+        categoryList = null;
         return "category";
     }
 
@@ -117,6 +140,7 @@ public class ProductManagerBean implements Serializable {
         } else {
             ctx.addMessage("", new FacesMessage("Sửa danh mục thành công"));
         }
+        categoryList = null;
         return "category";
     }
 
@@ -128,7 +152,19 @@ public class ProductManagerBean implements Serializable {
         } else {
             ctx.addMessage("", new FacesMessage("Xóa danh mục thành công"));
         }
+        categoryList = null;
         return "category";
+    }
+
+    public String doNewProduct() {
+        newProduct = new ProductDTO();
+        newProduct.setCategory(new CategoryDTO());
+        newProduct.setInfo(doGetProductInfo());
+        newProduct.setPromotion("0");
+        newProduct.setIsActive(true);
+        newProduct.setDescription(" ");
+        selectedCategoryId = 1;
+        return "product";
     }
 
     public List<ProductDTO> doLoadProducts() {
@@ -153,17 +189,29 @@ public class ProductManagerBean implements Serializable {
     }
 
     public String doAddProduct() {
-        boolean result = Methods.addProduct(product);
+        Category cat = new Category();
+        cat.setId(selectedCategoryId);
+        CategoryDTO dto = new CategoryDTO();
+        dto.setCategory(cat);
+        newProduct.setCategory(dto);
+        boolean result = Methods.addProduct(newProduct);
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (!result) {
             ctx.addMessage("", new FacesMessage("Không thể thêm sản phẩm"));
         } else {
             ctx.addMessage("", new FacesMessage("Thêm sản phẩm thành công"));
         }
+        newProduct = null;
+        productList = null;
         return "product";
     }
 
     public String doUpdateProduct() {
+        Category cat = new Category();
+        cat.setId(selectedCategoryId);
+        CategoryDTO dto = new CategoryDTO();
+        dto.setCategory(cat);
+        product.setCategory(dto);
         boolean result = Methods.updateProduct(product);
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (!result) {
@@ -171,6 +219,7 @@ public class ProductManagerBean implements Serializable {
         } else {
             ctx.addMessage("", new FacesMessage("Sửa sản phẩm thành công"));
         }
+        productList = null;
         return "product";
     }
 
@@ -182,28 +231,33 @@ public class ProductManagerBean implements Serializable {
         } else {
             ctx.addMessage("", new FacesMessage("Xóa sản phẩm thành công"));
         }
+        productList = null;
+        product = null;
         return "product";
     }
-    
-    public String doGetProductInfo() {
+
+    private String doGetProductInfo() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<table class='table table-border table-hover'>");
+        sb.append("<table border='1' width='100%'>");
         sb.append("</table>");
         return doUpdateProductInfo(sb.toString());
     }
-    
-    public String doUpdateProductInfo(String info) {
+
+    private String doUpdateProductInfo(String info) {
         StringBuilder sb = new StringBuilder(info);
-        int offset = sb.length()-"</table>".length();
-        String[] props = GlobalBean.getPropertyValue("info_product").split(";");
+        if (!(sb.toString().contains("<table border='1' width='100%'>") && sb.toString().contains("</table>"))) {
+            sb = new StringBuilder();
+            sb.append("<table border='1' width='100%' cellspacing='0'>");
+            sb.append("</table>");
+        }
+        int offset = sb.length() - "</table>".length();
+        List<String> props = Arrays.asList(GlobalBean.getPropertyValue("info_product").split(";"));
+        Collections.reverse(props);
         for (String p : props) {
-            if (sb.toString().contains("<th>"+p+"</th>")) {
-                sb.append("<tr><th>")
-                        .append(p)
-                        .append("</th>")
-                        .append("<td>&nbsp;</td></tr>");
+            if (!sb.toString().contains("<th width='25%%'>" + p + "</th>")) {
+                sb.insert(offset, String.format("<tr><th width='25%%'>%s</th><td>&nbsp;</td></tr>", p));
             }
         }
-        return info;
+        return sb.toString();
     }
 }

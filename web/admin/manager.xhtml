@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                Thông tin Quản lý
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="table">
+                    <p:growl id="msgs" showDetail="true" />
+
+                    <p:dataTable id="managerDT" var="item" value="#{personnelBean.managerList}" resizableColumns="true"
+                                 paginator="true" rows="10" emptyMessage="Không có quản lý nào"
+                                 paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="10,15,20">
+                        <p:column headerText="#" style="width:10%">
+                            <h:outputText value="#{item.id}" />
+                        </p:column>
+                        <p:column headerText="Mã quản lý">
+                            <h:outputText value="#{item.username}" />
+                        </p:column>
+                        <p:column headerText="Quyền hạn">
+                            <h:outputText value="#{item.priviledge.name}"/>
+                        </p:column>
+                        <p:column style="width:10%;text-align: center">
+                            <p:commandButton update=":form:managerDetail" oncomplete="PF('dlgManager').show();"
+                                             icon="ui-icon-search" title="Chi tiết"
+                                             action="#{personnelBean.doLoadManager(item.id)}" ajax="true">
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+                
+                <h:form id="form">
+                    <p:dialog  header="Sửa thông tin quản lý" widgetVar="dlgManager" id="dlgManager" position="top"
+                               modal="true" showEffect="fade" hideEffect="fade" width="650">
+                        <p:outputPanel id="managerDetail">
+                            <p:fragment rendered="#{not empty personnelBean.manager}">
+                                <h:outputText value="ID: " class="control-label"/>
+                                <strong><h:outputText value="#{personnelBean.manager.id}" class="text-primary"/></strong><br/>
+
+                                <h:outputText value="Mã quản lý" class="control-label"/>
+                                <p:inputText readonly="true" value="#{personnelBean.manager.username}" class="form-control" required="true" requiredMessage="Phải nhập mã số" validatorMessage="Không hợp lệ">
+                                    <f:validateLength minimum="3" maximum="58"/>
+                                </p:inputText>
+
+                                <h:outputText value="Thông tin" class="control-label"/>
+                                <p:editor value="#{personnelBean.manager.info}" controls="bold italic underline"/>
+
+                                <p:commandButton value="Cập nhật" styleClass="btn btn-primary"
+                                                 update=":table:managerDT,alertBox" action="#{personnelBean.doUpdateManager()}"/>
+                            </p:fragment>
+                        </p:outputPanel>
+                    </p:dialog>
+                    
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

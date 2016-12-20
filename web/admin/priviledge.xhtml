@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                Quyền hạn quản lý
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="table">
+                    <p:growl id="msgs" showDetail="true" />
+
+                    <p:commandButton value="Thêm quyền hạn" icon="ui-icon-plus" onclick="PF('dlgAddPriv').show();"
+                                     >
+                    </p:commandButton> | 
+                    <h:commandButton class="btn btn-link" value="Xuất Excel">
+                        <p:dataExporter type="xls" target="privDT" fileName="ds-quyen-quan-ly" pageOnly="false"/>
+                    </h:commandButton>
+                    <hr/>
+
+                    <p:dataTable id="privDT" var="item" value="#{systemBean.priviledgeList}" resizableColumns="true"
+                                 emptyMessage="Không có quyền hạn nào"
+                                 paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink}">
+                        <p:column headerText="#" style="width:10%">
+                            <h:outputText value="#{item.id}"/>
+                        </p:column>
+                        <p:column headerText="Tên gọi">
+                            <h:outputText value="#{item.name}" />
+                        </p:column>
+                        <p:column headerText="Quyền hạn">
+                            <h:outputText value="#{systemBean.doGetPriviledgeContext(item)}"/>
+                        </p:column>
+                        <p:column style="width:10%;text-align: center">
+                            <p:commandButton update=":form:privDetail" oncomplete="PF('dlgPriv').show();"
+                                             icon="ui-icon-search" title="Chi tiết"
+                                             action="#{systemBean.doGetPriviledge(item.id)}" ajax="true">
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+
+                <h:form id="form">
+                    <p:dialog  header="Sửa quyền hạn" widgetVar="dlgPriv" id="dlgPriv" position="top"
+                               modal="true" showEffect="fade" hideEffect="fade" width="650">
+                        <p:outputPanel id="privDetail">
+                            <p:fragment rendered="#{not empty systemBean.priviledge}">
+                                <h:outputText value="ID: " class="control-label"/>
+                                <strong><h:outputText value="#{systemBean.priviledge.id}" class="text-primary"/></strong><br/>
+
+                                <h:outputText value="Tên gọi" class="control-label"/>
+                                <h:inputText value="#{systemBean.priviledge.name}" class="form-control" required="true" requiredMessage="Phải nhập tên gọi" validatorMessage="Không hợp lệ">
+                                    <f:validateLength minimum="3" maximum="42"/>
+                                </h:inputText>
+
+                                <h:outputText value="Mô tả ngắn gọn" class="control-label"/>
+                                <h:inputText value="#{systemBean.priviledge.description}" class="form-control" required="true" requiredMessage="Phải nhập mô tả">
+                                </h:inputText>
+
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="well well-sm">
+                                            <h:outputText value="Admin: " class="control-label"/><br/>
+                                            <p:inputSwitch value="#{systemBean.priviledge.admin}" onLabel="CÓ" offLabel="KHÔNG"/><br/>
+                                        </div>
+
+                                        <div class="well well-sm">
+                                            <h:outputText value="Manager: " class="control-label"/><br/>
+                                            <p:inputSwitch value="#{systemBean.priviledge.manager}" onLabel="CÓ" offLabel="KHÔNG"/><br/>
+                                        </div>
+
+                                        <div class="well well-sm">
+                                            <h:outputText value="HR: " class="control-label"/><br/>
+                                            <p:inputSwitch value="#{systemBean.priviledge.hr}" onLabel="CÓ" offLabel="KHÔNG"/><br/>
+                                        </div>
+
+                                        <div class="well well-sm">
+                                            <h:outputText value="Editor: " class="control-label"/><br/>
+                                            <p:inputSwitch value="#{systemBean.priviledge.editor}" onLabel="CÓ" offLabel="KHÔNG"/><br/>
+                                        </div>
+
+                                        <div class="well well-sm">
+                                            <h:outputText value="View: " class="control-label"/><br/>
+                                            <p:inputSwitch value="#{systemBean.priviledge.view}" onLabel="CÓ" offLabel="KHÔNG"/><br/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="text-muted">
+                                            <strong>Giải nghĩa</strong>
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <th>Admin</th>
+                                                    <td>Chỉnh sửa và thay đổi cài đặt hệ thống, cài đặt các quyền hạn.</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Manager</th>
+                                                    <td>Chỉnh sửa thông tin cửa hàng, nội dung website.</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>HR</th>
+                                                    <td>Quản lý nhân sự</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Editor</th>
+                                                    <td>Quản lý danh mục và hàng hóa.</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>View</th>
+                                                    <td>Xem doanh số và tổng hợp doanh thu bán hàng.</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>(Không chọn)</th>
+                                                    <td>Không có quyền đăng nhập vào website quản trị (vẫn có quyền đăng nhập phần mềm POS).</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p:commandButton value="Cập nhật" styleClass="btn btn-primary"
+                                                 update=":table:privDT,alertBox" action="#{systemBean.doUpdatePriviledge()}"/>
+                                | &nbsp;&nbsp;&nbsp;&nbsp;
+                                <p:commandLink value="Xóa quyền hạn" styleClass="btn btn-sm btn-link"
+                                               update=":table:privDT,alertBox" action="#{systemBean.doRemovePriviledge()}"
+                                               onsuccess="PF('dlgEmployee').hide();">
+                                    <p:confirm header="Xóa quyền hạn này" message="Mọi nhân quản lý có quyền hạn này (nếu có) cũng sẽ bị xóa.\nBạn chắc chắn muốn xóa quyền hạn?" icon="ui-icon-alert"/>
+                                </p:commandLink>
+                            </p:fragment>
+                        </p:outputPanel>
+                    </p:dialog>
+
+                    <p:dialog  header="Thêm quyền hạn" widgetVar="dlgAddPriv" id="dlgAddPriv" position="top"
+                               modal="true" showEffect="fade" hideEffect="fade" width="650">
+                        <p:outputPanel id="privInsert">
+                            <p:fragment rendered="#{not empty systemBean.newPriviledge}">
+                                <h:outputText value="Tên gọi" class="control-label"/>
+                                <h:inputText value="#{systemBean.newPriviledge.name}" class="form-control" required="true" requiredMessage="Phải nhập tên gọi" validatorMessage="Không hợp lệ">
+                                    <f:validateLength minimum="3" maximum="42"/>
+                                </h:inputText>
+                                
+                                <h:outputText value="Mô tả ngắn gọn" class="control-label"/>
+                                <h:inputText value="#{systemBean.newPriviledge.description}" class="form-control" required="true" requiredMessage="Phải nhập mô tả">
+                                </h:inputText>
+
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="well well-sm">
+                                            <h:outputText value="Admin: " class="control-label"/><br/>
+                                            <p:inputSwitch value="#{systemBean.newPriviledge.admin}" onLabel="CÓ" offLabel="KHÔNG"/><br/>
+                                        </div>
+
+                                        <div class="well well-sm">
+                                            <h:outputText value="Manager: " class="control-label"/><br/>
+                                            <p:inputSwitch value="#{systemBean.newPriviledge.manager}" onLabel="CÓ" offLabel="KHÔNG"/><br/>
+                                        </div>
+
+                                        <div class="well well-sm">
+                                            <h:outputText value="HR: " class="control-label"/><br/>
+                                            <p:inputSwitch value="#{systemBean.newPriviledge.hr}" onLabel="CÓ" offLabel="KHÔNG"/><br/>
+                                        </div>
+
+                                        <div class="well well-sm">
+                                            <h:outputText value="Editor: " class="control-label"/><br/>
+                                            <p:inputSwitch value="#{systemBean.newPriviledge.editor}" onLabel="CÓ" offLabel="KHÔNG"/><br/>
+
+                                        </div>
+                                        <div class="well well-sm">
+                                            <h:outputText value="View: " class="control-label"/><br/>
+                                            <p:inputSwitch value="#{systemBean.newPriviledge.view}" onLabel="CÓ" offLabel="KHÔNG"/><br/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="text-muted">
+                                            <strong>Giải nghĩa</strong>
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <th>Admin</th>
+                                                    <td>Chỉnh sửa và thay đổi cài đặt hệ thống, cài đặt các quyền hạn.</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Manager</th>
+                                                    <td>Chỉnh sửa thông tin cửa hàng, nội dung website.</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>HR</th>
+                                                    <td>Quản lý nhân sự</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Editor</th>
+                                                    <td>Quản lý danh mục và hàng hóa.</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>View</th>
+                                                    <td>Xem doanh số và tổng hợp doanh thu bán hàng.</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>(Không chọn)</th>
+                                                    <td>Không có quyền đăng nhập vào website quản trị (vẫn có quyền đăng nhập phần mềm POS).</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p:commandButton value="Thêm quyền hạn" styleClass="btn btn-primary"
+                                                 update=":table:privDT,alertBox" action="#{systemBean.doAddPriviledge()}"/>
+                            </p:fragment>
+                        </p:outputPanel>
+                    </p:dialog>
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Có" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="Không" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

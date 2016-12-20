@@ -6,6 +6,8 @@
 body {
     font-family: "Source Sans Pro", Calibri, Tahoma, sans-serif;
     overflow-x: hidden;
+    background: url(../img/admin-bg.png.xhtml) #fafafa center fixed no-repeat;
+    background-size: cover;
 }
 
 .navbar-inverse {

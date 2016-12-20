@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                Thuộc tính hệ thống
+            </ui:define>
+
+            <ui:define name="content">
+                <form id="confirm-form">
+                    <div class="text-warning">
+                        <strong>
+                            Đây là phần thiết lập các biến cục bộ của ứng dụng<br/>
+                            Vui lòng đọc kỹ tài liệu trước khi thay đổi, đặc biệt với các biến mặc định<br/>
+                            Các thay đổi sẽ có hiệu lực trong khoảng 1-3 phút sau khi lưu<br/>
+                            Hãy cẩn trọng khi thao tác, ứng dụng có thể bị gián đoạn, lỗi hoặc hư hỏng nếu điều chỉnh sai
+                        </strong>
+                    </div>
+                    <button type="button" onclick="$('#form, #table').show();$('#confirm-form').hide();" class="btn">Tôi hiểu &amp; Tiếp tục</button>
+                </form>
+                <h:form id="table">
+                    <p:commandButton  value="Thêm thuộc tính" icon="ui-icon-plus" onclick="PF('dlgAddProp').show();"/> | 
+                    <h:commandButton class="btn btn-link" value="Xuất Excel">
+                        <p:dataExporter type="xls" target="propDT" fileName="system-property" pageOnly="false"/>
+                    </h:commandButton>
+                    <hr/>
+
+                    <p:dataTable id="propDT" widgetVar="propDT" var="item" value="#{systemBean.propertyList}">
+                        <p:column headerText="Key">
+                            <h:outputText value="#{item.key}" />
+                        </p:column>
+                        <p:column headerText="Value">
+                            <h:outputText value="#{item.value}" />
+                        </p:column>
+                        <p:column style="width:10%;text-align: center">
+                            <p:commandButton update=":form:propDetail" oncomplete="PF('dlgProp').show();"
+                                             icon="ui-icon-search" title="Chi tiết"
+                                             action="#{systemBean.doGetProperty(item.key)}" ajax="true">
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+
+                <h:form id="form">
+                    <p:dialog  header="Sửa thuộc tính hệ thống" widgetVar="dlgProp" id="dlgProp" position="top"
+                               modal="true" showEffect="fade" hideEffect="fade" width="650">
+                        <p:outputPanel id="propDetail">
+                            <p:fragment rendered="#{not empty systemBean.property}">
+                                <h:outputText value="KEY" class="control-label"/>
+                                <h:inputText value="#{systemBean.property.key}" class="form-control" readonly="true"/>
+
+                                <h:outputText value="VALUE" class="control-label"/>
+                                <h:inputText value="#{systemBean.property.value}" class="form-control" required="true" requiredMessage="Phải nhập giá trị"/>
+
+                                <p:commandButton value="Cập nhật giá trị" styleClass="btn btn-primary"
+                                                 update=":table:propDT,alertBox" action="#{systemBean.doUpdateProperty()}"/>
+                                | &nbsp;&nbsp;&nbsp;&nbsp;
+                                <p:commandLink value="Xóa thuộc tính" styleClass="btn btn-sm btn-link"
+                                               update=":table:propDT,alertBox" action="#{systemBean.doRemoveProperty()}"
+                                               onsuccess="PF('dlgEmployee').hide();">
+                                    <p:confirm header="Xóa thuộc tính" message="Bạn chắc chắn muốn xóa thuộc tính '#{systemBean.property.key}'?" icon="ui-icon-alert"/>
+                                </p:commandLink>
+                            </p:fragment>
+                        </p:outputPanel>
+                    </p:dialog>
+
+                    <p:dialog  header="Thêm thuộc tính hệ thống" widgetVar="dlgAddProp" id="dlgAddProp" position="top"
+                               modal="true" showEffect="fade" hideEffect="fade" width="650">
+                        <p:outputPanel id="propInsert">
+                            <p:fragment rendered="#{not empty systemBean.property}">
+                                <h:outputText value="KEY" class="control-label"/>
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <span class="input-group-addon">cust_</span>
+                                    </div>
+                                    <div class="col-xs-10">
+                                        <h:inputText value="#{systemBean.property.key}" class="form-control" readonly="false" required="true" requiredMessage="Phải nhập tên thuôc tính"/>
+                                    </div>
+                                </div>
+
+                                <h:outputText value="VALUE" class="control-label"/>
+                                <h:inputText value="#{systemBean.property.value}" class="form-control" required="true" requiredMessage="Phải nhập giá trị"/>
+
+                                <p:commandButton value="Thêm thuộc tính" styleClass="btn btn-primary"
+                                                 update=":table:propDT,alertBox" action="#{systemBean.doAddProperty()}"/>
+                            </p:fragment>
+                        </p:outputPanel>
+                    </p:dialog>
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Có" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="Không" type="button" styleClass="ui-confirmdialog-nos" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </h:form>
+
+                <script type="text/javascript">$('#form, #table').hide();</script>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

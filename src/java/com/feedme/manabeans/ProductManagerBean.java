@@ -201,18 +201,19 @@ public class ProductManagerBean implements Serializable {
         } else {
             ctx.addMessage("", new FacesMessage("Thêm sản phẩm thành công"));
         }
-        newProduct = null;
         productList = null;
         return "product";
     }
 
     public String doUpdateProduct() {
+        System.out.println("Prod ID: "+product.getId());
         Category cat = new Category();
         cat.setId(selectedCategoryId);
         CategoryDTO dto = new CategoryDTO();
         dto.setCategory(cat);
         product.setCategory(dto);
         boolean result = Methods.updateProduct(product);
+        System.out.println("Status: "+result);
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (!result) {
             ctx.addMessage("", new FacesMessage("Không thể sửa sản phẩm"));

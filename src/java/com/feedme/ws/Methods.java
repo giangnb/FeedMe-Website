@@ -353,12 +353,6 @@ public class Methods {
         return port.updatePriviledge(updatePriviledge);
     }
 
-    public static boolean updateProduct(com.feedme.service.ProductDTO updateProduct) {
-        com.feedme.service.ApplicationSevice_Service service = new com.feedme.service.ApplicationSevice_Service();
-        com.feedme.service.ApplicationSevice port = service.getApplicationSevicePort();
-        return port.updateProduct(updateProduct);
-    }
-
     public static boolean updatePromoted(com.feedme.service.PromotedDTO promotedUpdate) {
         com.feedme.service.ApplicationSevice_Service service = new com.feedme.service.ApplicationSevice_Service();
         com.feedme.service.ApplicationSevice port = service.getApplicationSevicePort();
@@ -369,5 +363,11 @@ public class Methods {
         com.feedme.service.ApplicationSevice_Service service = new com.feedme.service.ApplicationSevice_Service();
         com.feedme.service.ApplicationSevice port = service.getApplicationSevicePort();
         return port.updateProperties(propertyUpdate);
+    }
+
+    public static boolean updateProduct(com.feedme.service.ProductDTO updateProduct) {
+        com.feedme.service.ApplicationSevice_Service service = new com.feedme.service.ApplicationSevice_Service();
+        com.feedme.service.ApplicationSevice port = service.getApplicationSevicePort();
+        return port.updateProduct(updateProduct);
     }
 }

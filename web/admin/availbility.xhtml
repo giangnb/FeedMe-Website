@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                Thiết lập các tính năng
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="confirm-form">
+                    <div class="text-warning">
+                        <strong>
+                            Đây là phần thiết lập cho sự hiện diện của các tính năng/dịch vụ của ứng dụng.<br/>
+                            Hãy cẩn trọng khi sử dụng, ứng dụng có thể bị gián đoạn nếu điều chỉnh sai.
+                        </strong>
+                    </div>
+                    <p:commandButton value="Tôi hiểu &amp; Tiếp tục" action="#{systemBean.doLoadAvailbility()}" update=":content-form" onsuccess="$('#content-form').show();$('#confirm-form').hide();"/>
+                </h:form>
+
+                <h:form id="content-form">
+                    <div class="well">
+                        <h3 class="text-primary">Cho phép đặt hàng</h3>
+                        <div class="text-muted">Khách xem trang web có thể thêm hàng vào giỏ và tiền hành đặt hàng</div>
+                        <p:inputSwitch value="#{systemBean.opened}" onLabel="BẬT" offLabel="TẮT"></p:inputSwitch>
+                    </div>
+                    <div class="well">
+                        <h3 class="text-primary">Tính năng đánh giá đơn hàng</h3>
+                        <div class="text-muted">Khách có thể đánh giá những đơn hàng đã đóng sử dụng tính năng theo dõi đơn hàng tại website</div>
+                        <p:inputSwitch value="#{systemBean.rating}" onLabel="BẬT" offLabel="TẮT"></p:inputSwitch>
+                    </div>
+                    <div class="well">
+                        <h3 class="text-primary">Website đặt hàng</h3>
+                        <div class="text-muted">Khách có thể truy cập trang web và xem các sản phẩm cũng như các trang thông tin khác</div>
+                        <p:inputSwitch value="#{systemBean.enabled}" onLabel="BẬT" offLabel="TẮT"></p:inputSwitch>
+                    </div>
+                    <div class="well">
+                        <h3 class="text-primary">Ứng dụng POS tại cửa hàng</h3>
+                        <div class="text-muted">Quản lý và nhân viên có thể sử dụng ứng dụng POS để thao tác xử lý các đơn hàng</div>
+                        <p:inputSwitch value="#{systemBean.pos}" onLabel="BẬT" offLabel="TẮT"></p:inputSwitch>
+                    </div>
+
+                    <p:commandButton value="Lưu cài đặt" update=":content-form" action="#{systemBean.doUpdateAvailbility()}">
+                        <p:confirm header="Lưu cài đặt" message="Việc cài đặt sai có thể gây gián đoạn hệ thống. Bạn có chắc chắn muốn lưu cài đặt?" icon="ui-icon-alert"/>
+                    </p:commandButton>
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Tiếp tục" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="Hủy bỏ" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </h:form>
+
+                <script type="text/javascript">$('#content-form').hide();</script>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

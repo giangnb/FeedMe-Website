@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                Nội dung website
+            </ui:define>
+
+            <ui:define name="content">
+                <p class="well well-sm text-warning">
+                    Việc thay đổi tại đây không làm ảnh hưởng 
+                    tới hoạt động hệ thống nhưng có thể gây ra những sai sót về 
+                    mặt thông tin hiển thị trên website<br/>
+                    Hãy chắc chắn rằng bạn đã kiểm tra kỹ về nội dung cũng như các lỗi chính tả 
+                    trước khi lưu
+                </p>
+                <hr/>
+                <h:form id="form">
+                    <ul class="nav nav-pills" id="top-pills-menu">
+                        <li><a href="#context">Nội dung website</a></li>
+                        <li><a href="#notice">Các thông báo</a></li>
+                        <li><a href="#contacts">Thông tin liên hệ</a></li>
+                    </ul>
+                    <hr/>
+                    <p:commandButton value="Lưu thay đổi" update=":form" action="#{managerBean.doUpdateContext()}" onsuccess="alert('Cập nhật hoàn tất')"/>
+                    <br/>
+                    <div class="well" id="context">
+                        <h3>Tiêu đề website</h3>
+                        <p class="text-muted">Dòng tiêu đề được hiển thị trên thanh công cụ trình duyệt người dùng</p>
+                        <h:inputText class="form-control" value="#{managerBean.contextTitle}"></h:inputText>
+                    </div>
+                    <div class="well">
+                        <h3>Trang hướng dẫn &amp; Vận chuyển</h3>
+                        <p class="text-muted">Nội dung trong trang "Hướng dẫn": Những hướng dẫn về cách đặt hàng và phương thức vận quyển</p>
+                        <p:editor value="#{managerBean.contextDelivery}" controls="bold italic underline | color highlight | bullets numbering | alignleft center alignright justify | image link unlink"></p:editor>
+                    </div>
+                    <div class="well">
+                        <h3>Trang giới thiệu</h3>
+                        <p class="text-muted">Nội dung trang "Giới thiệu": Một vài giới thiệu ngắn gọn về cửa hàng của bạn</p>
+                        <p:editor value="#{managerBean.contextIntro}" controls="bold italic underline | color highlight | bullets numbering | alignleft center alignright justify | image link unlink"></p:editor>
+                    </div>
+                    <div class="well">
+                        <h3>Quy chế &amp; Chính sách</h3>
+                        <p class="text-muted">Nội dung phần "Quy chế" (bắt buộc trong một số trường hợp): Một số quy định pháp lí về việc sử dụng dịch vụ, đặt hàng và trao đổi hàng hóa đối với người dùng</p>
+                        <p:editor value="#{managerBean.contextTerm}" controls="bold italic underline | color highlight | bullets numbering | alignleft center alignright justify | image link unlink"></p:editor>
+                    </div>
+                    <div class="well">
+                        <h3>Chính sách Bảo mật thông tin</h3>
+                        <p class="text-muted">Nội dung phần "Chính sách Bảo mật" (bắt buộc trong một số trường hợp): Các quy định và thông báo về việc thu thập dữ liệu, sử dụng và bảo về dữ liệu, thông tin cá nhân của người dùng</p>
+                        <p:editor value="#{managerBean.contextSecure}" controls="bold italic underline | color highlight | bullets numbering | alignleft center alignright justify | image link unlink"></p:editor>
+                    </div>
+                    <div class="well">
+                        <h3>Trang Kiểm tra đơn hàng</h3>
+                        <p class="text-muted">Nội dung trong trang "Đơn hàng"</p>
+                        <p:editor value="#{managerBean.contextTrack}" controls="bold italic underline | color highlight | bullets numbering | alignleft center alignright justify | image link unlink"></p:editor>
+                    </div>
+                    <hr/>
+                    <div class="well" id="notice">
+                        <h3>Phản hồi &amp; Đánh giá đơn hàng</h3>
+                        <p class="text-muted">Nội dung trong ô phản hồi và đánh giá dành cho khách hàng (chỉ áp dụng đối với đơn hàng đã đóng)</p>
+                        <p:editor value="#{managerBean.contxtReview}" controls="bold italic underline | color highlight | bullets numbering | alignleft center alignright justify | image link unlink"></p:editor>
+                    </div>
+                    <div class="well">
+                        <h3>Thông báo Giỏ hàng trống</h3>
+                        <p class="text-muted">Nội dung hiển thị trong Giỏ hàng khi khách chưa chọn sản phẩm nào</p>
+                        <p:editor value="#{managerBean.contextEmptyCart}" controls=" bold italic underline strikethrough | subscript superscript | size style | bullets  numbering | link unlink"></p:editor>
+                    </div>
+                    <div class="well">
+                        <h3>Thông báo Hết giờ đặt hàng</h3>
+                        <p class="text-muted">Thông báo hiển thị trong phần Giỏ hàng khi hết giờ đặt hàng hoặc tính năng cho phép đặt hàng đã tắt</p>
+                        <p:editor value="#{managerBean.contextClosed}" controls=" bold italic underline strikethrough | subscript superscript | size style | bullets  numbering | link unlink"></p:editor>
+                    </div>
+                    <hr/>
+                    <div class="well" id="contacts">
+                        <h3>Thông tin liên hệ của Quản lý</h3>
+                        <p class="text-muted">Các thông tin liên hệ của người đại diện</p>
+                        <p:editor value="#{managerBean.contactManager}" controls=" bold italic underline strikethrough | subscript superscript | size style | bullets  numbering | link unlink"></p:editor>
+                    </div>
+                    <div class="well">
+                        <h3>Thông tin liên hệ của Quản trị hệ thống</h3>
+                        <p class="text-muted">Các thông tin liên hệ của người đại diện</p>
+                        <p:editor value="#{managerBean.contactAdmin}" controls=" bold italic underline strikethrough | subscript superscript | size style | bullets  numbering | link unlink"></p:editor>
+                    </div>
+                    <hr/>
+                    <p:commandButton value="Lưu thay đổi" update=":form" action="#{managerBean.doUpdateContext()}" onsuccess="alert('Cập nhật hoàn tất')"/>
+                </h:form>
+                
+                <h:outputScript>
+                    $(document).ready(function(){
+                        $(".well>h3").append('&nbsp;&nbsp;&nbsp;<small><a href="#top-pills-menu">↑</a></small>');
+                    });
+                </h:outputScript>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

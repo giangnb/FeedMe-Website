@@ -10,6 +10,10 @@
         <param-name>primefaces.THEME</param-name>
         <param-value>bootstrap</param-value>
     </context-param>
+    <context-param>
+        <param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+        <param-value>false</param-value>
+    </context-param>
     <filter>
         <filter-name>adminFilter</filter-name>
         <filter-class>com.feedme.manabeans.AdminFilter</filter-class>

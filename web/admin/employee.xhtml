@@ -15,11 +15,11 @@
             </ui:define>
 
             <ui:define name="content">
-                <h:form id="form">
+                <h:form id="table">
                     <p:growl id="msgs" showDetail="true" />
 
-                    <p:commandButton value="Thêm nhân viên" icon="ui-icon-plus" oncomplete="PF('dlgAddEmployee').show();PF('dlgAddEmployee').content.scrollTop('0');"
-                                     update=":form:employeeInsert" actionListener="#{personnelBean.getEmployee()}">
+                    <p:commandButton type="button" value="Thêm nhân viên" icon="ui-icon-plus" 
+                                     onclick="PF('dlgAddEmployee').show();">
                     </p:commandButton> | 
                     <h:commandButton class="btn btn-link" value="Xuất Excel">
                         <p:dataExporter type="xls" target="employeeDT" fileName="nhan-vien-ban-hang" pageOnly="false"/>
@@ -27,11 +27,11 @@
                     <hr/>
 
                     <p:dataTable id="employeeDT" var="item" value="#{personnelBean.employeeList}" resizableColumns="true"
-                                 paginator="true" rows="10" emptyMessage="Không có danh mục nào"
+                                 paginator="true" rows="10" emptyMessage="Không có nhân viên nào"
                                  paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}"
                                  rowsPerPageTemplate="10,15,20">
                         <p:column headerText="#" style="width:10%">
-                            <h:outputText value="#{item.employee.id}" />
+                            <h:outputText value="#{item.id}" />
                         </p:column>
                         <p:column headerText="Mã NV">
                             <h:outputText value="#{item.username}" />
@@ -43,18 +43,20 @@
                             <p:selectBooleanCheckbox value="#{item.isEnabled}" disabled="true"/>
                         </p:column>
                         <p:column style="width:10%;text-align: center">
-                            <p:commandButton update=":form:employeeDetail" onsuccess="PF('dlgEmployee').show();PF('dlgEmployee').content.scrollTop('0');"
-                                             icon="ui-icon-search" title="Chi tiết" actionListener="#{personnelBean.setEmployee(item)}">
+                            <p:commandButton update=":form:employeeDetail" onsuccess="PF('dlgEmployee').show();"
+                                             action="#{personnelBean.doLoadEmployee(item.id)}"
+                                             icon="ui-icon-search" title="Chi tiết">
                             </p:commandButton>
                         </p:column>
                     </p:dataTable>
-
-                    <p:dialog header="Sửa nhân viên bán hàng" widgetVar="dlgEmployee" position="top"
-                              modal="true" showEffect="fade" hideEffect="fade" width="650">
+                </h:form>
+                <h:form id="form">
+                    <p:dialog  header="Sửa nhân viên bán hàng" widgetVar="dlgEmployee" id="dlgEmployee" position="top"
+                               modal="true" showEffect="fade" hideEffect="fade" width="650">
                         <p:outputPanel id="employeeDetail">
                             <p:fragment rendered="#{not empty personnelBean.employee}">
                                 <h:outputText value="ID: " class="control-label"/>
-                                <strong><h:outputText value="#{personnelBean.employee.employee.id}" class="text-primary"/></strong><br/>
+                                <strong><h:outputText value="#{personnelBean.employee.id}" class="text-primary"/></strong><br/>
 
                                 <h:outputText value="Mã số nhân viên" class="control-label"/>
                                 <p:inputText value="#{personnelBean.employee.username}" class="form-control" required="true" requiredMessage="Phải nhập mã số" validatorMessage="Không hợp lệ">
@@ -63,20 +65,29 @@
 
                                 <h:outputText value="Quản lý" class="control-label"/>
                                 <h:selectOneMenu value="#{personnelBean.selectedManagerId}" class="form-control" required="true" requiredMessage="Phải chọn quản lý" validatorMessage="Không hợp lệ">
-                                    <f:selectItems value="#{personnelBean.managerList}" var="man" itemLabel="#{man.username}" itemValue="#{man.manager.id}"/>
+                                    <f:selectItems value="#{personnelBean.managerList}" var="man" itemLabel="#{man.username}" itemValue="#{man.id}"/>
                                 </h:selectOneMenu>
+
+                                <h:outputText value="Trạng thái làm việc" class="control-label"/><br/>
+                                <p:inputSwitch value="#{personnelBean.enabled}" onLabel="MỞ" offLabel="ĐÓNG"/><br/>
 
                                 <h:outputText value="Thông tin" class="control-label"/>
                                 <p:editor value="#{personnelBean.employee.info}"
                                           controls="bold italic underline"/>
 
                                 <p:commandButton value="Cập nhật" styleClass="btn btn-primary"
-                                                 update="employeeDT,alertBox" actionListener="#{personnelBean.doEditEmployee()}"/>
+                                                 update=":table:employeeDT,alertBox" action="#{personnelBean.doUpdateEmployee()}"/>
+                                | &nbsp;&nbsp;&nbsp;&nbsp;
+                                <p:commandLink value="Xóa nhân viên" styleClass="btn btn-sm btn-link"
+                                                 update=":table:employeeDT,alertBox" action="#{personnelBean.doRemoveEmployee()}"
+                                                 onsuccess="PF('dlgEmployee').hide();">
+                                    <p:confirm header="Xóa nhân viên" message="Bạn chắc chắn muốn xóa nhân viên này?" icon="ui-icon-alert"/>
+                                </p:commandLink>
                             </p:fragment>
                         </p:outputPanel>
                     </p:dialog>
 
-                    <p:dialog header="Thêm nhân viên bán hàng" widgetVar="dlgAddEmployee"  position="top"
+                    <p:dialog header="Thêm nhân viên bán hàng" widgetVar="dlgAddEmployee" id="dlgAddEmployee" position="top"
                               modal="true" showEffect="fade" hideEffect="fade" width="650">
                         <p:outputPanel id="employeeInsert">
                             <p:fragment rendered="#{not empty personnelBean.newEmployee}">
@@ -87,18 +98,26 @@
 
                                 <h:outputText value="Quản lý" class="control-label"/>
                                 <h:selectOneMenu value="#{personnelBean.selectedManagerId}" class="form-control" required="true" requiredMessage="Phải chọn quản lý" validatorMessage="Không hợp lệ">
-                                    <f:selectItems value="#{personnelBean.managerList}" var="man" itemLabel="#{man.username}" itemValue="#{man.manager.id}"/>
+                                    <f:selectItems value="#{personnelBean.managerList}" var="man" itemLabel="#{man.username}" itemValue="#{man.id}"/>
                                 </h:selectOneMenu>
+
+                                <h:outputText value="Trạng thái làm việc" class="control-label"/><br/>
+                                <p:inputSwitch value="#{personnelBean.enabled}" onLabel="MỞ" offLabel="ĐÓNG"/><br/>
 
                                 <h:outputText value="Thông tin" class="control-label"/>
                                 <p:editor value="#{personnelBean.newEmployee.info}"
                                           controls="bold italic underline"/>
 
                                 <p:commandButton value="Thêm nhân viên" styleClass="btn btn-primary"
-                                                 update="employeeDT,alertBox" actionListener="#{personnelBean.doAddEmployee()}"/>
+                                                 update=":table:employeeDT,alertBox,employeeInsert" action="#{personnelBean.doAddEmployee()}"/>
                             </p:fragment>
                         </p:outputPanel>
                     </p:dialog>
+                    
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Có" type="button" styleClass="ui-confirmdialog-yes btn btn-sm btn-danger" icon="ui-icon-check" />
+                        <p:commandButton value="Không" type="button" styleClass="ui-confirmdialog-no btn btn-success" icon="ui-icon-close"/>
+                    </p:confirmDialog>
                 </h:form>
             </ui:define>
 

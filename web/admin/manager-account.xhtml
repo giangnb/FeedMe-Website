@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                Tài khoản Quản lý
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="table">
+                    <p:growl id="msgs" showDetail="true" />
+                    <p:commandButton value="Thêm quản lý" icon="ui-icon-plus" onclick="PF('dlgAddManager').show();"
+                                     >
+                    </p:commandButton> | 
+                    <h:commandButton class="btn btn-link" value="Xuất Excel">
+                        <p:dataExporter type="xls" target="managerDT" fileName="quan-ly-cua-hang" pageOnly="false"/>
+                    </h:commandButton>
+                    <hr/>
+
+                    <p:dataTable id="managerDT" var="item" value="#{personnelBean.managerList}" resizableColumns="true"
+                                 paginator="true" rows="10" emptyMessage="Không có quản lý nào"
+                                 paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="10,15,20">
+                        <p:column headerText="#" style="width:10%">
+                            <h:outputText value="#{item.id}" />
+                        </p:column>
+                        <p:column headerText="Mã quản lý">
+                            <h:outputText value="#{item.username}" />
+                        </p:column>
+                        <p:column headerText="Quyền hạn">
+                            <h:outputText value="#{item.priviledge.name}"/>
+                        </p:column>
+                        <p:column style="width:10%;text-align: center">
+                            <p:commandButton update=":form:managerDetail" oncomplete="PF('dlgManager').show();"
+                                             icon="ui-icon-search" title="Chi tiết"
+                                             action="#{personnelBean.doLoadManager(item.id)}" ajax="true">
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+                
+                <h:form id="form">
+                    <p:dialog  header="Sửa thông tin quản lý" widgetVar="dlgManager" id="dlgManager" position="top"
+                               modal="true" showEffect="fade" hideEffect="fade" width="650">
+                        <p:outputPanel id="managerDetail">
+                            <p:fragment rendered="#{not empty personnelBean.manager}">
+                                <h:outputText value="ID: " class="control-label"/>
+                                <strong><h:outputText value="#{personnelBean.manager.id}" class="text-primary"/></strong><br/>
+
+                                <h:outputText value="Mã quản lý" class="control-label"/>
+                                <p:inputText value="#{personnelBean.manager.username}" class="form-control" required="true" requiredMessage="Phải nhập mã số" validatorMessage="Không hợp lệ">
+                                    <f:validateLength minimum="3" maximum="58"/>
+                                </p:inputText>
+                                
+                                <h:outputText value="Mật khẩu (bỏ trống nếu không thay đổi)" class="control-label"/>
+                                <h:inputSecret value="#{personnelBean.newPassword}" class="form-control" required="false" validatorMessage="Không hợp lệ">
+                                    <f:validateLength minimum="3" maximum="64"/>
+                                </h:inputSecret>
+
+                                <h:outputText value="Quyền hạn" class="control-label"/>
+                                <h:selectOneMenu value="#{personnelBean.selectedPrivId}" class="form-control" required="true" requiredMessage="Phải chọn quản lý" validatorMessage="Không hợp lệ">
+                                    <f:selectItems value="#{personnelBean.priv}" var="p" itemLabel="#{p.name}" itemValue="#{p.id}"/>
+                                </h:selectOneMenu>
+                                
+                                <h:outputText value="Thông tin" class="control-label"/>
+                                <p:editor value="#{personnelBean.manager.info}" controls="bold italic underline"/>
+
+                                <p:commandButton value="Cập nhật" styleClass="btn btn-primary"
+                                                 update=":table:managerDT,alertBox" action="#{personnelBean.doUpdateManager()}"/>
+                                | &nbsp;&nbsp;&nbsp;&nbsp;
+                                <p:commandLink value="Xóa tài khoản" styleClass="btn btn-sm btn-link"
+                                               update=":table:managerDT,alertBox" action="#{personnelBean.doRemoveManager()}"
+                                                 onsuccess="PF('dlgEmployee').hide();">
+                                    <p:confirm header="Xóa xóa tài khoản quản lý" message="Mọi nhân viên gắn với quản lý này cũng sẽ bị xóa.\nBạn chắc chắn muốn xóa tài khoản này?" icon="ui-icon-alert"/>
+                                </p:commandLink>
+                            </p:fragment>
+                        </p:outputPanel>
+                    </p:dialog>
+                    
+                    <p:dialog  header="Thêm quản lý" widgetVar="dlgAddManager" id="dlgAddManager" position="top"
+                               modal="true" showEffect="fade" hideEffect="fade" width="650">
+                        <p:outputPanel id="managerInsert">
+                            <p:fragment rendered="#{not empty personnelBean.newManager}">
+                                <h:outputText value="Mã quản lý" class="control-label"/>
+                                <p:inputText value="#{personnelBean.newManager.username}" class="form-control" required="true" requiredMessage="Phải nhập mã số" validatorMessage="Không hợp lệ" autocomplete="off">
+                                    <f:validateLength minimum="3" maximum="58"/>
+                                </p:inputText>
+                                
+                                <h:outputText value="Mật khẩu đăng nhập" class="control-label"/>
+                                <h:inputSecret value="#{personnelBean.newPassword}" class="form-control" required="true" requiredMessage="Phải nhập mã số" validatorMessage="Không hợp lệ" autocomplete="off">
+                                    <f:validateLength minimum="3" maximum="64"/>
+                                </h:inputSecret>
+
+                                <h:outputText value="Quyền hạn" class="control-label"/>
+                                <h:selectOneMenu value="#{personnelBean.selectedPrivId}" class="form-control" required="true" requiredMessage="Phải chọn quản lý" validatorMessage="Không hợp lệ">
+                                    <f:selectItems value="#{personnelBean.priv}" var="p" itemLabel="#{p.name}" itemValue="#{p.id}"/>
+                                </h:selectOneMenu>
+
+                                <h:outputText value="Thông tin" class="control-label"/>
+                                <p:editor value="#{personnelBean.newManager.info}" controls="bold italic underline"/>
+
+                                <p:commandButton value="Thêm tài khoản" styleClass="btn btn-primary"
+                                                 update=":table:managerDT,alertBox" action="#{personnelBean.doAddManager()}"/>
+                            </p:fragment>
+                        </p:outputPanel>
+                    </p:dialog>
+                    
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Có" type="button" styleClass="ui-confirmdialog-yes btn btn-sm btn-danger" icon="ui-icon-check" />
+                        <p:commandButton value="Không" type="button" styleClass="ui-confirmdialog-no btn btn-success" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

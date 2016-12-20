@@ -47,7 +47,7 @@
                         </p:column>
                     </p:dataTable>
 
-                    <p:dialog header="Sửa danh mục" widgetVar="dlgCategory" modal="true" showEffect="fade" hideEffect="fade" width="650">
+                    <p:dialog header="Sửa danh mục" widgetVar="dlgCategory" modal="true" showEffect="fade" hideEffect="fade" width="650" position="top">
                         <p:outputPanel id="categoryDetail">
                             <p:fragment rendered="#{not empty productManaBean.category}">
                                 <p:fragment rendered="#{not empty productManaBean.category.category.id}">
@@ -81,7 +81,7 @@
                         </p:outputPanel>
                     </p:dialog>
 
-                    <p:dialog header="Thêm danh mục" widgetVar="dlgAddCategory" modal="true" showEffect="fade" hideEffect="fade" width="650">
+                    <p:dialog header="Thêm danh mục" widgetVar="dlgAddCategory" modal="true" showEffect="fade" hideEffect="fade" width="650" position="top">
                         <p:outputPanel id="categoryInsert">
                             <p:fragment rendered="#{not empty productManaBean.newCategory}">
                                 <h:outputText value="Tên" class="control-label"/>

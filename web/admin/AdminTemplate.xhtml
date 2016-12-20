@@ -70,7 +70,7 @@
             <div class="col-sm-3"><br/></div>
             <div class="col-sm-9">
                 <h3>
-                    <ui:insert name="title">Trang quản lý</ui:insert>
+                    <ui:insert name="title">&nbsp;</ui:insert>
                     &nbsp;&nbsp;&nbsp;
                     <p:link outcome="#{view.viewId}" class="btn btn-sm btn-default" onclick="PF('ajaxStatusDialog').show();">
                         <span class="glyphicon glyphicon-refresh"></span>
@@ -120,7 +120,7 @@
                                     </a>
                                     <ul id="sidenav-2" class="submenu collapse">
                                         <li><h:commandLink value="Nhân viên" action="#{adminBean.doNavigate('employee')}" onclick="PF('ajaxStatusDialog').show();"/></li>
-                                        <li><a href="#">Quản lý</a></li>
+                                        <li><h:commandLink value="Thông tin Quản lý" action="#{adminBean.doNavigate('manager')}" onclick="PF('ajaxStatusDialog').show();"/></li>
                                     </ul>
                                 </li>
                             </ui:fragment>
@@ -131,10 +131,11 @@
                                         Quản lý <span class="caret"></span>
                                     </a>
                                     <ul id="sidenav-3" class="submenu collapse">
-                                        <li><a href="#">Nội dung website</a></li>
-                                        <li><a href="#">Tài khoản đăng nhập</a></li>
+                                        <li><a href="#">Trạng thái đơn hàng</a></li>
+                                        <li><a href="#">Định dạng</a></li>
                                         <li class="divider"></li>
-                                        <li><a href="#">Cài đặt cửa hàng</a></li>
+                                        <li><h:commandLink value="Nội dung website" action="#{adminBean.doNavigate('context')}" onclick="PF('ajaxStatusDialog').show();"/></li>
+                                        <li><h:commandLink value="Tài khoản Quản lý" action="#{adminBean.doNavigate('manager-account')}" onclick="PF('ajaxStatusDialog').show();"/></li>
                                     </ul>
                                 </li>
                             </ui:fragment>
@@ -145,12 +146,11 @@
                                         Hệ thống <span class="caret"></span>
                                     </a>
                                     <ul id="sidenav-4" class="submenu collapse">
-                                        <li><a href="#">Bật/Tắt chức năng</a></li>
-                                        <li><a href="#">Định dạng</a></li>
+                                        <li><a href="#">Thông tin cửa hàng</a></li>
+                                        <li><a href="#"><h:commandLink value="Bật/Tắt chức năng" action="#{adminBean.doNavigate('availbility')}" onclick="PF('ajaxStatusDialog').show();"/></a></li>
+                                        <li><h:commandLink value="Phân quyền" action="#{adminBean.doNavigate('priviledge')}" onclick="PF('ajaxStatusDialog').show();"/></li>
                                         <li class="divider"></li>
-                                        <li><a href="#">Phân quyền</a></li>
-                                        <li class="divider"></li>
-                                        <li><a href="#">Cài đặt nâng cao</a></li>
+                                        <li><h:commandLink value="Thuộc tính hệ thống" action="#{adminBean.doNavigate('property')}" onclick="PF('ajaxStatusDialog').show();"/></li>
                                     </ul>
                                 </li>
                             </ui:fragment>

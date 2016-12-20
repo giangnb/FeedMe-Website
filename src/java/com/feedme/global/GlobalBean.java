@@ -5,6 +5,7 @@
  */
 package com.feedme.global;
 
+import com.feedme.service.Property;
 import com.feedme.service.PropertyDTO;
 import com.feedme.ws.Methods;
 import java.text.DecimalFormat;
@@ -99,6 +100,17 @@ public class GlobalBean {
     
     public static String getPropertyValue(String key) {
         return PROP.get(key);
+    }
+    
+    public static List<Property> getProperties() {
+        List<Property> list = new java.util.ArrayList<>();
+        Property p = new Property();
+        for (String k : PROP.keySet()) {
+            p.setKey(k);
+            p.setValue(PROP.get(k));
+            list.add(p);
+        }
+        return list;
     }
 
     private static void startTimer() {

@@ -54,6 +54,16 @@ a:hover, a:focus {
     height: 65px;
 }
 
+.well {
+    background: rgba(245,245,245,0.7);
+}
+
+.nav>li .dropdown-toggle:active,
+.nav>li .dropdown-toggle:focus {
+    color: #333;
+    font-weight: bold;
+}
+
 footer {
     background: rgba(100,100,100,0.4);
     color: #fff;
@@ -64,6 +74,7 @@ footer {
     height: 45px;
     line-height: 45px;
     text-align: center;
+    z-index: 9999;
 }
 
 ul.submenu {

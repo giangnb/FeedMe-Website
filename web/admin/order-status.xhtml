@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                Trạng thái đơn hàng
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="table">
+                    <p:growl id="msgs" showDetail="true" />
+
+                    <p:commandButton value="Thêm trạng thái" icon="ui-icon-plus" oncomplete="PF('dlgAddStatus').show();"
+                                     update=":form:statusInsert" actionListener="#{orderManaBean.doNewStatus()}">
+                    </p:commandButton> | 
+                    <h:commandButton class="btn btn-link" value="Xuất Excel">
+                        <p:dataExporter type="xls" target="statusDT" fileName="trang-thai-don-hang" pageOnly="false"/>
+                    </h:commandButton>
+                    <hr/>
+
+                    <p:dataTable id="statusDT" var="item" value="#{orderManaBean.orderStatusList}" resizableColumns="true"
+                                 paginator="true" rows="10" emptyMessage="Không có trạng thái nào"
+                                 paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="10,15,20">
+                        <p:column headerText="#" style="width:10%">
+                            <h:outputText value="#{item.id}" />
+                        </p:column>
+                        <p:column headerText="Tên">
+                            <h:outputText value="#{item.name}" />
+                        </p:column>
+                        <p:column headerText="Kết thúc ĐH">
+                            <p:selectBooleanCheckbox value="#{item.isStopped}" disabled="true"/>
+                        </p:column>
+                        <p:column style="width:10%;text-align: center">
+                            <p:commandButton update=":form:statusDetail" oncomplete="PF('dlgStatus').show();"
+                                             icon="ui-icon-search" title="Chi tiết" action="#{orderManaBean.doLoadStatus(item.id)}">
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+
+                <h:form id="form">
+                    <p:dialog header="Sửa trạng thái" id="dlgStatus" widgetVar="dlgStatus" modal="true" showEffect="fade" hideEffect="fade" width="650" position="top">
+                        <p:outputPanel id="statusDetail">
+                            <p:fragment rendered="#{not empty orderManaBean.status}">
+                                <h:outputText value="ID: " class="control-label"/>
+                                <strong><h:outputText value="#{orderManaBean.status.id}" class="text-primary"/></strong><br/>
+
+                                <h:outputText value="Tên" class="control-label"/>
+                                <p:inputText value="#{orderManaBean.status.name}" class="form-control" required="true" requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ">
+                                    <f:validateLength minimum="3" maximum="58"/>
+                                </p:inputText>
+
+                                <h:outputText value="Kết thúc đơn hàng" class="control-label"/><br/>
+                                <p:inputSwitch value="#{orderManaBean.isFinished}" onLabel="CÓ" offLabel="KHÔNG"/>
+                                <br/><br/>
+
+                                <p:commandButton value="Cập nhật" styleClass="btn btn-primary"
+                                                 update=":table:statusDT,alertBox" actionListener="#{orderManaBean.doUpdateStatus()}"/>
+                                | &nbsp;&nbsp;&nbsp;
+                                <p:commandLink styleClass="btn btn-link" value="Xóa"
+                                               update=":table:statusDT,alertBox" actionListener="#{orderManaBean.doRemoveStatus()}"
+                                               oncomplete="PF('dlgStatus').hide();">
+                                    <p:confirm header="Xóa trạng thái" message="Xóa trạng thái sẽ xóa tất cả đơn hàng có trạng thái này. Bạn có muốn tiếp tục?" icon="ui-icon-alert"/>
+                                </p:commandLink>
+                            </p:fragment>
+                        </p:outputPanel>
+                    </p:dialog>
+                    
+                    <p:dialog header="Thêm trạng thái" id="dlgAddStatus" widgetVar="dlgAddStatus" modal="true" showEffect="fade" hideEffect="fade" width="650" position="top">
+                        <p:outputPanel id="statusInsert">
+                            <p:fragment rendered="#{not empty orderManaBean.newStatus}">
+                                <h:outputText value="Tên" class="control-label"/>
+                                <p:inputText value="#{orderManaBean.newStatus.name}" class="form-control" required="true" requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ">
+                                    <f:validateLength minimum="3" maximum="58"/>
+                                </p:inputText>
+
+                                <h:outputText value="Kết thúc đơn hàng" class="control-label"/><br/>
+                                <p:inputSwitch value="#{orderManaBean.isFinished}" onLabel="CÓ" offLabel="KHÔNG"/>
+                                <br/><br/>
+
+                                <p:commandButton value="Thêm mới" styleClass="btn btn-primary"
+                                                 update=":table:statusDT,alertBox" actionListener="#{orderManaBean.doAddStatus()}"/>
+                            </p:fragment>
+                        </p:outputPanel>
+                    </p:dialog>
+                    
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Có" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="Không" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

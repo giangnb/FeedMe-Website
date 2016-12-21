@@ -38,6 +38,7 @@ public class GlobalBean {
      * Creates a new instance of GlobalBean
      */
     public GlobalBean() {
+        javax.faces.context.FacesContext.getCurrentInstance().getViewRoot().setLocale(new java.util.Locale("vi"));
         startTimer();
     }
     
@@ -95,7 +96,10 @@ public class GlobalBean {
     }
 
     public String doGetProperty(String key) {
-        return PROP.get(key);
+        try {
+            return PROP.get(key);
+        } catch(Exception ex) {}
+        return "";
     }
     
     public static String getPropertyValue(String key) {

@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                Định dạng hiển thị
+            </ui:define>
+
+            <ui:define name="content">
+                <p class="well well-sm text-warning">
+                    Định dạng sai có thể làm cho ứng dụng hoạt động sai hoặc gặp lỗi<br/>
+                    Hãy đọc kĩ tài liệu và kiểm tra trước khi áp dụng
+                </p>
+                <hr/>
+                <h:form id="form">
+                    <p:commandButton value="Lưu thay đổi" action="#{managerBean.doUpdateFormat()}" update=":form" onsuccess="alert('Lưu thay đổi thành công');"/>
+                    <br/><br/>
+                    <div class="well">
+                        <h3>Định dạng thời gian</h3>
+                        <p class="text-muted">Định dạng hiển thị thời gian tại website và ứng dụng POS</p>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="control-label">Định dạng ngày</p>
+                                <h:inputText class="form-control" value="#{managerBean.fmtDate}" required="true" requiredMessage="Phải nhập định dạng ngày" validatorMessage="Không đúng định dạng ngày">
+                                    <f:validateRegex pattern="([GyMwWDdFE]|\W|\d)+"/>
+                                </h:inputText>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="control-label">Định dạng giờ</p>
+                                <h:inputText class="form-control" value="#{managerBean.fmtTime}" required="true" requiredMessage="Phải nhập định dạng giờ" validatorMessage="Không đúng định dạng giờ">
+                                    <f:validateRegex pattern="([aHhKhmSsZz]|\W|\d)+"/>
+                                </h:inputText>
+                            </div>
+                        </div>
+                        <hr/>
+                        Định dạng mẫu: &nbsp;
+                        <h:outputText id="sampleDateTime" class="text-warning" value="#{managerBean.doTestFormatDateTime()}" rendered="#{managerBean.doTestFormatDateTime()!=null}"/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <p:commandButton update=":form:sampleDateTime,alertBox" actionListener="#{managerBean.doTestFormatDateTime()}" value="Xem trước"/>
+                    </div>
+                    <div class="well">
+                        <h3>Định dạng số</h3>
+                        <p class="text-muted">Định kiểu hiển thị số tại website và ứng dụng POS</p>
+                        <div class="row">
+                            <h:outputText value="#{managerBean.fmtNumber}" class="hidden"/>
+                            <div class="col-sm-4">
+                                <p class="control-label">Nhóm chữ số</p>
+                                <h:inputText class="form-control" value="#{managerBean.numberGroupStr}" required="true" requiredMessage="Phải nhập nhóm chữ số" validatorMessage="Không đúng định dạng" maxlength="2">
+                                    <f:validateRegex pattern="[0-9]{1,2}"/>
+                                    <f:validateLongRange maximum="12" minimum="0"/>
+                                </h:inputText>
+                            </div>
+                            <div class="col-sm-4">
+                                <p class="control-label">Số chữ số thập phân</p>
+                                <h:inputText class="form-control" value="#{managerBean.numberDecimalsStr}" required="true" requiredMessage="Phải nhập số lượng số thập phân" validatorMessage="Không đúng định dạng" maxlength="2">
+                                    <f:validateRegex pattern="[0-9]{1,2}"/>
+                                    <f:validateLongRange maximum="12" minimum="0"/>
+                                </h:inputText>
+                            </div>
+                            <div class="col-sm-4">
+                                <br/>
+                                <p class="control-label"><h:selectBooleanCheckbox value="#{managerBean.isFilled}" />&nbsp;Điền đầy phần thập phân</p>
+                            </div>
+                        </div>
+                        <hr/>
+                        Định dạng mẫu: &nbsp;
+                        <h:outputText id="sampleNumber" class="text-warning" value="#{managerBean.doTestFormatNumber()}" rendered="#{managerBean.doTestFormatNumber()!=null}"/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <p:commandButton update=":form:sampleNumber,alertBox" actionListener="#{managerBean.doTestFormatNumber()}" value="Xem trước"/>
+                    </div>
+                    <div class="well">
+                        <h3>Định dạng tiền tệ</h3>
+                        <p class="text-muted">Cách hiển thị các đơn vị tiền tệ (số tiền sẽ được định dạng theo định dạng số)</p>
+                        <div class="row">
+                            <h:outputText value="#{managerBean.fmtCurrency}" class="hidden"/>
+                            <div class="col-sm-4">
+                                <p class="control-label">Kí hiệu đứng trước</p>
+                                <h:inputText class="form-control" value="#{managerBean.currencyBefore}" required="false" validatorMessage="Không đúng định dạng" maxlength="5">
+                                    <f:validateRegex pattern="[^:]*"/>
+                                    <f:validateLength maximum="5"/>
+                                </h:inputText>
+                            </div>
+                            <div class="col-sm-1 hidden-sm text-center"><h:outputText value="..."/></div>
+                            <div class="col-sm-4">
+                                <p class="control-label">Kí hiệu đứng sau</p>
+                                <h:inputText class="form-control" value="#{managerBean.currencyAfter}" required="false" validatorMessage="Không đúng định dạng" maxlength="5">
+                                    <f:validateRegex pattern="[^:]*"/>
+                                    <f:validateLength maximum="5"/>
+                                </h:inputText>
+                            </div>
+                        </div>
+                        <hr/>
+                        Định dạng mẫu: &nbsp;
+                        <h:outputText id="sampleMoney" class="text-warning" value="#{managerBean.currencyBefore} #{managerBean.doTestFormatNumber()} #{managerBean.currencyAfter}" rendered="#{managerBean.doTestFormatMoney()!=null}"/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <p:commandButton update=":form:sampleMoney,alertBox" actionListener="#{managerBean.doTestFormatMoney()}" value="Xem trước"/>
+                    </div>
+                    <div class="well">
+                        <h3>Thông tin mặc định</h3>
+                        <p class="text-muted">Thông tin bắt buộc phải có khi chỉnh sửa/tạo mới<br/><strong>Phân tách bằng xuống dòng hoặc dấu chấm phẩy (;)</strong></p>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <p class="control-label">Sản phẩm</p>
+                                <h:inputTextarea value="#{managerBean.infoProduct}" class="form-control" rows="5"></h:inputTextarea>
+                            </div>
+                            <div class="col-sm-4">
+                                <p class="control-label">Nhân viên</p>
+                                <h:inputTextarea value="#{managerBean.infoEmployee}" class="form-control" rows="5"></h:inputTextarea>
+                            </div>
+                            <div class="col-sm-4">
+                                <p class="control-label">Quản lý</p>
+                                <h:inputTextarea value="#{managerBean.infoManager}" class="form-control" rows="5"></h:inputTextarea>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <p:commandButton value="Lưu thay đổi" action="#{managerBean.doUpdateFormat()}" update=":form" onsuccess="alert('Lưu thay đổi thành công');"/>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

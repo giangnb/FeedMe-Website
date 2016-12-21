@@ -1,7 +1,6 @@
 
 package com.feedme.service;
 
-import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -38,7 +37,7 @@ import javax.xml.bind.annotation.XmlType;
     "manager",
     "username"
 })
-public class Employee implements Serializable{
+public class Employee {
 
     protected Short id;
     protected String info;

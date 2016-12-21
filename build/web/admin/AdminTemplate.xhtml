@@ -8,6 +8,7 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="shortcut icon" type="image/x-icon" href="#{adminBean.doGetFavicoUrl()}"/>
         <f:facet name="last">
             <h:outputStylesheet name="./css/bootstrap.min.css"/>
             <h:outputStylesheet name="./css/bootstrap-theme.min.css"/>
@@ -16,7 +17,7 @@
         </f:facet>
         <!--        <h:outputScript name="./js/jquery.min.js" target="body"/>-->
         <h:outputScript name="./js/bootstrap.min.js"/>
-        <title>FeedMe - Quản lý</title>
+        <title>#{globalBean.doGetProperty('store_name')} - Trang Quản lý</title>
     </h:head>
 
     <h:body>
@@ -34,7 +35,7 @@
                                     <span class="icon-bar"></span>
                                 </button>
                                 <span class="navbar-brand">
-                                    <h:graphicImage library="img" name="logo.png" style="height: 100px;"
+                                    <img src="#{adminBean.doGetLogoUrl()}" style="height: 100px;"
                                                     alt="FeedMe Logo" class="img-responsive img-thumbnail"/>
                                 </span>
                             </div>
@@ -131,8 +132,8 @@
                                         Quản lý <span class="caret"></span>
                                     </a>
                                     <ul id="sidenav-3" class="submenu collapse">
-                                        <li><a href="#">Trạng thái đơn hàng</a></li>
-                                        <li><a href="#">Định dạng</a></li>
+                                        <li><h:commandLink value="Trạng thái đơn hàng" action="#{adminBean.doNavigate('order-status')}" onclick="PF('ajaxStatusDialog').show();"/></li>
+                                        <li><h:commandLink value="Định dạng" action="#{adminBean.doNavigate('format')}" onclick="PF('ajaxStatusDialog').show();"/></li>
                                         <li class="divider"></li>
                                         <li><h:commandLink value="Nội dung website" action="#{adminBean.doNavigate('context')}" onclick="PF('ajaxStatusDialog').show();"/></li>
                                         <li><h:commandLink value="Tài khoản Quản lý" action="#{adminBean.doNavigate('manager-account')}" onclick="PF('ajaxStatusDialog').show();"/></li>
@@ -146,8 +147,9 @@
                                         Hệ thống <span class="caret"></span>
                                     </a>
                                     <ul id="sidenav-4" class="submenu collapse">
-                                        <li><a href="#">Thông tin cửa hàng</a></li>
-                                        <li><a href="#"><h:commandLink value="Bật/Tắt chức năng" action="#{adminBean.doNavigate('availbility')}" onclick="PF('ajaxStatusDialog').show();"/></a></li>
+                                        <li><h:commandLink value="Thông tin cửa hàng" action="#{adminBean.doNavigate('store')}" onclick="PF('ajaxStatusDialog').show();"/></li>
+                                        <li class="divider"></li>
+                                        <li><h:commandLink value="Bật/Tắt chức năng" action="#{adminBean.doNavigate('availbility')}" onclick="PF('ajaxStatusDialog').show();"/></li>
                                         <li><h:commandLink value="Phân quyền" action="#{adminBean.doNavigate('priviledge')}" onclick="PF('ajaxStatusDialog').show();"/></li>
                                         <li class="divider"></li>
                                         <li><h:commandLink value="Thuộc tính hệ thống" action="#{adminBean.doNavigate('property')}" onclick="PF('ajaxStatusDialog').show();"/></li>

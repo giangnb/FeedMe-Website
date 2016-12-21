@@ -70,13 +70,16 @@ body {
 .ui-corner-all, .ui-corner-top, .ui-corner-bottom, select {
     border-radius: 0 !important;
 }
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+.ui-state-default:not(.ui-inputfield),
+.ui-widget-content .ui-state-default:not(.ui-inputfield),
+.ui-widget-header .ui-state-default:not(.ui-inputfield) {
     background-image: none !important;
     background-color: #f8f8f8 !important;
     border-radius: 0 !important;
 }
-.ui-state-default:hover, .ui-widget-content .ui-state-default:hover, .ui-widget-header .ui-state-default:hover,
-.ui-state-default:active, .ui-widget-content .ui-state-default:active, .ui-widget-header .ui-state-default:active {
+.ui-state-default:hover:not(.ui-inputfield),
+.ui-widget-content .ui-state-default:hover:not(.ui-inputfield),
+.ui-widget-header .ui-state-default:hover:not(.ui-inputfield) {
     background-image: none !important;
     background-color: #c8c8c8 !important;
     border-radius: 0 !important;

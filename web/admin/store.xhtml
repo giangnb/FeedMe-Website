@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                Thông tin cửa hàng
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form">
+                    <p:commandButton value="Lưu thay đổi" onclick="updateAddr()" action="#{managerBean.doUpdateStore()}" update=":form" onsuccess="alert('Lưu thay đổi thành công')"/>
+                    <hr/>
+                    <div class="well">
+                        <h3>Tên cửa hàng</h3>
+                        <p class="text-muted">Tên cửa hàng sẽ được hiện trên website cho người dùng và trên ứng dụng POS</p>
+                        <h:inputText class="form-control" value="#{managerBean.storeName}" required="true" maxlength="64">
+                            <f:validateLength minimum="3" maximum="64"/>
+                        </h:inputText>
+                    </div>
+                    <div class="well">
+                        <h3>Điện thoại</h3>
+                        <p class="text-muted">Số điện thoại (tổng đài/hotline) hiển thị tại website</p>
+                        <h:inputText class="form-control" value="#{managerBean.storePhone}" required="true" maxlength="32">
+                            <f:validateLength minimum="3" maximum="32"/>
+                        </h:inputText>
+                    </div>
+                    <div class="well">
+                        <h3>Địa chỉ</h3>
+                        <p class="text-muted">Địa chỉ cửa hàng được hiển thị tại đầu trang (địa chỉ ngắn gọn) và ở chân trang (địa chỉ đầy đủ)</p>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="control-label">Địa chỉ ngắn gọn (3-32 kí tự)</p>
+                                <input type="text" class="form-control" id="addr-short" maxlength="32" onchange="updateAddr()"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="control-label">Địa chỉ đầy đủ (trên 10 kí tự)</p>
+                                <textarea rows="5" class="form-control" id="addr-full" onchange="updateAddr()"></textarea>
+                            </div>
+                        </div>
+                        <h:inputText id="addr-final" class="hidden" value="#{managerBean.storeAddress}" required="true" requiredMessage="Hãy điền đầy đủ địa chỉ"/>
+                    </div>
+                    <div class="well">
+                        <h3>Giờ nhận đơn đặt hàng qua website</h3>
+                        <p class="text-muted">Khung giờ người dùng có thể thực hiện đặt hàng tại website (ngoài khung giờ này, khách hàng chỉ có teher xem các sản phẩm)</p>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="control-label">Giờ mở cửa</p>
+                                <p:inputMask class="form-control" value="#{managerBean.storeOpen}" mask="99:99" placeholder="hh:mm" required="true"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="control-label">Giờ đóng cửa</p>
+                                <p:inputMask class="form-control" value="#{managerBean.storeClose}" mask="99:99" placeholder="hh:mm" required="true"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="well">
+                        <h3>Logo cửa hàng</h3>
+                        <p class="text-muted">Logo cửa hàng được hiển thị tại website</p>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="control-label">URL ảnh (nên dùng đường dẫn tuyệt đối)</p>
+                                <div class="input-group">
+                                    <h:inputText class="form-control" value="#{managerBean.storeLogo}" required="true" id="img-logo-url"/>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn" onclick="restoreDefaultLogo()">Mặc định</button>
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-1">
+                                <hr/>
+                                <strong>hoặc</strong>
+                                <hr/>
+                            </div>
+                            <div class="col-sm-5">
+                                <p class="control-label">Upload ảnh</p>
+                                <input type="button" class="btn btn-primary" value="Upload tập tin" onclick="PF('uploadLogo').show();"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="well">
+                        <h3>Biểu tượng thu nhỏ</h3>
+                        <p class="text-muted">Logo cửa hàng thu nhỏ được hiển thị trên thanh công cụ trình duyệt<br/></p>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="control-label">URL ảnh (nên dùng đường dẫn tuyệt đối)</p>
+                                <div class="input-group">
+                                    <h:inputText class="form-control" value="#{managerBean.storeFavico}" required="true" id="img-fav-url"/>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn" onclick="restoreDefaultFav()">Mặc định</button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <hr/>
+                                <strong>hoặc</strong>
+                                <hr/>
+                            </div>
+                            <div class="col-sm-5">
+                                <p class="control-label">Upload ảnh</p>
+                                <input type="button" class="btn btn-primary" value="Upload tập tin" onclick="PF('uploadFavico').show();"/>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <p:commandButton value="Lưu thay đổi" onclick="updateAddr()" action="#{managerBean.doUpdateStore()}" update=":form" onsuccess="alert('Lưu thay đổi thành công')"/>
+                </h:form>
+
+                <p:dialog id="uploadLogo" widgetVar="uploadLogo" header="Tải logo" position="top" modal="true">
+                    <h:form id="uploadLogoForm" enctype="multipart/form-data">
+                        <p class="control-label">Chọn tập tin ảnh (Khuyến cáo dùng tập tin *.png)</p>
+                        <h:inputFile class="form-control" value="#{managerBean.fileLogo}"/>
+                        <hr/>
+                        <h:commandButton class="btn btn-primary" value="Tải lên" action="#{managerBean.doUploadLogo()}"/>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="uploadFavico" widgetVar="uploadFavico" header="Tải icon thu nhỏ" position="top" modal="true">
+                    <h:form id="uploadFavicoForm" enctype="multipart/form-data">
+                        <p class="control-label">Chọn tập tin ảnh (Khuyến cáo dùng tập tin *.ico)</p>
+                        <h:inputFile class="form-control" value="#{managerBean.fileFavico}"/>
+                        <hr/>
+                        <h:commandButton class="btn btn-primary" value="Tải lên" action="#{managerBean.doUploadFavico()}"/>
+                    </h:form>
+                </p:dialog>
+
+                <h:outputScript library="js" name="admin-store-process.js"/>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

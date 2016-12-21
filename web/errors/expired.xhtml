@@ -14,16 +14,21 @@
 
             <ui:define name="cause">
                 Lỗi này xảy ra khi bạn làm việc với một phiên đăng nhập hết hạn 
-                hoặc khi máy chủ ngưng phục vụ.
+                hoặc sau khi máy chủ ứng dụng được cập nhật hoặc nạp lại.
             </ui:define>
 
             <ui:define name="explain">
-                Bạn hãy truy cập lại trang web để tạo phiên làm việc mới (bạn có thể cần phải đăng nhập).
+                Bạn cần phải truy cập lại trang web để tạo một phiên làm việc mới (bạn có thể cần phải đăng nhập).
                 <br/>
-                <a id="main-url" href="#" target="_top" class="btn btn-primary btn-lg">Tiếp tục &raquo;</a>
+                <a id="main-url" href="#" target="_top" class="btn btn-primary btn-lg">Ấn vào đây nếu trang không tự chuyển &raquo;</a>
 
                 <script type="text/javascript">
                     "use strict";
+                    if (!window.location.href.toString().indexOf("expired.xhtml") > 0) {
+                        location = window.location.href;
+                    } else {
+                        location = "../index.xhtml";
+                    }
                     $('#main-url').attr("href", window.location.href);
                 </script>
             </ui:define>

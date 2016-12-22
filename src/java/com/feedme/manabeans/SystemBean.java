@@ -5,7 +5,6 @@
  */
 package com.feedme.manabeans;
 
-import com.feedme.global.GlobalBean;
 import com.feedme.service.Priviledge;
 import com.feedme.service.PriviledgeDTO;
 import com.feedme.service.Property;

@@ -8,17 +8,28 @@ package com.feedme.manabeans;
 import com.feedme.global.GlobalBean;
 import com.feedme.service.Category;
 import com.feedme.service.CategoryDTO;
+import com.feedme.service.Product;
 import com.feedme.service.ProductDTO;
 import com.feedme.ws.Methods;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
+import javax.servlet.ServletContext;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 /**
  * For products and categories managements
@@ -26,18 +37,79 @@ import javax.faces.event.AjaxBehaviorEvent;
  * @author Giang
  */
 @ManagedBean(name = "productManaBean")
-@ViewScoped
+//@ViewScoped
+@SessionScoped
 public class ProductManagerBean implements Serializable {
 
     private CategoryDTO category, newCategory;
-    private ProductDTO product, newProduct;
+    private Product product, newProduct;
 
     private List<CategoryDTO> categoryList;
-    private List<ProductDTO> productList;
+    private List<Product> productList;
 
     private short selectedCategoryId;
+    private boolean productActivated;
+    private String productImages, productImageUrl;
+    private String productName, productPromo, productInfo, productDesc;
+    private double productPrice;
 
     public ProductManagerBean() {
+    }
+
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productImageUrl = productImageUrl;
+    }
+
+    public String getProductImages() {
+        return productImages;
+    }
+
+    public void setProductImages(String productImages) {
+        this.productImages = productImages;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getProductPromo() {
+        return productPromo;
+    }
+
+    public void setProductPromo(String productPromo) {
+        this.productPromo = productPromo;
+    }
+
+    public String getProductInfo() {
+        return productInfo;
+    }
+
+    public void setProductInfo(String productInfo) {
+        this.productInfo = productInfo;
+    }
+
+    public String getProductDesc() {
+        return productDesc;
+    }
+
+    public void setProductDesc(String productDesc) {
+        this.productDesc = productDesc;
+    }
+
+    public double getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(double productPrice) {
+        this.productPrice = productPrice;
     }
 
     public CategoryDTO getNewCategory() {
@@ -48,11 +120,11 @@ public class ProductManagerBean implements Serializable {
         this.newCategory = newCategory;
     }
 
-    public ProductDTO getNewProduct() {
+    public Product getNewProduct() {
         return newProduct;
     }
 
-    public void setNewProduct(ProductDTO newProduct) {
+    public void setNewProduct(Product newProduct) {
         this.newProduct = newProduct;
     }
 
@@ -64,15 +136,14 @@ public class ProductManagerBean implements Serializable {
         this.category = category;
     }
 
-    public ProductDTO getProduct() {
+    public Product getProduct() {
         return product;
     }
 
-    public void setProduct(ProductDTO p) {
-        System.out.println("set" + p);
+    public void setProduct(Product p) {
         this.product = p;
         product.setInfo(doUpdateProductInfo(product.getInfo()));
-        selectedCategoryId = product.getCategory().getCategory().getId();
+        selectedCategoryId = product.getCategory().getId();
     }
 
     public short getSelectedCategoryId() {
@@ -81,6 +152,14 @@ public class ProductManagerBean implements Serializable {
 
     public void setSelectedCategoryId(short selectedCategoryId) {
         this.selectedCategoryId = selectedCategoryId;
+    }
+
+    public boolean isProductActivated() {
+        return productActivated;
+    }
+
+    public void setProductActivated(boolean productActivated) {
+        this.productActivated = productActivated;
     }
 
     public String doNewCategory() {
@@ -127,7 +206,7 @@ public class ProductManagerBean implements Serializable {
         } else {
             ctx.addMessage("", new FacesMessage("Thêm danh mục thành công"));
         }
-        newCategory=null;
+        newCategory = null;
         categoryList = null;
         return "category";
     }
@@ -157,30 +236,53 @@ public class ProductManagerBean implements Serializable {
     }
 
     public String doNewProduct() {
-        newProduct = new ProductDTO();
-        newProduct.setCategory(new CategoryDTO());
+        newProduct = new Product();
         newProduct.setInfo(doGetProductInfo());
         newProduct.setPromotion("0");
-        newProduct.setIsActive(true);
         newProduct.setDescription(" ");
         selectedCategoryId = 1;
-        return "product";
+        productActivated = true;
+        productImages = "";
+        productDesc = "";
+        productInfo = newProduct.getInfo();
+        productName = "";
+        productPrice = 1;
+        productPromo = "0";
+        return "product-edit";
     }
 
-    public List<ProductDTO> doLoadProducts() {
+    public String doLoadProduct(short id) {
+        product = Methods.fetchProductsById(id).getProduct();
+        if (product != null) {
+            selectedCategoryId = product.getCategory().getId();
+            productActivated = product.isIsActive();
+            productImages = product.getImageFile();
+            productDesc = product.getDescription();
+            productInfo = product.getInfo();
+            productPromo = product.getPromotion();
+            productName = product.getName();
+            productPrice = product.getPrice();
+            return "product-edit";
+        } else {
+            return "product";
+        }
+    }
+
+    public List<Product> doLoadProducts() {
+        product = null;
+        newProduct = null;
         if (productList == null || productList.isEmpty()) {
-            productList = Methods.fetchProducts();
+            productList = Methods.fetchProducts().stream().map(ProductDTO::getProduct).collect(Collectors.toList());
             FacesContext ctx = FacesContext.getCurrentInstance();
             if (productList.isEmpty()) {
                 ctx.addMessage("", new FacesMessage("Không có sản phẩm"));
             }
-            return productList;
         }
         return productList;
     }
 
-    public List<ProductDTO> doGetProduct(String name) {
-        List<ProductDTO> prods = Methods.fetchProductsByName(name);
+    public List<Product> doGetProduct(String name) {
+        List<Product> prods = Methods.fetchProductsByName(name).stream().map(ProductDTO::getProduct).collect(Collectors.toList());
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (prods.isEmpty()) {
             ctx.addMessage("", new FacesMessage("Không tìm thấy sản phẩm"));
@@ -191,10 +293,17 @@ public class ProductManagerBean implements Serializable {
     public String doAddProduct() {
         Category cat = new Category();
         cat.setId(selectedCategoryId);
-        CategoryDTO dto = new CategoryDTO();
-        dto.setCategory(cat);
-        newProduct.setCategory(dto);
-        boolean result = Methods.addProduct(newProduct);
+        newProduct.setCategory(cat);
+        newProduct.setImageFile(productImages);
+        newProduct.setDescription(productDesc);
+        newProduct.setInfo(productInfo);
+        newProduct.setName(productName);
+        newProduct.setIsActive(productActivated);
+        newProduct.setPrice(productPrice);
+        newProduct.setPromotion(productPromo);
+        ProductDTO dto = new ProductDTO();
+        dto.setProduct(newProduct);
+        boolean result = Methods.addProduct(dto);
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (!result) {
             ctx.addMessage("", new FacesMessage("Không thể thêm sản phẩm"));
@@ -206,14 +315,19 @@ public class ProductManagerBean implements Serializable {
     }
 
     public String doUpdateProduct() {
-        System.out.println("Prod ID: "+product.getId());
         Category cat = new Category();
         cat.setId(selectedCategoryId);
-        CategoryDTO dto = new CategoryDTO();
-        dto.setCategory(cat);
-        product.setCategory(dto);
-        boolean result = Methods.updateProduct(product);
-        System.out.println("Status: "+result);
+        product.setCategory(cat);
+        product.setImageFile(productImages);
+        product.setDescription(productDesc);
+        product.setInfo(productInfo);
+        product.setName(productName);
+        product.setIsActive(productActivated);
+        product.setPrice(productPrice);
+        product.setPromotion(productPromo);
+        ProductDTO dto = new ProductDTO();
+        dto.setProduct(product);
+        boolean result = Methods.updateProduct(dto);
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (!result) {
             ctx.addMessage("", new FacesMessage("Không thể sửa sản phẩm"));
@@ -221,7 +335,7 @@ public class ProductManagerBean implements Serializable {
             ctx.addMessage("", new FacesMessage("Sửa sản phẩm thành công"));
         }
         productList = null;
-        return "product";
+        return "product-edit";
     }
 
     public String doRemoveProduct() {
@@ -260,5 +374,104 @@ public class ProductManagerBean implements Serializable {
             }
         }
         return sb.toString();
+    }
+
+    public List<String> doGetUrls() {
+        List<String> list = new java.util.ArrayList<>();
+        for (String s : productImages.split(";")) {
+            if (s.equals("")) {
+                continue;
+            }
+            if (s.contains("[url]")) {
+                list.add(s.replace("[url]", ""));
+            } else {
+                list.add("../javax.faces.resource/uploads/products/" + s + ".xhtml");
+            }
+
+        }
+        return list;
+    }
+
+    public void eventFileUpload(FileUploadEvent event) {
+        eventFileUploadNew(event);
+        doUpdateProduct();
+    }
+
+    public void eventFileUploadNew(FileUploadEvent event) {
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        UploadedFile file = event.getFile();
+        if (true) {
+            try (InputStream input = file.getInputstream()) {
+                String realPath = ((ServletContext) ctx.getExternalContext().getContext()).getRealPath("/")
+                        + "/resources/uploads/products/";
+                if (!new File(realPath).exists()) {
+                    Files.createDirectory(Paths.get(realPath));
+                }
+                String fileName = new Date().getTime() + ".bin";
+                File destination = new File(realPath + fileName);
+                while (destination.exists()) {
+                    fileName = new Date().getTime() + ".bin";
+                    destination = new File(realPath + fileName);
+                }
+                Files.copy(input, destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                ctx.addMessage("", new FacesMessage("Upload ảnh sản phẩm thành công", "Đã upload ảnh " + file.getFileName()));
+                productImages += fileName + ";";
+            } catch (Exception ex) {
+                ctx.addMessage("", new FacesMessage("Upload ảnh sản phẩm thất bại", ex.getMessage()));
+                ex.printStackTrace();
+            }
+        } else {
+            ctx.addMessage("", new FacesMessage("Tập tin không hợp lệ"));
+        }
+    }
+
+    public void eventFileDelete(String fileName) {
+        eventFileDeleteNew(fileName);
+        doUpdateProduct();
+    }
+
+    public void eventFileDeleteNew(String fileName) {
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (fileName.contains("http") && fileName.contains(":")) {
+            productImages = productImages.replace(fileName, "");
+            productImages = productImages.replace("[url]", "");
+            productImages = productImages.replace(";;", ";");
+            productImages = productImages.equals(";") ? "" : productImages;
+            return;
+        }
+        try {
+            fileName = fileName.replace("../javax.faces.resource/uploads/products/", "")
+                    .replace(".xhtml", "");
+            String realPath = ((ServletContext) ctx.getExternalContext().getContext()).getRealPath("/")
+                    + "/resources/uploads/products/" + fileName;
+            productImages = productImages.replace(fileName, "");
+            productImages = productImages.replace(";;", ";");
+            productImages = productImages.equals(";") ? "" : productImages;
+            Files.delete(new File(realPath).toPath());
+            ctx.addMessage("", new FacesMessage("Xóa ảnh sản phẩm thành công"));
+        } catch (IOException ex) {
+            ctx.addMessage("", new FacesMessage("Xóa ảnh sản phẩm thất bại", ex.getMessage()));
+            //ex.printStackTrace();
+        }
+    }
+
+    private boolean validateFile(UploadedFile file) {
+        if (file == null) {
+            return false;
+        }
+        if (!file.getContentType().contains("image/")) {
+            return false;
+        }
+        if (file.getSize() > 1000 * 1000 * 1.5) {
+            return false;
+        }
+        return true;
+    }
+
+    public void doSetImageUrl() {
+        productImages += ";" + "[url]" + productImageUrl + ";";
+        productImages = productImages.replace(";;", ";");
+        System.out.println("set " + productImages);
+        doUpdateProduct();
     }
 }

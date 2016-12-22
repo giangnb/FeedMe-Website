@@ -116,7 +116,9 @@
 
                 <p:dialog id="uploadLogo" widgetVar="uploadLogo" header="Tải logo" position="top" modal="true">
                     <h:form id="uploadLogoForm" enctype="multipart/form-data">
-                        <p class="control-label">Chọn tập tin ảnh (Khuyến cáo dùng tập tin *.png)</p>
+                        <p class="control-label">Chọn tập tin ảnh (Khuyến cáo dùng tập tin *.png)<br/>
+                            <strong>Tối đa 1MB</strong>
+                        </p>
                         <h:inputFile class="form-control" value="#{managerBean.fileLogo}"/>
                         <hr/>
                         <h:commandButton class="btn btn-primary" value="Tải lên" action="#{managerBean.doUploadLogo()}"/>
@@ -125,7 +127,9 @@
 
                 <p:dialog id="uploadFavico" widgetVar="uploadFavico" header="Tải icon thu nhỏ" position="top" modal="true">
                     <h:form id="uploadFavicoForm" enctype="multipart/form-data">
-                        <p class="control-label">Chọn tập tin ảnh (Khuyến cáo dùng tập tin *.ico)</p>
+                        <p class="control-label">Chọn tập tin ảnh (Khuyến cáo dùng tập tin *.ico)<br/>
+                            <strong>Tối đa 1MB</strong>
+                        </p>
                         <h:inputFile class="form-control" value="#{managerBean.fileFavico}"/>
                         <hr/>
                         <h:commandButton class="btn btn-primary" value="Tải lên" action="#{managerBean.doUploadFavico()}"/>

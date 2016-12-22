@@ -15,7 +15,7 @@
 
             <ui:define name="content">
                 <div class="jumbotron">
-                    <h:form rendered="#{accountBean.manager==null}">
+                    <h:form rendered="#{accountBean.manager==null}" onsubmit="PF('ajaxStatusDialog').show();">
                         <h1>Đăng nhập &raquo;</h1>
                         <p>Vui lòng đăng nhập để truy cập trang quản lý</p>
                         <div class="row">

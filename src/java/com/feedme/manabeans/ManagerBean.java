@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -154,14 +155,18 @@ public class ManagerBean {
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (validateFile(fileLogo)) {
             try (InputStream input = fileLogo.getInputStream()) {
-                String realPath = ((ServletContext) ctx.getExternalContext().getContext()).getRealPath("/");
-                System.out.println(realPath);
-                Files.copy(input, new File(realPath + "/resources/uploads/store-logo.png").toPath(), StandardCopyOption.REPLACE_EXISTING);
+                String realPath = ((ServletContext) ctx.getExternalContext().getContext()).getRealPath("/")
+                        + "/resources/uploads/app/";
+                if (!new File(realPath).exists()) {
+                    Files.createDirectory(Paths.get(realPath));
+                }
+                Files.copy(input, new File(realPath+"store-logo.bin").toPath(), StandardCopyOption.REPLACE_EXISTING);
                 ctx.addMessage("", new FacesMessage("Upload thành công", "Đã cập nhật logo cửa hàng"));
                 PropertyDTO p = new PropertyDTO();
                 p.setKey("store_logo");
-                p.setValue("./javax.faces.resource/uploads/store-logo.png.xhtml");
+                p.setValue("./javax.faces.resource/uploads/app/store-logo.bin.xhtml");
                 Methods.updateProperties(p);
+                doFetchData();
             } catch (IOException e) {
                 ctx.addMessage("", new FacesMessage("Upload thất bại", e.getMessage()));
                 e.printStackTrace();
@@ -176,14 +181,18 @@ public class ManagerBean {
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (validateFile(fileFavico)) {
             try (InputStream input = fileFavico.getInputStream()) {
-                String realPath = ((ServletContext) ctx.getExternalContext().getContext()).getRealPath("/");
-                System.out.println(realPath);
-                Files.copy(input, new File(realPath + "/resources/uploads/store-favico.ico").toPath(), StandardCopyOption.REPLACE_EXISTING);
-                ctx.addMessage("", new FacesMessage("Upload thành công", "Đã cập nhật icon website cửa hàng"));
+                String realPath = ((ServletContext) ctx.getExternalContext().getContext()).getRealPath("/")
+                        + "/resources/uploads/app/";
+                if (!new File(realPath).exists()) {
+                    Files.createDirectory(Paths.get(realPath));
+                }
+                Files.copy(input, new File(realPath+"store-favico.bin").toPath(), StandardCopyOption.REPLACE_EXISTING);
+                ctx.addMessage("", new FacesMessage("Upload thành công", "Đã cập nhật icon cửa hàng"));
                 PropertyDTO p = new PropertyDTO();
-                p.setKey("store_favico");
-                p.setValue("./javax.faces.resource/uploads/store-favico.ico.xhtml");
+                p.setKey("store_logo");
+                p.setValue("./javax.faces.resource/uploads/app/store-favico.bin.xhtml");
                 Methods.updateProperties(p);
+                doFetchData();
             } catch (IOException e) {
                 ctx.addMessage("", new FacesMessage("Upload thất bại", e.getMessage()));
             }
@@ -608,7 +617,7 @@ public class ManagerBean {
         if (!file.getContentType().contains("image/")) {
             return false;
         }
-        if (file.getSize() > 1000 * 1000 * 3) {
+        if (file.getSize() > 1000 * 1024) {
             return false;
         }
         return true;

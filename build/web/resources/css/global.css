@@ -71,15 +71,21 @@ body {
     border-radius: 0 !important;
 }
 .ui-state-default:not(.ui-inputfield),
+.ui-state-default:not(.ui-progressbar),
 .ui-widget-content .ui-state-default:not(.ui-inputfield),
-.ui-widget-header .ui-state-default:not(.ui-inputfield) {
+.ui-widget-content .ui-state-default:not(.ui-progressbar),
+.ui-widget-header .ui-state-default:not(.ui-inputfield),
+.ui-widget-header .ui-state-default:not(.ui-progressbar) {
     background-image: none !important;
     background-color: #f8f8f8 !important;
     border-radius: 0 !important;
 }
 .ui-state-default:hover:not(.ui-inputfield),
+.ui-state-default:hover:not(.ui-progressbar),
 .ui-widget-content .ui-state-default:hover:not(.ui-inputfield),
-.ui-widget-header .ui-state-default:hover:not(.ui-inputfield) {
+.ui-widget-content .ui-state-default:hover:not(.ui-progressbar),
+.ui-widget-header .ui-state-default:hover:not(.ui-inputfield), 
+.ui-widget-header .ui-state-default:hover:not(.ui-progressbar) {
     background-image: none !important;
     background-color: #c8c8c8 !important;
     border-radius: 0 !important;

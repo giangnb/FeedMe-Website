@@ -18,9 +18,8 @@
                 <h:form id="table">
                     <p:growl id="msgs" showDetail="true" />
 
-                    <p:commandButton value="Thêm sản phẩm" actionListener="#{productManaBean.doNewProduct()}" icon="ui-icon-plus" onsuccess="PF('dlgAddProduct').show();PF('dlgAddProduct').content.scrollTop('5');"
-                                     update=":form:productInsert">
-                    </p:commandButton> | 
+                    <p:commandButton value="Thêm sản phẩm" action="#{productManaBean.doNewProduct()}" icon="ui-icon-plus" onclick="PF('ajaxStatusDialog').show();" ajax="false"/>
+                     | 
                     <h:commandButton class="btn btn-link" value="Xuất Excel">
                         <p:dataExporter type="xls" target="productDT" fileName="hang-hoa" pageOnly="false"/>
                     </h:commandButton>
@@ -46,130 +45,13 @@
                             <p:selectBooleanCheckbox value="#{item.isActive}" disabled="true"/>
                         </p:column>
                         <p:column style="width:10%;text-align: center">
-                            <p:commandButton update=":form:productDetail" onsuccess="PF('dlgProduct').show();PF('dlgProduct').content.scrollTop('5');"
-                                             icon="ui-icon-search" title="Chi tiết" actionListener="#{productManaBean.setProduct(item)}">
-                                
-                            </p:commandButton>
+                            <p:commandButton icon="ui-icon-search" title="Chi tiết" action="#{productManaBean.doLoadProduct(item.id)}" ajax="false" onclick="PF('ajaxStatusDialog').show();"/>
+                            <!--                            <p:commandButton update=":form:productDetail" onsuccess="PF('dlgProduct').show();PF('dlgProduct').content.scrollTop('5');"
+                                                                         icon="ui-icon-search" title="Chi tiết" actionListener="#productManaBean.setProduct(item)}">
+                                                            
+                                                        </p:commandButton>-->
                         </p:column>
                     </p:dataTable>
-                </h:form>
-                    
-                <h:form id="form">
-                    <p:dialog header="Sửa sản phẩm" widgetVar="dlgProduct" modal="true" showEffect="fade"
-                              hideEffect="fade" width="650" position="top" closeOnEscape="true">
-                        <p:outputPanel id="productDetail">
-                            <p:fragment rendered="#{not empty productManaBean.product}">
-                                <h:outputText value="ID: " class="control-label"/>
-                                <strong><h:outputText value="#{productManaBean.product.id}" class="text-primary"/></strong><br/>
-
-                                <h:outputText value="Tên" class="control-label"/>
-                                <h:inputText value="#{productManaBean.product.name}" class="form-control" required="true" requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ">
-                                    <f:validateLength minimum="3" maximum="58"/>
-                                </h:inputText>
-
-                                <h:outputText value="Danh mục" class="control-label"/>
-                                <h:selectOneMenu value="#{productManaBean.selectedCategoryId}" style="width: 100%"
-                                                  class="form-control" required="true">
-                                    <f:selectItems value="#{productManaBean.doLoadCategories()}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat.category.id}" />
-                                </h:selectOneMenu>
-
-                                <h:outputText value="Giá" class="control-label"/>
-                                <p:inputNumber value="#{productManaBean.product.price}" class="row" required="true" style="width: 100%"
-                                               requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ" thousandSeparator=",">
-                                    <f:validateDoubleRange minimum="0.001"/>
-                                </p:inputNumber>
-                                
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <h:outputText value="Hiển thị?" class="control-label"/><br/>
-                                        <p:inputSwitch value="#{productManaBean.product.isActive}" offLabel="ẩn" onLabel="hiện" />
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <h:outputText value="Chiết khấu (Giá hoặc phần trăm)" class="control-label"/>
-                                        <h:inputText value="#{productManaBean.product.promotion}" class="form-control" style="width: 100%"
-                                                     validatorMessage="Không hợp lệ">
-                                            <f:validateDoubleRange minimum="0"/>
-                                            <f:validateRegex pattern="^[0-9]+[%]?$"/>
-                                        </h:inputText>
-                                    </div>
-                                </div>
-
-                                <h:outputText value="Mô tả" class="control-label"/>
-                                <p:editor value="#{productManaBean.product.description}" height="150"
-                                          controls="bold italic underline | color highlight | 
-                                          bullets numbering | alignleft center alignright justify | image link unlink"/>
-
-                                <h:outputText value="Chi tiết" class="control-label"/>
-                                <p:editor value="#{productManaBean.product.info}" height="150"
-                                          controls="bold italic underline | color highlight"/>
-
-                                <p:commandButton value="Cập nhật" styleClass="btn btn-primary"
-                                                 update=":table:productDT,alertBox" actionListener="#{productManaBean.doUpdateProduct()}"/>
-                                | &nbsp;&nbsp;&nbsp;
-                                <p:commandLink styleClass="btn btn-link" value="Xóa sản phẩm"
-                                               update=":table:productDT,alertBox" actionListener="#{productManaBean.doRemoveProduct()}"
-                                               oncomplete="PF('dlgProduct').hide();">
-                                    <p:confirm header="Xóa sản phẩm" message="Bạn chắc chắn muốn xóa '#{productManaBean.product.name}'?" icon="ui-icon-alert"/>
-                                </p:commandLink>
-                            </p:fragment>
-                        </p:outputPanel>
-                    </p:dialog>
-
-                    <p:dialog header="Thêm sản phẩm" widgetVar="dlgAddProduct" modal="true" showEffect="fade"
-                              hideEffect="fade" width="650" position="top">
-                        <p:outputPanel id="productInsert">
-                            <p:fragment rendered="#{not empty productManaBean.newProduct}">
-                                <h:outputText value="Tên" class="control-label"/>
-                                <h:inputText value="#{productManaBean.newProduct.name}" class="form-control" required="true" requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ">
-                                    <f:validateLength minimum="3" maximum="58"/>
-                                </h:inputText>
-
-                                <h:outputText value="Danh mục" class="control-label"/>
-                                <h:selectOneMenu value="#{productManaBean.selectedCategoryId}" style="width: 100%"
-                                                  class="form-control" required="true">
-                                    <f:selectItems value="#{productManaBean.doLoadCategories()}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat.category.id}" />
-                                </h:selectOneMenu>
-
-                                <h:outputText value="Đơn giá" class="control-label"/>
-                                <p:inputNumber value="#{productManaBean.newProduct.price}" class="row" required="true" style="width: 100%"
-                                               requiredMessage="Phải nhập giá" validatorMessage="Không hợp lệ" thousandSeparator=",">
-                                    <f:validateDoubleRange minimum="0.001"/>
-                                </p:inputNumber>
-
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <h:outputText value="Hiển thị?" class="control-label"/><br/>
-                                        <p:inputSwitch value="#{productManaBean.newProduct.isActive}" offLabel="ẩn" onLabel="hiện" />
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <h:outputText value="Chiết khấu (Giá hoặc phần trăm)" class="control-label"/>
-                                        <h:inputText value="#{productManaBean.newProduct.promotion}" class="form-control" style="width: 100%"
-                                                       validatorMessage="Không hợp lệ">
-                                            <f:validateDoubleRange minimum="0"/>
-                                            <f:validateRegex pattern="^[0-9]+[%]?$"/>
-                                        </h:inputText>
-                                    </div>
-                                </div>
-
-                                <h:outputText value="Mô tả" class="control-label"/>
-                                <p:editor value="#{productManaBean.newProduct.description}"
-                                          controls="bold italic underline | color highlight | 
-                                          bullets numbering | alignleft center alignright justify | image link unlink" height="150"/>
-
-                                <h:outputText value="Chi tiết" class="control-label"/>
-                                <p:editor value="#{productManaBean.newProduct.info}" height="150"
-                                          controls="bold italic underline | color highlight"/>
-
-                                <p:commandButton value="Thêm sản phẩm" styleClass="btn btn-primary"
-                                                 update=":table:productDT,alertBox" actionListener="#{productManaBean.doAddProduct()}"/>
-                            </p:fragment>
-                        </p:outputPanel>
-                    </p:dialog>
-
-                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                        <p:commandButton value="Có" type="button" styleClass="ui-confirmdialog-yes btn btn-sm btn-danger" icon="ui-icon-check" />
-                        <p:commandButton value="Không" type="button" styleClass="ui-confirmdialog-no btn btn-success" icon="ui-icon-close"/>
-                    </p:confirmDialog>
                 </h:form>
             </ui:define>
 

@@ -1,6 +1,7 @@
 
 package com.feedme.service;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -47,7 +48,7 @@ import javax.xml.bind.annotation.XmlType;
     "product",
     "promotion"
 })
-public class ProductDTO {
+public class ProductDTO implements Serializable{
 
     protected CategoryDTO category;
     protected String description;

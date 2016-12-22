@@ -1,18 +1,240 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
 
     <body>
 
         <ui:composition template="./AdminTemplate.xhtml">
 
             <ui:define name="title">
-                <ui:fragment rendered=""></ui:fragment>
+                <ui:fragment rendered="#{productManaBean.product.id!=null}">
+                    <h:link outcome="product" title="Quay về" value="&laquo;" class="btn btn-sm btn-default" onclick="PF('ajaxStatusDialog').show();"/>
+                    &nbsp; &nbsp; &nbsp;
+                    Sửa thông tin sản phẩm
+                </ui:fragment>
+                <ui:fragment rendered="#{productManaBean.newProduct!=null}">
+                    <h:link outcome="product" title="Quay về" value="&laquo;" class="btn btn-sm btn-default" onclick="PF('ajaxStatusDialog').show();"/>
+                    &nbsp; &nbsp; &nbsp;
+                    Thêm sản phẩm mới
+                </ui:fragment>
+                <ui:fragment rendered="#{productManaBean.product.id==null and productManaBean.newProduct==null}">
+                    LỖI TRUY CẬP <br/><h:link outcome="product" value="Quay về" class="btn btn-warning" onclick="PF('ajaxStatusDialog').show();"/>
+                </ui:fragment>
             </ui:define>
 
             <ui:define name="content">
-                content
+                <h:form id="form" enctype="multipart/form-data" rendered="#{productManaBean.product.id!=null or productManaBean.newProduct!=null}">
+                    <p:growl id="uploadMessages" showDetail="true" />
+
+                    <p:fragment rendered="#{productManaBean.product.id!=null}">
+                        <span class="control-label">ID</span>
+                        <h:inputText class="form-control" value="#{productManaBean.product.id}" readonly="true"/>
+                        <br/>
+
+                        <span class="control-label">Tên sản phẩm</span>
+                        <h:inputText class="form-control" value="#{productManaBean.productName}" required="true">
+                            <f:validateLength minimum="3" maximum="64"/>
+                        </h:inputText>
+                        <br/>
+
+                        <span class="control-label">Danh mục</span>
+                        <h:selectOneMenu value="#{productManaBean.selectedCategoryId}" style="width: 100%"
+                                         class="form-control" required="true">
+                            <f:selectItems value="#{productManaBean.doLoadCategories()}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat.category.id}" />
+                        </h:selectOneMenu>
+                        <br/>
+
+                        <span class="control-label">Hình ảnh</span>
+                        <p:fragment id="imgView">
+                            <div class="row">
+                                <ui:repeat value="#{productManaBean.doGetUrls()}" var="item">
+                                    <div class="col-sm-2 text-center">
+                                        <img src="#{item}"
+                                             class="img-responsive img-thumbnail" onclick="openViewer('#{item}');"/>
+                                        <br/>
+                                        <p:commandLink value="xóa" action="#{productManaBean.eventFileDelete(item)}" update=":form:uploadMessages,:form:imgView">
+                                            <p:confirm header="Xóa ảnh" message="Bạn chắc chắn muốn xóa ảnh này?" icon="ui-icon-alert"/>
+                                        </p:commandLink>
+                                    </div>
+                                </ui:repeat>
+                            </div>
+                        </p:fragment>
+                        <br/>
+
+                        <span class="control-label">Thêm hình ảnh</span>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <br/>
+                                <button type="button" onclick="PF('dlgImageUrl').show();" class="btn btn-sm btn-default">
+                                    <span class="glyphicon glyphicon-picture">&nbsp;</span>
+                                    Nhập ảnh từ URL
+                                </button>
+                            </div>
+                            <div class="col-sm-8">
+                                <span class="control-label">Upload hình ảnh</span>
+                                <p:fileUpload fileUploadListener="#{productManaBean.eventFileUpload}" mode="advanced" dragDropSupport="true"
+                                              update="uploadMessages,imgView" fileLimit="10" sizeLimit="1500000" 
+                                              allowTypes="/(\.|\/)(gif|jpe?g|png|bmp|svg)$/" multiple="true" 
+                                              uploadLabel="Tải lên" cancelLabel="Hủy" label="Chọn ảnh" sequential="true"
+                                              invalidFileMessage="Tập tin không hợp lệ" invalidSizeMessage="Kích thước tối đa: 1.5 MB"/>
+                            </div>
+                        </div>
+                        <br/>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <span class="control-label">Giá</span>
+                                <p:inputNumber value="#{productManaBean.productPrice}" required="true" style="width: 100%"
+                                               requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ" thousandSeparator=",">
+                                    <f:validateDoubleRange minimum="0.001"/>
+                                </p:inputNumber>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="control-label">Giảm giá (giá tiền hoặc phần trăm)</span>
+                                <h:inputText class="form-control" value="#{productManaBean.productPromo}" required="true">
+                                    <f:validateRegex pattern="[0-9]+([.][0-9]+)*[%]?"/>
+                                </h:inputText>
+                            </div>
+                        </div>
+                        <br/>
+
+                        <span style="padding-right: 15px;">Hiển thị</span>
+                        <p:inputSwitch value="#{productManaBean.productActivated}" onLabel="HIỆN" offLabel="ẨN" style="display: inline-block;"/>
+                        <br/><br/>
+
+                        <span class="control-label">Mô tả</span>
+                        <p:editor value="#{productManaBean.productDesc}" required="false"
+                                  controls="bold italic underline | color highlight | bullets numbering | 
+                                  alignleft center alignright justify | image link unlink" height="150"/>
+                        <br/>
+
+                        <span class="control-label">Chi tiết</span>
+                        <p:editor value="#{productManaBean.productInfo}" height="150"
+                                  required="true" controls="bold italic underline | color highlight"/>
+
+                        <h:commandButton value="Cập nhật" styleClass="btn btn-lg btn-primary" onclick="PF('ajaxStatusDialog').show();" action="#{productManaBean.doUpdateProduct()}"/>
+                        | &nbsp;&nbsp;&nbsp;
+                        <p:commandLink styleClass="btn btn-link" onclick="PF('ajaxStatusDialog').show();"
+                                       value="Xóa sản phẩm" actionListener="#{productManaBean.doRemoveProduct()}">
+                            <p:confirm header="Xóa sản phẩm" message="Bạn chắc chắn muốn xóa '#{productManaBean.product.name}'?" icon="ui-icon-alert"/>
+                        </p:commandLink>
+                    </p:fragment>
+
+                    <ui:fragment rendered="#{productManaBean.newProduct!=null}">
+                        <span class="control-label">Tên sản phẩm</span>
+                        <h:inputText class="form-control" value="#{productManaBean.productName}" required="true">
+                            <f:validateLength minimum="3" maximum="64"/>
+                        </h:inputText>
+                        <br/>
+
+                        <span class="control-label">Danh mục</span>
+                        <h:selectOneMenu value="#{productManaBean.selectedCategoryId}" style="width: 100%"
+                                         class="form-control" required="true">
+                            <f:selectItems value="#{productManaBean.doLoadCategories()}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat.category.id}" />
+                        </h:selectOneMenu>
+                        <br/>
+
+                        <h4 class="control-label">Hình ảnh</h4>
+                        <h:inputText id="newProdImg" value="#{productManaBean.productImages}" onchange="changeNewImageUrl();"/>
+                        <div class="row">
+                            <div class="col-sm-4" style="border-right: double thick #555;">
+                                <span class="control-label">Thêm từ URL</span><br/>
+                                <button type="button" onclick="addNewImageUrl();" class="btn btn-sm btn-default">
+                                    <span class="glyphicon glyphicon-picture">&nbsp;</span>
+                                    Nhập URL hình ảnh
+                                </button>
+                                <ul id="addedUrls" class="well well-sm">
+                                </ul>
+                            </div>
+                            <div class="col-sm-8">
+                                <span class="control-label">Upload hình ảnh</span>
+                                <p:fileUpload fileUploadListener="#{productManaBean.eventFileUploadNew}" mode="advanced" dragDropSupport="true"
+                                              update="uploadMessages,newProdImg,addedImgs" fileLimit="10" sizeLimit="1500000" 
+                                              allowTypes="/(\.|\/)(gif|jpe?g|png|bmp|svg)$/" multiple="true" oncomplete="changeNewImageUrl();"
+                                              uploadLabel="Tải lên" cancelLabel="Hủy" label="Chọn ảnh" sequential="true"
+                                              invalidFileMessage="Tập tin không hợp lệ" invalidSizeMessage="Kích thước tối đa: 1.5 MB"/>
+                                <div class="row">
+                                    <p:fragment id="addedImgs">
+                                        <ui:repeat value="#{productManaBean.doGetUrls()}" var="item">
+                                            <div class="col-sm-3 text-center">
+                                                <img src="#{item}"
+                                                     class="img-responsive img-thumbnail" onclick="openViewer('#{item}');"/>
+                                                <br/>
+                                                <p:commandLink value="xóa" action="#{productManaBean.eventFileDeleteNew(item)}" 
+                                                               update=":form:uploadMessages,:form:newProdImg,:form:addedImgs" oncomplete="changeNewImageUrl();">
+                                                    <p:confirm header="Xóa ảnh" message="Bạn chắc chắn muốn xóa ảnh này?" icon="ui-icon-alert"/>
+                                                </p:commandLink>
+                                            </div>
+                                        </ui:repeat>
+                                    </p:fragment>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <span class="control-label">Giá</span>
+                                <p:inputNumber value="#{productManaBean.productPrice}" required="true" style="width: 100%"
+                                               requiredMessage="Phải nhập tên" validatorMessage="Không hợp lệ" thousandSeparator=",">
+                                    <f:validateDoubleRange minimum="0.001"/>
+                                </p:inputNumber>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="control-label">Giảm giá (giá tiền hoặc phần trăm)</span>
+                                <h:inputText class="form-control" value="#{productManaBean.productPromo}" required="true">
+                                    <f:validateRegex pattern="[0-9]+([.][0-9]+)*[%]?"/>
+                                </h:inputText>
+                            </div>
+                        </div>
+                        <br/>
+
+                        <span style="padding-right: 15px;">Hiển thị</span>
+                        <p:inputSwitch value="#{productManaBean.productActivated}" onLabel="HIỆN" offLabel="ẨN" style="display: inline-block;"/>
+                        <br/><br/>
+
+                        <span class="control-label">Mô tả</span>
+                        <p:editor value="#{productManaBean.productDesc}" required="false"
+                                  controls="bold italic underline | color highlight | bullets numbering | 
+                                  alignleft center alignright justify | image link unlink" height="150"/>
+                        <br/>
+
+                        <span class="control-label">Chi tiết</span>
+                        <p:editor value="#{productManaBean.productInfo}" height="150"
+                                  required="true" controls="bold italic underline | color highlight"/>
+
+                        <h:commandButton value="Thêm sản phẩm mới" styleClass="btn btn-lg btn-primary" onclick="PF('ajaxStatusDialog').show();" action="#{productManaBean.doAddProduct()}"/>
+                    </ui:fragment>
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Có" type="button" styleClass="ui-confirmdialog-yes btn btn-sm btn-danger" icon="ui-icon-check" />
+                        <p:commandButton value="Không" type="button" styleClass="ui-confirmdialog-no btn btn-success" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </h:form>
+
+                <p:dialog id="dlgImagePreview" widgetVar="dlgImagePreview" header="Xem trước ảnh" modal="true" position="top">
+                    <div class="row">
+                        <img id="img-preview" class="img-responsive" src="" alt="Không tải được hình ảnh"/>
+                    </div>
+                </p:dialog>
+
+                <p:dialog id="dlgImageUrl" widgetVar="dlgImageUrl" header="Nhập ảnh từ URL" modal="true" position="top" style="min-width: 260px;">
+                    <h:form id="imgUrl">
+                        <span class="control-label">URL ảnh (URL đầy đủ)</span>
+                        <h:inputText value="#{productManaBean.productImageUrl}" required="true" class="form-control">
+
+                        </h:inputText>
+                        <hr/>
+                        <p:commandButton value="Thêm ảnh" action="#{productManaBean.doSetImageUrl()}" 
+                                         update=":imgUrl,:form:imgView" oncomplete="PF('dlgImageUrl').show();"/>
+                    </h:form>
+                </p:dialog>
+
+                <h:outputScript library="js" name="admin-product-process.js"/>
             </ui:define>
 
         </ui:composition>

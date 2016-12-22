@@ -35,20 +35,26 @@ public class AdminBean {
     public String doSubString(String str, int count, String suffix) {
         return str.length() > count - 1 ? str.substring(0, count - 1) + suffix : str;
     }
-    
+
     public String doGetLogoUrl() {
         String logo = GlobalBean.getPropertyValue("store_logo");
-        if (logo.contains("http://")) {
-            return logo;
+        if (logo != null) {
+            if (logo.contains("http://")) {
+                return logo;
+            }
+            return "." + logo;
         }
-        return "."+logo;
+        return "";
     }
-    
+
     public String doGetFavicoUrl() {
         String logo = GlobalBean.getPropertyValue("store_favico");
-        if (logo.contains("http://")) {
-            return logo;
+        if (logo != null) {
+            if (logo.contains("http://")) {
+                return logo;
+            }
+            return "." + logo;
         }
-        return "."+logo;
+        return "";
     }
 }

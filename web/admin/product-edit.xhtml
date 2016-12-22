@@ -139,7 +139,7 @@
                         <br/>
 
                         <h4 class="control-label">Hình ảnh</h4>
-                        <h:inputText id="newProdImg" value="#{productManaBean.productImages}" onchange="changeNewImageUrl();"/>
+                        <h:inputText class="hidden" id="newProdImg" value="#{productManaBean.productImages}" onchange="changeNewImageUrl();"/>
                         <div class="row">
                             <div class="col-sm-4" style="border-right: double thick #555;">
                                 <span class="control-label">Thêm từ URL</span><br/>
@@ -165,7 +165,8 @@
                                                      class="img-responsive img-thumbnail" onclick="openViewer('#{item}');"/>
                                                 <br/>
                                                 <p:commandLink value="xóa" action="#{productManaBean.eventFileDeleteNew(item)}" 
-                                                               update=":form:uploadMessages,:form:newProdImg,:form:addedImgs" oncomplete="changeNewImageUrl();">
+                                                               update=":form:uploadMessages,:form:newProdImg,:form:addedImgs" 
+                                                               oncomplete="changeNewImageUrl();" onclick="changeNewImageUrl();" onmouseover="changeNewImageUrl();">
                                                     <p:confirm header="Xóa ảnh" message="Bạn chắc chắn muốn xóa ảnh này?" icon="ui-icon-alert"/>
                                                 </p:commandLink>
                                             </div>

@@ -6,8 +6,11 @@
 package com.feedme.manabeans;
 
 import com.feedme.global.GlobalBean;
+import java.util.Iterator;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 
 /**
  * Utilities for manager's site
@@ -56,5 +59,18 @@ public class AdminBean {
             return "." + logo;
         }
         return "";
+    }
+
+    public void eventIdle() {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+                "Không có hoạt động", "Bạn không sử dụ trang web này trong 10 phút. Phiên làm việc sẽ kết thúc trong 5 phút nữa nếu không có hoạt động nào."));
+    }
+
+    public void eventActive() {
+        Iterator<FacesMessage> msgIterator = FacesContext.getCurrentInstance().getMessages();
+        while (msgIterator.hasNext()) {
+            msgIterator.next();
+            msgIterator.remove();
+        }
     }
 }

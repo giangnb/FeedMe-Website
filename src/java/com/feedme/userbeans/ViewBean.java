@@ -6,14 +6,14 @@
 package com.feedme.userbeans;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 
 /**
  *
  * @author Giang
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class ViewBean {
     private String currentPage;
     

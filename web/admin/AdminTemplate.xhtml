@@ -36,7 +36,7 @@
                                 </button>
                                 <span class="navbar-brand">
                                     <img src="#{adminBean.doGetLogoUrl()}" style="height: 100px;"
-                                                    alt="FeedMe Logo" class="img-responsive img-thumbnail"/>
+                                         alt="FeedMe Logo" class="img-responsive img-thumbnail"/>
                                 </span>
                             </div>
 
@@ -176,31 +176,22 @@
             </footer>
         </div>
 
-        <p:growl id="alertBox" showDetail="true" sticky="true" />
+        <p:growl id="alertBox" showDetail="true" sticky="true" autoUpdate="true"/>
         <p:ajaxStatus onstart="PF('ajaxStatusDialog').show()" onsuccess="PF('ajaxStatusDialog').hide(); addBtnClass();" onerror="PF('ajaxStatusDialog').hide(); alert('Vui lòng tải lại trang web hoặc kiểm tra kết nối Internet!');" />
         <p:dialog widgetVar="ajaxStatusDialog" modal="true" showHeader="false" resizable="false" 
                   draggable="false" closable="false" style="background:none;border:none;box-shadow: none;">
             <div class="loader loader-border is-active" data-text="Xin chờ..."></div>
         </p:dialog>
+        <p:idleMonitor timeout="600000">
+            <p:ajax event="idle" listener="#{adminBean.eventIdle}" update="alertBox" />
+            <p:ajax event="active" listener="#{adminBean.eventActive}" update="alertBox" />
+        </p:idleMonitor>
         <script type="text/javascript">
             $(".ui-dialog-content").click(function () {
                 $(this).scrollTop();
             });
-//            "use strict";
-//            $(document).ready(function () {
-//                $("input[type='button'], input[type='submit'], input[type='reset'], button").addClass("btn").removeClass("ui-widget ui-state-default ui-corner-all");
-//            });
             function addBtnClass() {
-//                $("input[type='button'], input[type='submit'], input[type='reset'], button").addClass("btn").removeClass("ui-widget ui-state-default ui-corner-all");
             }
-//            $("input[type='button'], input[type='submit'], input[type='reset'], button").hover(
-//                    function () {
-//                        $(this).removeClass("ui-state-hover");
-//                    },
-//                    function () {
-//                        $(this).removeClass("ui-state-hover");
-//                    }
-//            );
         </script>
     </h:body>
 

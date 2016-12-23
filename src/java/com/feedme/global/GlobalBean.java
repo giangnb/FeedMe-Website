@@ -154,4 +154,22 @@ public class GlobalBean {
         };
         TIMER.schedule(task, 0, 60 * 1000);
     }
+    
+    public static double processDiscount(double price, String discount) {
+        double result = 0, dis;
+        if (discount.contains("%")) {
+            dis = Double.parseDouble(discount.replace("%", ""));
+            if (dis<=100) {
+                result = (double)(price*dis/100);
+            }
+        } else {
+            try {
+                dis = Double.parseDouble(discount);
+                if (dis<=price) {
+                    result = dis;
+                }
+            } catch(NumberFormatException ex) {}
+        }
+        return result;
+    }
 }

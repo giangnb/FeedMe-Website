@@ -8,10 +8,10 @@
 
     <body>
 
-        <h:form class="hidden">
+        <form class="hidden">
             <h:outputText value="#{viewBean.doSetPage('index')}"/>
-        </h:form>
-        
+        </form>
+
         <ui:composition template="./UserTemplate.xhtml">
 
             <ui:define name="title-line">
@@ -23,7 +23,67 @@
             </ui:define>
 
             <ui:define name="content">
-                content
+                <h:form id="mainForm">
+                    <div class="row">
+                        <ui:repeat value="#{productsBean.doGetProductsRange()}" var="item">
+                            <div class="col-sm-6">
+                                <div class="product-container">
+                                    <h:outputText rendered="#{productsBean.doGetProductDiscount(item)>0}"
+                                                  class="product-sale-badge" value="&nbsp;"/>
+                                    <div class="product-image" title="Nhấn để xem thông tin"
+                                         style="background-image: url('#{productsBean.doGetFirstImageUrl(item)}')">
+                                        <span class="glyphicon glyphicon-search text-center"></span>
+                                        <p:commandButton value="&nbsp;" action="#{productsBean.doViewProductDetail(item)}"
+                                                         oncomplete="PF('dlgProduct').show();" update="product"
+                                                         class="product-view-button"/>
+                                    </div>
+                                    <div class="product-content">
+                                        <div class="product-title">
+                                            #{item.name}
+                                        </div>
+                                        <div>
+                                            <h:outputText rendered="#{productsBean.doGetProductDiscount(item)>0}"
+                                                          class="product-old-price" value="#{globalBean.doFormatPrice(item.price)}"/>
+                                            <h:outputText class="product-price" value="#{globalBean.doFormatPrice(item.price-productsBean.doGetProductDiscount(item))}"/>
+                                        </div>
+                                    </div>
+                                    <p:commandLink action="#{cartBean.doAddToCart(item)}" onclick="$(this).hide();"
+                                                   update="selectedCart,selectedCartTotal,selectedCartEmpty" oncomplete="$(this).show();"
+                                                   class="btn product-cart-button hvr-push"
+                                                   value="Thêm vào giỏ" onmouseover="$(this).addClass('btn-warning')"
+                                                   onmouseout="$(this).removeClass('btn-warning')">
+                                    </p:commandLink>
+                                </div>
+                            </div>
+                        </ui:repeat>
+                    </div>
+
+                    <ul class="pager" style="margin-top:10px;padding-top:10px;border-top:thin solid #888">
+                        <ui:fragment rendered="#{productsBean.page>1}">
+                            <li class="previous">
+                                <p:commandLink action="#{productsBean.doPreviousPage()}" value="&larr; Trang trước" update="@(form)"/>
+                            </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{productsBean.productListSize>=12}">
+                            <li class="next">
+                                <p:commandLink action="#{productsBean.doNextPage()}" value="Trang sau &rarr;" update="@(form)"/>
+                            </li>
+                        </ui:fragment>
+                    </ul>
+
+                </h:form>
+
+                <p:dialog header="Thông tin sản phẩm" widgetVar="dlgProduct" modal="true" showEffect="fade" hideEffect="fade" minHeight="250" minWidth="250"
+                          height="250" width="250">
+                    <h:form id="product">
+                        <p:outputPanel id="productDetail" style="text-align:center;">
+                            <p:panelGrid  columns="2" rendered="#{not empty productsBean.selectedProduct}" columnClasses="label,value">
+                                <h:outputText value="Id:" />
+                                <h:outputText value="hehe" />
+                            </p:panelGrid>
+                        </p:outputPanel>
+                    </h:form>
+                </p:dialog>
             </ui:define>
 
         </ui:composition>

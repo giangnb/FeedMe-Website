@@ -8,14 +8,14 @@
 
     <body>
 
-        <form class="hidden">
+        <div class="hidden">
             <h:outputText value="#{viewBean.doSetPage('index')}"/>
-        </form>
+        </div>
 
         <ui:composition template="./UserTemplate.xhtml">
 
             <ui:define name="title-line">
-                <h:outputText value="#{productsBean.doGetFilterContext()}" escape="false"/>
+                <h:outputText id="titleLine" value="#{productsBean.doGetFilterContext()}" escape="false"/>
             </ui:define>
 
             <ui:define name="top">
@@ -25,8 +25,14 @@
             <ui:define name="content">
                 <h:form id="mainForm">
                     <div class="row">
-                        <ui:repeat value="#{productsBean.doGetProductsRange()}" var="item">
-                            <div class="col-sm-6">
+                        <ui:fragment rendered="#{empty productsBean.products}">
+                            <p class="text-warning text-center">
+                                Không tìm thấy sản phẩm nào<br/>
+                                <h:link class="btn btn-default" outcome="index" value="Xem tất cả các sản phẩm" onclick="PF('ajaxStatusDialog').show()"/>
+                            </p>
+                        </ui:fragment>
+                        <ui:repeat value="#{productsBean.products}" var="item">
+                            <div class="col-sm-4">
                                 <div class="product-container">
                                     <h:outputText rendered="#{productsBean.doGetProductDiscount(item)>0}"
                                                   class="product-sale-badge" value="&nbsp;"/>
@@ -44,18 +50,24 @@
                                         <div>
                                             <h:outputText rendered="#{productsBean.doGetProductDiscount(item)>0}"
                                                           class="product-old-price" value="#{globalBean.doFormatPrice(item.price)}"/>
-                                            <h:outputText class="product-price" value="#{globalBean.doFormatPrice(item.price-productsBean.doGetProductDiscount(item))}"/>
+                                            <h:outputText class="product-price" value="#{globalBean.doFormatPrice(item.price - productsBean.doGetProductDiscount(item))}"/>
                                         </div>
                                     </div>
-                                    <p:commandLink action="#{cartBean.doAddToCart(item)}" onclick="$(this).hide();"
-                                                   update="selectedCart,selectedCartTotal,selectedCartEmpty" oncomplete="$(this).show();"
-                                                   class="btn product-cart-button hvr-push"
-                                                   value="Thêm vào giỏ" onmouseover="$(this).addClass('btn-warning')"
-                                                   onmouseout="$(this).removeClass('btn-warning')">
+                                    <p:commandLink action="#{cartBean.doAddToCart(item)}"
+                                                   update="selectedCart,selectedCartTotal,selectedCartEmpty"
+                                                   class="btn product-cart-button hvr-sweep-to-top"
+                                                   value="Thêm vào giỏ">
                                     </p:commandLink>
                                 </div>
                             </div>
                         </ui:repeat>
+                        <p:fragment rendered="#{!(productsBean.productListSize>0)}">
+                            <div class="text-center">
+                            <h4>Không tìm thấy sản phẩm nào</h4>
+                            <p:commandLink value="Xem tất cả sản phẩm" class="btn btn-lg btn-primary"
+                                           update="mainForm" action="#{productsBean.doResetFilters()}"/>
+                            </div>
+                        </p:fragment>
                     </div>
 
                     <ul class="pager" style="margin-top:10px;padding-top:10px;border-top:thin solid #888">
@@ -73,13 +85,51 @@
 
                 </h:form>
 
-                <p:dialog header="Thông tin sản phẩm" widgetVar="dlgProduct" modal="true" showEffect="fade" hideEffect="fade" minHeight="250" minWidth="250"
-                          height="250" width="250">
+                <p:dialog header="Thông tin sản phẩm" widgetVar="dlgProduct" modal="true" 
+                          showEffect="fade" hideEffect="fade" minHeight="250" minWidth="250"
+                          height="250" width="550" draggable="false">
                     <h:form id="product">
-                        <p:outputPanel id="productDetail" style="text-align:center;">
-                            <p:panelGrid  columns="2" rendered="#{not empty productsBean.selectedProduct}" columnClasses="label,value">
-                                <h:outputText value="Id:" />
-                                <h:outputText value="hehe" />
+                        <p:outputPanel id="productDetail">
+                            <p:panelGrid rendered="#{not empty productsBean.selectedProduct}" columnClasses="label,value">
+                                <div class="row">
+                                    <div class="col-sm-7" style="text-align:center;">
+                                        <img id="cart-image-carousel" src="#{productsBean.doGetFirstImageUrl(item)}"/>
+                                        <br/>
+                                        <div class="row">
+                                            <ui:repeat value="#{productsBean.doGetImageUrls(productsBean.selectedProduct)}" var="img">
+                                                <div class="col-sm-3">
+                                                    <img src="#{img}" alt="Hình ảnh" class="img-thumbnail"
+                                                         onclick="$('#cart-image-carousel').attr('src', '#{img}');"/>
+                                                </div>
+                                            </ui:repeat>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <h4><strong>#{productsBean.selectedProduct.name}</strong></h4>
+                                        <h:outputText rendered="#{productsBean.doGetProductDiscount(productsBean.selectedProduct)>0}" style="color:#787878;text-decoration:line-through;"
+                                                      value="#{globalBean.doFormatPrice(productsBean.selectedProduct.price)}" />
+                                        <h:outputText class="product-price" style="font-size:large;color:#b68903;"
+                                                      value="#{globalBean.doFormatPrice(item.price-productsBean.doGetProductDiscount(productsBean.selectedProduct))}"/>
+                                        <br/><br/>
+                                        <p:commandLink style="display:block;color:#fff;" action="#{cartBean.doAddToCart(productsBean.selectedProduct)}"
+                                                       update="selectedCart,selectedCartTotal,selectedCartEmpty"
+                                                       class="btn btn-warning product-cart-button hvr-outline-in"
+                                                       value="Thêm vào giỏ" oncomplete="$('#cart-added-alert').removeClass('hidden');">
+                                        </p:commandLink>
+                                        <div id="cart-added-alert" class="text-primary hidden"><br/>Sản phẩm đã được thêm vào giỏ.</div>
+                                    </div>
+                                </div>
+                                <br/>
+                                <p><h:outputText value="#{productsBean.selectedProduct.description}" escape="false"/></p>
+                                <br/>
+                                <p><h:outputText value="#{productsBean.selectedProduct.info}" escape="false"/></p>
+                                <br/>
+                                <p:commandLink style="display:block;color:#fff;"
+                                               action="#{cartBean.doAddToCart(productsBean.selectedProduct)}"
+                                               update="selectedCart,selectedCartTotal,selectedCartEmpty"
+                                               class="btn btn-warning hvr-outline-in"
+                                               value="Thêm vào giỏ" oncomplete="$('#cart-added-alert').removeClass('hidden');">
+                                </p:commandLink>
                             </p:panelGrid>
                         </p:outputPanel>
                     </h:form>

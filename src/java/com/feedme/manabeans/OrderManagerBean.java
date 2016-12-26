@@ -7,7 +7,6 @@ package com.feedme.manabeans;
 
 import com.feedme.service.EmployeeDTO;
 import com.feedme.service.OrderDetail;
-import com.feedme.service.OrderDetailDTO;
 import com.feedme.service.OrderStatus;
 import com.feedme.service.ProductDTO;
 import com.feedme.ws.Methods;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -50,7 +48,7 @@ public class OrderManagerBean {
 
     public List<OrderDetail> getOrderDetailList() {
         if (orderDetailList == null) {
-            orderDetailList = Methods.fetchOrders(fromTime.getTime(), toTime.getTime()).stream().map(OrderDetailDTO::getOrderDetail).collect(Collectors.toList());
+            orderDetailList = Methods.fetchOrders(fromTime.getTime()+"", toTime.getTime()+"");
         }
         return orderDetailList;
     }
@@ -186,8 +184,8 @@ public class OrderManagerBean {
         }
     }
 
-    public List<OrderDetailDTO> doLoadOrderByTime() {
-        List<OrderDetailDTO> list = Methods.fetchOrders(toTime.getTime(), fromTime.getTime());
+    public List<OrderDetail> doLoadOrderByTime() {
+        List<OrderDetail> list = Methods.fetchOrders(toTime.getTime()+"", fromTime.getTime()+"");
         if (list == null) {
             FacesContext ctx = FacesContext.getCurrentInstance();
             ctx.addMessage("", new FacesMessage("Không tìm thấy hóa đơn từ " + toTime.toString() + " đến " + fromTime.toString()));
@@ -195,8 +193,8 @@ public class OrderManagerBean {
         return list;
     }
 
-    public List<OrderDetailDTO> doLoadOrderByEmployee(EmployeeDTO employee) {
-        List<OrderDetailDTO> list = Methods.fetchOrdersByEmployee(toTime.getTime(), fromTime.getTime(), employee.getEmployee().getId());
+    public List<OrderDetail> doLoadOrderByEmployee(EmployeeDTO employee) {
+        List<OrderDetail> list = Methods.fetchOrdersByEmployee(toTime.getTime()+"", fromTime.getTime()+"", employee.getEmployee().getId());
         if (list == null) {
             FacesContext ctx = FacesContext.getCurrentInstance();
             ctx.addMessage("", new FacesMessage("Không tìm thấy hóa đơn được xử lý bởi nhân viên " + employee.getEmployee().getUsername()));
@@ -206,9 +204,9 @@ public class OrderManagerBean {
 
     public List<ProductDTO> doLoadFoodSales() {
         List<ProductDTO> listProduct = new ArrayList<>();
-        List<OrderDetailDTO> list = Methods.fetchOrders(toTime.getTime(), fromTime.getTime());
-        for (OrderDetailDTO order : list) {
-            listProduct = order.getFoods();
+        List<OrderDetail> list = Methods.fetchOrders(toTime.getTime()+"", fromTime.getTime()+"");
+        for (OrderDetail order : list) {
+            //listProduct = order.get;
         }
         if (listProduct.isEmpty()) {
             FacesContext ctx = FacesContext.getCurrentInstance();
@@ -220,7 +218,7 @@ public class OrderManagerBean {
 
     public List<String> doLoadComments() {
         List<String> comments = new ArrayList<>();
-        List<OrderDetailDTO> list = Methods.fetchOrders(toTime.getTime(), fromTime.getTime());
+        List<OrderDetail> list = Methods.fetchOrders(toTime.getTime()+"", fromTime.getTime()+"");
         list.stream().forEach((order) -> {
             comments.add(order.getComment());
         });

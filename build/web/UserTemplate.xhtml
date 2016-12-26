@@ -8,11 +8,14 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <h:outputStylesheet name="./css/bootstrap.min.css"/>
-        <h:outputStylesheet name="./css/bootstrap-theme.min.css"/>
-        <h:outputStylesheet name="./css/cssLayout.css"/>
-        <h:outputStylesheet name="./css/global.css"/>
-        <h:outputStylesheet name="./css/hover.css"/>
+        <link rel="shortcut icon" type="image/x-icon" href="#{viewBean.doGetFavicoUrl()}"/>
+        <f:facet name="last">
+            <h:outputStylesheet name="./css/bootstrap.min.css"/>
+            <h:outputStylesheet name="./css/bootstrap-theme.min.css"/>
+            <h:outputStylesheet name="./css/cssLayout.css"/>
+            <h:outputStylesheet name="./css/global.css"/>
+            <h:outputStylesheet name="./css/hover.css"/>
+        </f:facet>
         <h:outputScript name="./js/bootstrap.min.js"/>
         <title><h:outputText value="#{globalBean.doGetProperty('context_title')}"/></title>
     </h:head>
@@ -31,11 +34,9 @@
                             <span class="icon-bar"></span>
                         </button>
                         <div id="logo">
-                            <h:form>
-                                <h:commandLink action="index">
-                                    <h:graphicImage library="img" name="logo.png" alt="Logo"/>
-                                </h:commandLink>
-                            </h:form>
+                            <h:link outcome="index" onclick="PF('ajaxStatusDialog').show()">
+                                <img src="#{globalBean.doGetProperty('store_logo')}" alt="Logo"/>
+                            </h:link>
                         </div>
                     </div>
                     <div id="menu-header" class="collapse navbar-collapse">
@@ -57,14 +58,14 @@
                         </h:form>
                     </div>
                     <div class="contact-header hidden-sm hidden-xs">
-                        <strong>43 Kim Dong St</strong>, Hoang Mai, Hanoi
+                        #{viewBean.doGetShortAddress()}
                         &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;
-                        <strong>1800-6969</strong>
+                        <strong>#{globalBean.doGetProperty('store_phone')}</strong>
                     </div>
                     <div id="search">
-                        <h:form>
+                        <h:form rendered="#{view.viewId=='/index.xhtml'}">
                             <h:inputText style="width: 165px; position: relative; top: 0; left: 0;" class="inputbox" value="#{productsBean.search}"/>
-                            <p:commandButton class="button" value="Search" update="@(form)" action="#{productsBean.doSearch}"/>
+                            <p:commandButton class="button" value="Search" update="mainForm,titleLine" action="#{productsBean.doSearch()}"/>
                         </h:form>
                     </div>
                 </div>
@@ -84,11 +85,21 @@
                     <ui:insert name="left">
                         <h3 class="hidden-sm hidden-xs" onclick="$('#category-toggle').show(200);">DANH MỤC</h3>
                         <h3 class="hidden-lg hidden-md" onclick="$('#category-toggle').toggle(200);"><span class="glyphicon glyphicon-menu-hamburger">&nbsp;</span>DANH MỤC</h3>
-                        <h:form>
+                        <!-- RENDER FOR PRODUCTS PAGE -->
+                        <h:form rendered="#{view.viewId=='/index.xhtml'}" style="font-family:'Source Sans Pro',Tahoma,Arial,sans-serif !important">
                             <ul id="category-toggle">
-                                <li><h:commandLink value="Tất cả sản phẩm" action="#{productsBean.doResetFilters()}" onclick="PF('ajaxStatusDialog').show()"/></li>
+                                <li><p:commandLink value="Tất cả sản phẩm" action="#{productsBean.doResetFilters()}" update="mainForm,titleLine" style="font-family:'Source Sans Pro',Tahoma,Arial,sans-serif !important"/></li>
                                 <ui:repeat value="#{productsBean.doGetCategories()}" var="cat">
-                                    <li><h:commandLink value="#{cat.name}" action="#{productsBean.doSelectCategory(cat)}"/></li>
+                                    <li><p:commandLink value="#{cat.name}" action="#{productsBean.doSelectCategory(cat)}" update="mainForm,titleLine" style="font-family:'Source Sans Pro',Tahoma,Arial,sans-serif !important"/></li>
+                                </ui:repeat>
+                            </ul>
+                        </h:form>
+                        <!-- RENDER FOR OTHER PAGES -->
+                        <h:form rendered="#{view.viewId!='/index.xhtml'}">
+                            <ul id="category-toggle">
+                                <li><h:commandLink value="Tất cả sản phẩm" action="index"/></li>
+                                <ui:repeat value="#{productsBean.doGetCategories()}" var="cat">
+                                    <li><h:commandLink value="#{cat.name}" action="#{productsBean.doSelectCategoryNonAjax(cat)}"/></li>
                                 </ui:repeat>
                             </ul>
                         </h:form>
@@ -146,25 +157,25 @@
                                 </h:form>
                                 <div class="row cart-total">
                                     <h:form id="selectedCartTotal">
-                                        <ui:fragment rendered="#{cartBean.doGetCart().size()>0}">
+                                        <p:fragment  rendered="#{cartBean.doGetCart().size()>0}">
                                             <div class="col-sm-4">Tạm tính</div>
                                             <div class="col-sm-8 cart-price">#{globalBean.doFormatPrice(cartBean.doGetTotal())}</div>
                                             <div class="col-sm-2"></div>
                                             <div class="col-sm-8">
-                                                <button type="button" onclick="PF('dlgOrderProcess').show()"
-                                                        class="btn btn-warning form-control">
+                                                <p:commandLink type="button" onclick="PF('dlgOrderProcess').show()"
+                                                               class="btn btn-warning form-control hvr-grow-shadow hvr-rectangle-out" update="dlgOrderProcess"
+                                                               style="font-family:'Source Sans Pro',Calibri,Tahoma,Arial,sans-serif;background-color:#ff7518">
                                                     &raquo; ĐẶT HÀNG &raquo;
-                                                </button>
+                                                </p:commandLink>
                                             </div>
                                             <div class="col-sm-2"></div>
-                                        </ui:fragment>
+                                        </p:fragment>
                                     </h:form>
-                                    <ui:fragment id="selectedCartEmpty">
+                                    <p:fragment id="selectedCartEmpty">
                                         <div class="col-sm-12">
                                             <h:outputText rendered="#{!(cartBean.doGetCart().size()>0)}" value="#{globalBean.doGetProperty('context_empty_cart')}" escape="false"/>
-                                            <!--Giỏ hàng đang trống,<br/>hãy chọn sản phẩm bạn muốn!-->
                                         </div>
-                                    </ui:fragment>
+                                    </p:fragment>
                                 </div>
                             </div>
                         </div>
@@ -174,44 +185,141 @@
         </div>
 
         <p:dialog header="Tiến hành Đặt hàng" modal="true" position="top" showEffect="fade" hideEffect="fade"
-                  widgetVar="dlgOrderProcess" minWidth="200" minHeight="150" width="350">
-            <h:form id="dlgOrderProcess" class="cart-context-process" rendered="#{cartBean.doGetCart().size()>0}">
+                  widgetVar="dlgOrderProcess" draggable="false" minWidth="200" minHeight="150" width="560">
+            <h:form id="dlgOrderProcess" class="cart-context-process">
                 <h3>Đơn hàng</h3>
-                <ui:repeat value="#{cartBean.doGetCart()}" var="item">
-                    <div class="cart-item">
-                        <div class="row">
-                            <h:outputText class="col-sm-5"
-                                          value="#{item.name}"/>
-                            <div class="col-md-2">
-                                <p:commandLink class="glyphicon glyphicon-plus-sign" title="Thêm SP" ajax="true"
-                                               update="dlgOrderProcess,selectedCart,selectedCartTotal,selectedCartEmpty"
-                                               action="#{cartBean.doAddToCart(item)}"/>
-                                &nbsp;
-                                <h:outputText class="cart-quantity"
-                                              value="#{cartBean.doGetCount(item)}"/>
-                                &nbsp;
-                                <p:commandLink class="glyphicon glyphicon-minus-sign" title="Bớt SP" ajax="true"
-                                               update="dlgOrderProcess,selectedCart,selectedCartTotal,selectedCartEmpty"
-                                               action="#{cartBean.doRemoveFromCart(item)}"/>
+                <p:fragment rendered="#{!(cartBean.doGetCart().size()>0)}">
+                    <h:outputText value="#{globalBean.doGetProperty('context_empty_cart')}" escape="false"/>
+                    <hr/>
+                    <p class="text-center">
+                        <button type="button" class="btn btn-lg btn-default" onclick="PF('dlgOrderProcess').hide()">
+                            Bắt đầu mua sắm <span class="glyphicon glyphicon-arrow-right"></span>
+                        </button>
+                    </p>
+                </p:fragment>
+                <p:fragment rendered="#{cartBean.doGetCart().size()>0}">
+                    <ui:repeat value="#{cartBean.doGetCart()}" var="item">
+                        <div class="cart-item">
+                            <div class="row">
+                                <h:outputText class="col-sm-5"
+                                              value="#{item.name}"/>
+                                <div class="col-sm-2">
+                                    <p:commandLink class="glyphicon glyphicon-plus-sign" title="Thêm SP" ajax="true"
+                                                   update="dlgOrderProcess,selectedCart,selectedCartTotal,selectedCartEmpty"
+                                                   action="#{cartBean.doAddToCart(item)}"/>
+                                    &nbsp;
+                                    <h:outputText class="cart-quantity"
+                                                  value="#{cartBean.doGetCount(item)}"/>
+                                    &nbsp;
+                                    <p:commandLink class="glyphicon glyphicon-minus-sign" title="Bớt SP" ajax="true"
+                                                   update="dlgOrderProcess,selectedCart,selectedCartTotal,selectedCartEmpty"
+                                                   action="#{cartBean.doRemoveFromCart(item)}"/>
+                                </div>
+                                <h:outputText class="col-sm-5"
+                                              value="#{globalBean.doFormatPrice(item.price)}"/>
                             </div>
-                            <h:outputText class="col-sm-5"
-                                          value="#{globalBean.doFormatPrice(item.price)}"/>
+                            <div class="cart-separator"></div>
                         </div>
-                        <div class="cart-separator"></div>
+                    </ui:repeat>
+                    <div class="row">
+                        <div class="col-sm-6 text-center">Tạm tính</div>
+                        <div class="col-sm-6 text-right"><strong>#{globalBean.doFormatPrice(cartBean.doGetSubtotal())}</strong></div>
                     </div>
-                </ui:repeat>
-                <p:commandButton value="OK"/>
+                </p:fragment>
+                <p:fragment rendered="#{cartBean.doGetCart().size()>0}">
+                    <div class="row">
+                        <div class="col-sm-6 text-center">Giảm giá</div>
+                        <div class="col-sm-6 text-right"><strong>#{globalBean.doFormatPrice(cartBean.doGetDiscount())}</strong></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 text-center">Thành tiền</div>
+                        <div class="col-sm-6 text-right"><strong>#{globalBean.doFormatPrice(cartBean.doGetTotal())}</strong></div>
+                    </div>
+                    <hr/>
+                    <h4>Thông tin người mua hàng</h4>
+                    <span class="control-label">Họ tên người mua <sup class="glyphicon glyphicon-asterisk text-danger"></sup></span>
+                    <h:inputText id="cart-form-name" class="form-control" value="#{cartBean.name}" onkeydown="validateCart()">
+                    </h:inputText>
+
+                    <span class="control-label">Điện thoại <sup class="glyphicon glyphicon-asterisk text-danger"></sup></span>
+                    <h:inputText id="cart-form-phone" class="form-control" value="#{cartBean.phone}" onkeydown="validateCart()">
+                    </h:inputText>
+
+                    <span class="control-label">Email</span>
+                    <h:inputText id="cart-form-email" class="form-control" value="#{cartBean.email}"  onkeydown="validateCart()">
+                    </h:inputText>
+
+                    <span class="control-label">Địa chỉ nhận hàng <sup class="glyphicon glyphicon-asterisk text-danger"></sup></span>
+                    <h:inputTextarea id="cart-form-address" class="form-control" value="#{cartBean.address}" onkeydown="validateCart()">
+                    </h:inputTextarea>
+                    <sup>Vui lòng cung cấp địa chỉ đầy đủ và chính xác</sup>
+                    <br/>
+                    <sup class="glyphicon glyphicon-asterisk text-danger"></sup> Tôi đã đọc và <p:selectBooleanButton id="cart-form-accept" value="#{cartBean.accept}" onLabel="Đồng ý" offLabel="Không đồng ý" onchange="validateCart()"/> 
+                    với <h:link target="_blank" value="Quy chế" outcome="term"/>, <h:link target="_blank" value="Chính sách Bảo mật" outcome="privacy"/> của #{globalBean.doGetProperty('store_name')}
+                    <br/>
+                    <p:captcha label="Captcha" required="true" requiredMessage="Bạn chưa kiểm tra Captcha"/>
+                    <hr/>
+                    <p class="text-warning" id="cart-form-incomplete">
+                        Vui lòng điền đầy đủ thông tin phía trên<br/>
+                        Các mục có dấu <span class="text-danger">*</span> là mục bắt buộc
+                    </p>
+                    <p:commandLink id="cart-form-submit" value="ĐẶT HÀNG" class="btn btn-lg btn-warning" style="display:block"
+                                   action="#{cartBean.doCreateOrder()}" onstart="PF('dlgOrderCreating').show();"
+                                   onerror="PF('dlgOrderCreating').hide()" update="selectedCart,selectedCartTotal,selectedCartEmpty,orderSuccess,alertBox,dlgOrderProcess"
+                                   oncomplete="PF('dlgOrderCreating').hide();PF('dlgOrderProcess').hide();PF('dlgOrderSuccess').show();">
+                    </p:commandLink>
+                    <h:outputScript name="./js/cart-validation.js"/>
+                </p:fragment>
             </h:form>
         </p:dialog>
 
-        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-            <p:commandButton value="Đặt hàng" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-            <p:commandButton value="Tôi muốn kiểm tra lại" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
-        </p:confirmDialog>
+        <p:dialog widgetVar="dlgOrderCreating" modal="false" showHeader="false" resizable="false" 
+                  draggable="false" closable="false" style="background:#b68903;border:none;box-shadow: none;">
+            <h2 style="color:#333;font-weight:bold;padding-top:100px" class="text-center">
+                Đơn hàng đang được tạo...
+            </h2>
+            <p class="text-center" style="color:#333;font-weight:bold">Vui lòng không chuyển trang hoặc tắt trình duyệt</p>
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgOrderSuccess" modal="true" position="top" showEffect="fade" hideEffect="fade"
+                  draggable="false" header="Đặt hàng" minWidth="200" minHeight="150" width="450">
+            <h:form id="orderSuccess" class="text-center">
+                <p:fragment rendered="#{cartBean.doGetOrderTrackingCode()==null}">
+                    <span class="glyphicon glyphicon-warning-sign">&nbsp;</span>
+                    <strong>
+                        Bạn chưa điền đầy đủ thông tin đơn hàng!
+                    </strong>
+                    <hr/>
+                    <button type="button" class="btn btn-lg btn-warning" onclick="PF('dlgOrderSuccess').hide();PF('dlgOrderProcess').show();">Kiểm tra lại</button>
+                </p:fragment>
+                <p:fragment rendered="#{cartBean.doGetOrderTrackingCode()!=null}">
+                    <h3>Đặt hàng thành công!</h3>
+                    <br/>
+                    <p>
+                        <small>Mã số đơn hàng của bạn</small>
+                        <input type="text" class="form-control text-center"
+                               style="font-family:monospace;font-size:x-large;font-weight:bold"
+                               value="#{cartBean.doGetOrderTrackingCode()}" readonly="true"/>
+                        <small>Bạn có thể kiểm tra đơn hàng tại <h:link target="_blank" outcome="tracking" value="đây"/></small>
+                        <hr/>
+                        Chúng tôi sẽ liên hệ tới bạn qua số điện thoại <strong>#{cartBean.phone}</strong> 
+                        để xác nhận đơn hàng.<hr/>
+                        Mọi chi tiết, xin liên hệ <strong>#{globalBean.doGetProperty('store_phone')}</strong>
+                        <br/><br/>
+                        Cảm ơn bạn đã đến với #{globalBean.doGetProperty('store_name')}!<br/><br/>
+                    </p>
+                </p:fragment>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="ajaxStatusDialog" modal="false" showHeader="false" resizable="false" 
+                  draggable="false" closable="false" style="background:none;border:none;box-shadow: none;">
+            <div class="loader loader-double is-active"></div>
+        </p:dialog>
 
         <p:growl id="alertBox" showDetail="true" life="3500" autoUpdate="true"/>
         <p:ajaxStatus onstart="PF('ajaxStatusDialog').show()" onsuccess="PF('ajaxStatusDialog').hide();" onerror="PF('ajaxStatusDialog').hide(); alert('Vui lòng tải lại trang web hoặc kiểm tra kết nối Internet!');" />
-        <p:dialog widgetVar="ajaxStatusDialog" modal="true" showHeader="false" resizable="false" 
+        <p:dialog widgetVar="ajaxStatusDialog" modal="false" showHeader="false" resizable="false" 
                   draggable="false" closable="false" style="background:none;border:none;box-shadow: none;">
             <div class="loader loader-double is-active"></div>
         </p:dialog>

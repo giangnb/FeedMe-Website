@@ -63,7 +63,7 @@ public class AdminBean {
 
     public void eventIdle() {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-                "Không có hoạt động", "Bạn không sử dụ trang web này trong 10 phút. Phiên làm việc sẽ kết thúc trong 5 phút nữa nếu không có hoạt động nào."));
+                "Không có hoạt động", "Bạn không sử dụng trang web này trong 10 phút. Phiên làm việc sẽ kết thúc trong 5 phút nữa nếu không có hoạt động nào."));
     }
 
     public void eventActive() {

@@ -43,8 +43,10 @@
                         <p>
                             <ui:insert name="explain">&nbsp;</ui:insert>
                         </p>
-                        <h:commandLink class="btn btn-primary" value="Trang chủ" action="/index"/> | 
-                        <a class="btn btn-link" onclick="PF('errorTrace').show();">Báo lỗi</a>
+                        <ui:insert name="debug">
+                            <h:commandLink class="btn btn-primary" value="Trang chủ" action="/index"/> | 
+                            <a class="btn btn-link" onclick="PF('errorTrace').show();">Báo lỗi</a>
+                        </ui:insert>
                     </div>
                 </div>
             </div>

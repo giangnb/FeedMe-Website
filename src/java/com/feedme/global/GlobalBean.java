@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ApplicationScoped;
 
@@ -39,6 +40,10 @@ public class GlobalBean {
      */
     public GlobalBean() {
         javax.faces.context.FacesContext.getCurrentInstance().getViewRoot().setLocale(new java.util.Locale("vi"));
+    }
+    
+    @PostConstruct
+    private void applicationInitialization() {
         startTimer();
     }
     

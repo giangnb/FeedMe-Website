@@ -10,10 +10,12 @@ import com.feedme.service.Category;
 import com.feedme.service.CategoryDTO;
 import com.feedme.service.Product;
 import com.feedme.service.ProductDTO;
+import com.feedme.service.Promoted;
 import com.feedme.ws.Methods;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,7 +32,7 @@ import javax.faces.bean.ViewScoped;
 public class ProductsBean implements Serializable {
 
     private Category category; // Selected category
-    private List<Product> products;
+    private List<Product> products, promotedProducts;
     private String search = "";
     private Product selectedProduct;
     private int page = 1, productListSize;
@@ -42,6 +44,21 @@ public class ProductsBean implements Serializable {
         search = "";
         category = null;
         page = 1;
+    }
+
+    public List<Product> getPromotedProducts() {
+        if (promotedProducts == null) {
+            promotedProducts = new java.util.ArrayList<>();
+            List<Promoted> list = Methods.fetchPromotedByTime(new Date().getTime() + "");
+            list.forEach((p) -> {
+                promotedProducts.add(p.getProduct());
+            });
+        }
+        return promotedProducts;
+    }
+
+    public void setPromotedProducts(List<Product> promotedProducts) {
+        this.promotedProducts = promotedProducts;
     }
 
     public List<Product> getProducts() {
@@ -198,7 +215,7 @@ public class ProductsBean implements Serializable {
         List<String> list = doGetImageUrls(product);
         if (list.size() > 0) {
             try {
-                return list.get(1);
+                return list.get(0);
             } catch (Exception ex) {
             }
         }
@@ -257,7 +274,7 @@ public class ProductsBean implements Serializable {
             if (size == 0) {
                 return prod;
             }
-            
+
             // Paging
             int from = 12 * (page - 1), to = 12 * page - 1;
             prod = prod.subList(from > size ? size - 1 : from, to > size ? size : to);

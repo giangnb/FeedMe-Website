@@ -162,7 +162,7 @@
                                             <div class="col-sm-8 cart-price">#{globalBean.doFormatPrice(cartBean.doGetTotal())}</div>
                                             <div class="col-sm-2"></div>
                                             <div class="col-sm-8">
-                                                <p:commandLink type="button" onclick="PF('dlgOrderProcess').show()"
+                                                <p:commandLink type="button" oncomplete="PF('dlgOrderProcess').show()"
                                                                class="btn btn-warning form-control hvr-grow-shadow hvr-rectangle-out" update="dlgOrderProcess"
                                                                style="font-family:'Source Sans Pro',Calibri,Tahoma,Arial,sans-serif;background-color:#ff7518">
                                                     &raquo; ĐẶT HÀNG &raquo;
@@ -184,7 +184,7 @@
             </div>
         </div>
 
-        <p:dialog header="Tiến hành Đặt hàng" modal="true" position="top" showEffect="fade" hideEffect="fade"
+        <p:dialog header="Tiến hành Đặt hàng" modal="true" position="top" showEffect="fade" hideEffect="fade" resizable="false"
                   widgetVar="dlgOrderProcess" draggable="false" minWidth="200" minHeight="150" width="560">
             <h:form id="dlgOrderProcess" class="cart-context-process">
                 <h3>Đơn hàng</h3>
@@ -237,11 +237,11 @@
                     </div>
                     <hr/>
                     <h4>Thông tin người mua hàng</h4>
-                    <span class="control-label">Họ tên người mua <sup class="glyphicon glyphicon-asterisk text-danger"></sup></span>
+                    <span class="control-label">Họ tên người mua <sup><span class="glyphicon glyphicon-asterisk text-danger"></span></sup></span>
                     <h:inputText id="cart-form-name" class="form-control" value="#{cartBean.name}" onkeydown="validateCart()">
                     </h:inputText>
 
-                    <span class="control-label">Điện thoại <sup class="glyphicon glyphicon-asterisk text-danger"></sup></span>
+                    <span class="control-label">Điện thoại <sup><span class="glyphicon glyphicon-asterisk text-danger"></span></sup></span>
                     <h:inputText id="cart-form-phone" class="form-control" value="#{cartBean.phone}" onkeydown="validateCart()">
                     </h:inputText>
 
@@ -249,19 +249,20 @@
                     <h:inputText id="cart-form-email" class="form-control" value="#{cartBean.email}"  onkeydown="validateCart()">
                     </h:inputText>
 
-                    <span class="control-label">Địa chỉ nhận hàng <sup class="glyphicon glyphicon-asterisk text-danger"></sup></span>
+                    <span class="control-label">Địa chỉ nhận hàng <sup><span class="glyphicon glyphicon-asterisk text-danger"></span></sup></span>
                     <h:inputTextarea id="cart-form-address" class="form-control" value="#{cartBean.address}" onkeydown="validateCart()">
                     </h:inputTextarea>
                     <sup>Vui lòng cung cấp địa chỉ đầy đủ và chính xác</sup>
                     <br/>
-                    <sup class="glyphicon glyphicon-asterisk text-danger"></sup> Tôi đã đọc và <p:selectBooleanButton id="cart-form-accept" value="#{cartBean.accept}" onLabel="Đồng ý" offLabel="Không đồng ý" onchange="validateCart()"/> 
+                    <sup><span class="glyphicon glyphicon-asterisk text-danger"></span></sup>&nbsp;
+                    Tôi đã đọc và <p:selectBooleanButton id="cart-form-accept" value="#{cartBean.accept}" onLabel="Đồng ý" offLabel="Không đồng ý" onchange="validateCart()"/> 
                     với <h:link target="_blank" value="Quy chế" outcome="term"/>, <h:link target="_blank" value="Chính sách Bảo mật" outcome="privacy"/> của #{globalBean.doGetProperty('store_name')}
                     <br/>
                     <p:captcha label="Captcha" required="true" requiredMessage="Bạn chưa kiểm tra Captcha"/>
                     <hr/>
                     <p class="text-warning" id="cart-form-incomplete">
                         Vui lòng điền đầy đủ thông tin phía trên<br/>
-                        Các mục có dấu <span class="text-danger">*</span> là mục bắt buộc
+                        Các mục có dấu <sup><span class="glyphicon glyphicon-asterisk text-danger"></span></sup> là mục bắt buộc
                     </p>
                     <p:commandLink id="cart-form-submit" value="ĐẶT HÀNG" class="btn btn-lg btn-warning" style="display:block"
                                    action="#{cartBean.doCreateOrder()}" onstart="PF('dlgOrderCreating').show();"
@@ -327,6 +328,26 @@
         <div id="bottom">
             <div class="main">
                 <ui:insert name="bottom">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h:link value="Trang chủ" outcome="index"/><br/>
+                            <h:link value="Hướng dẫn đặt hàng" outcome="delivery"/><br/>
+                            <h:link value="Giới thiệu #{globalBean.doGetProperty('store_name')}" outcome="introduction"/><br/>
+                            <h:link value="Theo dõi &amp; đánh giá đơn hàng" outcome="tracking"/>
+                        </div>
+                        <div class="col-sm-4">
+                            <h:link value="Quy định &amp; Điều kiện" outcome="index"/><br/>
+                            <h:link value="Chính sách Bảo mật thông tin" outcome="delivery"/><br/>
+                            <a onclick="alert('Thông tin liên hệ:\n#{globalBean.doGetProperty('contact_manager')}');">Người đại diện</a><br/>
+                        </div>
+                        <div class="col-sm-4">
+                            <h:outputText value="#{viewBean.doGetFullAddress()}" escape="false"/>
+                            <br/>
+                            <h:outputText value="#{globalBean.doGetProperty('store_phone')}" escape="false"/>
+                            <br/>
+                        </div>
+                    </div>
+                    <hr/>
                     Copyright &copy; 2016 by <strong>FeedMe Team</strong>
                 </ui:insert>
             </div>

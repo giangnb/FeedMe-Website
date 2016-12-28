@@ -5,23 +5,19 @@
  */
 package com.feedme.userbeans;
 
-import com.feedme.global.GlobalBean;
 import com.feedme.info.Information;
 import com.feedme.service.Employee;
 import com.feedme.service.OrderDetail;
 import com.feedme.service.OrderDetailDTO;
 import com.feedme.service.OrderStatus;
 import com.feedme.service.Product;
-import com.feedme.service.ProductDTO;
+import com.feedme.utils.Cart;
 import com.feedme.utils.Json;
 import com.feedme.ws.Methods;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -109,7 +105,7 @@ public class CartBean implements Serializable {
      * @return
      */
     public List<Product> doGetCart() {
-        return cart.getProducts();
+        return Arrays.asList(cart.getProducts());
     }
 
     /**
@@ -118,15 +114,15 @@ public class CartBean implements Serializable {
      * @return
      */
     public double doGetSubtotal() {
-        return cart.subTotal;
+        return cart.getSubTotal();
     }
 
     public double doGetTotal() {
-        return cart.total;
+        return cart.getTotal();
     }
 
     public double doGetDiscount() {
-        return cart.discount;
+        return cart.getDiscount();
     }
 
     /**
@@ -209,7 +205,7 @@ public class CartBean implements Serializable {
                 od.setCustomer(getCustomerJson());
                 od.setDiscount(doGetDiscount());
                 od.setEmployee(getDefaultEmployee());
-                od.setFoods(Json.SerializeObject(cart));
+                od.setFoods(cart.exportToJson());
                 od.setNote(getInitNote());
                 od.setOrdertime(orderDate + "");
                 od.setRating(Double.parseDouble("0"));
@@ -275,7 +271,7 @@ public class CartBean implements Serializable {
         if (name.length() <= 0 || name.length() > 64) {
             return false;
         }
-        if (!phone.matches("([(]?[\\+]?[0-9]+[)]?)?[\\s]?[0-9]{4,}")) {
+        if (!phone.matches("([(]?[\\+]?[0-9]+[)]?)?[0-9]{4,}")) {
             return false;
         }
         if (email.length() > 0 && !email.matches("[a-z0-9-_.]+[@]([a-z0-9-]+[.])+[a-z]+")) {
@@ -285,75 +281,5 @@ public class CartBean implements Serializable {
             return false;
         }
         return accept;
-    }
-
-    /**
-     * Class stores Products and its quantity
-     */
-    public class Cart extends HashMap<Product, Integer> implements Serializable {
-
-        public double subTotal = 0, total = 0, discount = 0;
-
-        public void put(Product product) {
-            Integer val = null;
-            for (Product p : keySet()) {
-                if (p.getId().equals(product.getId())) {
-                    val = get(p);
-                    put(p, val + 1);
-                    break;
-                }
-            }
-            if (val == null) {
-                put(product, 1);
-            }
-            subTotal += product.getPrice();
-            total += product.getPrice();
-            double dis = GlobalBean.processDiscount(product.getPrice(), product.getPromotion());
-            discount += dis;
-            total -= dis;
-        }
-
-        public void pop(Product product) {
-            Integer value = get(product);
-            if (value == null) {
-                return;
-            }
-            if (value > 1) {
-                put(product, value - 1);
-            } else {
-                remove(product);
-            }
-            subTotal -= product.getPrice();
-            total -= product.getPrice();
-            double dis = GlobalBean.processDiscount(product.getPrice(), product.getPromotion());
-            discount -= dis;
-            total += dis;
-        }
-
-        public void removeProduct(Product product) {
-            for (int i = 0; i < get(product); i++) {
-                pop(product);
-            }
-        }
-
-        public void importProductsList(List<Product> list) {
-            for (Product p : list) {
-                put(p);
-            }
-        }
-
-        public List<Product> exportProductsList() {
-            ArrayList<Product> list = new ArrayList<>();
-            for (Product p : keySet()) {
-                for (int i = 0; i < get(p); i++) {
-                    list.add(p);
-                }
-            }
-            return list;
-        }
-
-        public List<Product> getProducts() {
-            return new ArrayList<>(keySet());
-        }
     }
 }

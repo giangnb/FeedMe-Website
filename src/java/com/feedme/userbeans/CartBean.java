@@ -5,6 +5,7 @@
  */
 package com.feedme.userbeans;
 
+import com.feedme.global.GlobalBean;
 import com.feedme.info.Information;
 import com.feedme.service.Employee;
 import com.feedme.service.OrderDetail;
@@ -194,6 +195,9 @@ public class CartBean implements Serializable {
         orderDate = -1;
         FacesContext ctx = FacesContext.getCurrentInstance();
         RequestContext req = RequestContext.getCurrentInstance();
+        if (!GlobalBean.checkOrderable()) {
+            ctx.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Không thể đặt hàng", "Chúng tôi đã dừng tiếp nhận đơn hàng, vui lòng quay lại sau. Rất mong Quý khách thông cảm!"));
+        }
         if (!validateData()) {
             ctx.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Tạo đơn hàng", "Vui lòng nhập đầy đủ các thông tin cần thiết"));
         } else {

@@ -129,7 +129,7 @@
                                 GIỎ HÀNG
                             </h3>
                             <div id="cart-float">
-                                <h:form id="selectedCart" class="cart-context">
+                                <h:form id="selectedCart" class="cart-context" rendered="#{globalBean.doCheckOrderable()}">
                                     <ui:repeat value="#{cartBean.doGetCart()}" var="item" rendered="#{cartBean.doGetCart().size()>0}">
                                         <div class="cart-item">
                                             <div class="row">
@@ -156,7 +156,7 @@
                                     </ui:repeat>
                                 </h:form>
                                 <div class="row cart-total">
-                                    <h:form id="selectedCartTotal">
+                                    <h:form id="selectedCartTotal" rendered="#{globalBean.doCheckOrderable()}">
                                         <p:fragment  rendered="#{cartBean.doGetCart().size()>0}">
                                             <div class="col-sm-4">Tạm tính</div>
                                             <div class="col-sm-8 cart-price">#{globalBean.doFormatPrice(cartBean.doGetTotal())}</div>
@@ -171,9 +171,15 @@
                                             <div class="col-sm-2"></div>
                                         </p:fragment>
                                     </h:form>
-                                    <p:fragment id="selectedCartEmpty">
+                                    <p:fragment id="selectedCartEmpty" rendered="#{globalBean.doCheckOrderable()}">
                                         <div class="col-sm-12">
                                             <h:outputText rendered="#{!(cartBean.doGetCart().size()>0)}" value="#{globalBean.doGetProperty('context_empty_cart')}" escape="false"/>
+                                        </div>
+                                    </p:fragment>
+                                    <p:fragment rendered="#{!globalBean.doCheckOrderable()}">
+                                        <div class="col-sm-12">
+                                            <p class="text-center"><h:outputText value="#{viewBean.doGetOpenTimeContext()}" escape="false"/></p>
+                                            <h:outputText value="#{globalBean.doGetProperty('context_closed')}" escape="false"/><br/>
                                         </div>
                                     </p:fragment>
                                 </div>
@@ -264,7 +270,15 @@
                         Vui lòng điền đầy đủ thông tin phía trên<br/>
                         Các mục có dấu <sup><span class="glyphicon glyphicon-asterisk text-danger"></span></sup> là mục bắt buộc
                     </p>
-                    <p:commandLink id="cart-form-submit" value="ĐẶT HÀNG" class="btn btn-lg btn-warning" style="display:block"
+                    <p:fragment rendered="#{!globalBean.doCheckOrderable()}">
+                        <div class="text-danger">
+                            <strong>
+                                <p class="text-center"><h:outputText value="#{viewBean.doGetOpenTimeContext()}" escape="false"/></p>
+                                <h:outputText value="#{globalBean.doGetProperty('context_closed')}" escape="false"/><br/>
+                            </strong>
+                        </div>
+                    </p:fragment>
+                    <p:commandLink rendered="#{globalBean.doCheckOrderable()}" id="cart-form-submit" value="ĐẶT HÀNG" class="btn btn-lg btn-warning" style="display:block"
                                    action="#{cartBean.doCreateOrder()}" onstart="PF('dlgOrderCreating').show();"
                                    onerror="PF('dlgOrderCreating').hide()" update="selectedCart,selectedCartTotal,selectedCartEmpty,orderSuccess,alertBox,dlgOrderProcess"
                                    oncomplete="PF('dlgOrderCreating').hide();PF('dlgOrderProcess').hide();PF('dlgOrderSuccess').show();">
@@ -276,7 +290,7 @@
 
         <p:dialog widgetVar="dlgOrderCreating" modal="false" showHeader="false" resizable="false" 
                   draggable="false" closable="false" style="background:#b68903;border:none;box-shadow: none;">
-            <h2 style="color:#333;font-weight:bold;padding-top:100px" class="text-center">
+            <h2 style="color:#333;font-weight:bold;padding-top:120px" class="text-center">
                 Đơn hàng đang được tạo...
             </h2>
             <p class="text-center" style="color:#333;font-weight:bold">Vui lòng không chuyển trang hoặc tắt trình duyệt</p>
@@ -286,12 +300,24 @@
                   draggable="false" header="Đặt hàng" minWidth="200" minHeight="150" width="450">
             <h:form id="orderSuccess" class="text-center">
                 <p:fragment rendered="#{cartBean.doGetOrderTrackingCode()==null}">
-                    <span class="glyphicon glyphicon-warning-sign">&nbsp;</span>
-                    <strong>
-                        Bạn chưa điền đầy đủ thông tin đơn hàng!
-                    </strong>
-                    <hr/>
-                    <button type="button" class="btn btn-lg btn-warning" onclick="PF('dlgOrderSuccess').hide();PF('dlgOrderProcess').show();">Kiểm tra lại</button>
+                    <p:fragment rendered="#{!globalBean.doCheckOrderable()}">
+                        <div class="text-danger">
+                            <strong>
+                                <p class="text-center"><h:outputText value="#{viewBean.doGetOpenTimeContext()}" escape="false"/></p>
+                                <h:outputText value="#{globalBean.doGetProperty('context_closed')}" escape="false"/><br/>
+                            </strong>
+                        </div>
+                        <hr/>
+                        <button type="button" class="btn btn-lg btn-warning" onclick="PF('dlgOrderSuccess').hide();PF('dlgOrderProcess').hide();">Quay lại</button>
+                    </p:fragment>
+                    <p:fragment rendered="#{globalBean.doCheckOrderable()}">
+                        <span class="glyphicon glyphicon-warning-sign">&nbsp;</span>
+                        <strong>
+                            Bạn chưa điền đầy đủ thông tin đơn hàng!
+                        </strong>
+                        <hr/>
+                        <button type="button" class="btn btn-lg btn-warning" onclick="PF('dlgOrderSuccess').hide();PF('dlgOrderProcess').show();">Kiểm tra lại</button>
+                    </p:fragment>
                 </p:fragment>
                 <p:fragment rendered="#{cartBean.doGetOrderTrackingCode()!=null}">
                     <h3>Đặt hàng thành công!</h3>
@@ -336,15 +362,16 @@
                             <h:link value="Theo dõi &amp; đánh giá đơn hàng" outcome="tracking"/>
                         </div>
                         <div class="col-sm-4">
-                            <h:link value="Quy định &amp; Điều kiện" outcome="index"/><br/>
-                            <h:link value="Chính sách Bảo mật thông tin" outcome="delivery"/><br/>
+                            <h:link value="Quy định &amp; Điều kiện" outcome="term"/><br/>
+                            <h:link value="Chính sách Bảo mật thông tin" outcome="privacy"/><br/>
                             <a onclick="alert('Thông tin liên hệ:\n#{globalBean.doGetProperty('contact_manager')}');">Người đại diện</a><br/>
                         </div>
                         <div class="col-sm-4">
                             <h:outputText value="#{viewBean.doGetFullAddress()}" escape="false"/>
                             <br/>
-                            <h:outputText value="#{globalBean.doGetProperty('store_phone')}" escape="false"/>
-                            <br/>
+                            <h:outputText value="Hotline: #{globalBean.doGetProperty('store_phone')}" escape="false"/>
+                            <br/><br/>
+                            <h:outputText value="#{viewBean.doGetOpenTimeContext()}" escape="false"/>
                         </div>
                     </div>
                     <hr/>

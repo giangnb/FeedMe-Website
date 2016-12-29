@@ -19,8 +19,8 @@
             </ui:define>
 
             <ui:define name="top">
-                    <h3>Những gì có mặt tại <strong>#{globalBean.doGetProperty('store_name')}</strong></h3>
-                
+                <h3>Những gì có mặt tại <strong>#{globalBean.doGetProperty('store_name')}</strong></h3>
+
             </ui:define>
 
             <ui:define name="content">
@@ -57,7 +57,7 @@
                                     <p:commandLink action="#{cartBean.doAddToCart(item)}"
                                                    update="selectedCart,selectedCartTotal,selectedCartEmpty"
                                                    class="btn product-cart-button hvr-sweep-to-top"
-                                                   value="Thêm vào giỏ">
+                                                   value="Thêm vào giỏ" rendered="#{globalBean.doCheckOrderable()}">
                                     </p:commandLink>
                                 </div>
                             </div>
@@ -112,7 +112,8 @@
                                         <h:outputText class="product-price" style="font-size:large;color:#b68903;"
                                                       value="#{globalBean.doFormatPrice(item.price-productsBean.doGetProductDiscount(productsBean.selectedProduct))}"/>
                                         <br/><br/>
-                                        <p:commandLink style="display:block;color:#fff;" action="#{cartBean.doAddToCart(productsBean.selectedProduct)}"
+                                        <p:commandLink rendered="#{globalBean.doCheckOrderable()}" style="display:block;color:#fff;"
+                                                       action="#{cartBean.doAddToCart(productsBean.selectedProduct)}"
                                                        update="selectedCart,selectedCartTotal,selectedCartEmpty"
                                                        class="btn btn-warning product-cart-button hvr-outline-in"
                                                        value="Thêm vào giỏ" oncomplete="$('#cart-added-alert').removeClass('hidden');">
@@ -125,7 +126,7 @@
                                 <br/>
                                 <p><h:outputText value="#{productsBean.selectedProduct.info}" escape="false"/></p>
                                 <br/>
-                                <p:commandLink style="display:block;color:#fff;"
+                                <p:commandLink rendered="#{globalBean.doCheckOrderable()}" style="display:block;color:#fff;"
                                                action="#{cartBean.doAddToCart(productsBean.selectedProduct)}"
                                                update="selectedCart,selectedCartTotal,selectedCartEmpty"
                                                class="btn btn-warning hvr-outline-in"

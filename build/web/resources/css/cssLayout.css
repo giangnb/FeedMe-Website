@@ -163,6 +163,7 @@ body {
     margin: 0px;
     width: 100%;
     margin-left: 0px;
+    margin-top: 12px;
     overflow: hidden;
     position: relative;
 }
@@ -189,6 +190,7 @@ body {
 }
 #bottom .col-sm-4:last-child {
     border-right: none;
+    color:#333;
 }
 
 #left {

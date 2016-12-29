@@ -91,7 +91,7 @@ public class OrderBean implements Serializable {
     }
 
     public void setComment(String comment) {
-        this.comment = comment;
+        this.comment = comment.replace("\n", "<br/>");
     }
 
     public int getRating() {
@@ -249,6 +249,8 @@ public class OrderBean implements Serializable {
             Information note = Json.DeserializeObject(order.getNote(), Information.class);
             note.put(new Date().getTime()+"", "Khách hàng đã gửi nhận xét ("+rating+" sao)");
             order.setNote(note.toJson());
+            order.setComment(comment);
+            order.setRating(Double.parseDouble(rating+""));
             OrderDetailDTO dto = new OrderDetailDTO();
             dto.setOrderDetail(order);
             boolean result = Methods.updateOrder(dto);

@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ApplicationScoped;
@@ -41,12 +43,12 @@ public class GlobalBean {
     public GlobalBean() {
         javax.faces.context.FacesContext.getCurrentInstance().getViewRoot().setLocale(new java.util.Locale("vi"));
     }
-    
+
     @PostConstruct
     private void applicationInitialization() {
         startTimer();
     }
-    
+
     public String doFormatPrice(double price) {
         String result = doFormatNumber(price);
         try {
@@ -67,6 +69,11 @@ public class GlobalBean {
 
     public String doFormatDate(Date d) {
         return date.format(d);
+    }
+
+    public String doFormatDateTime(Date d) {
+        SimpleDateFormat fmt = new SimpleDateFormat(PROP.get("format_date") + " " + PROP.get("format_time"));
+        return fmt.format(d);
     }
 
     public Double doParsePrice(String price) {
@@ -103,14 +110,15 @@ public class GlobalBean {
     public String doGetProperty(String key) {
         try {
             return PROP.get(key);
-        } catch(Exception ex) {}
+        } catch (Exception ex) {
+        }
         return "";
     }
-    
+
     public static String getPropertyValue(String key) {
         return PROP.get(key);
     }
-    
+
     public static List<Property> getProperties() {
         List<Property> list = new java.util.ArrayList<>();
         Property p = new Property();
@@ -159,22 +167,57 @@ public class GlobalBean {
         };
         TIMER.schedule(task, 0, 60 * 1000);
     }
-    
+
     public static double processDiscount(double price, String discount) {
         double result = 0, dis;
         if (discount.contains("%")) {
             dis = Double.parseDouble(discount.replace("%", ""));
-            if (dis<=100) {
-                result = (double)(price*dis/100);
+            if (dis <= 100) {
+                result = (double) (price * dis / 100);
             }
         } else {
             try {
                 dis = Double.parseDouble(discount);
-                if (dis<=price) {
+                if (dis <= price) {
                     result = dis;
                 }
-            } catch(NumberFormatException ex) {}
+            } catch (NumberFormatException ex) {
+            }
         }
         return result;
+    }
+
+    public boolean doCheckOrderable() {
+        if (PROP.get("system_opened").equals("0")) {
+            return false;
+        }
+        try {
+            SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
+            int current = Integer.parseInt(fmt.format(new Date()).replace(":", ""));
+            int open, close;
+            open = Integer.parseInt(PROP.get("store_open").replace(":", ""));
+            close = Integer.parseInt(PROP.get("store_close").replace(":", ""));
+            return open <= current && current <= close;
+        } catch (NumberFormatException ex) {
+            // ignore
+        }
+        return true;
+    }
+    
+    public static boolean checkOrderable() {
+        if (PROP.get("system_opened").equals("0")) {
+            return false;
+        }
+        try {
+            SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
+            int current = Integer.parseInt(fmt.format(new Date()).replace(":", ""));
+            int open, close;
+            open = Integer.parseInt(PROP.get("store_open").replace(":", ""));
+            close = Integer.parseInt(PROP.get("store_close").replace(":", ""));
+            return open <= current && current <= close;
+        } catch (NumberFormatException ex) {
+            // ignore
+        }
+        return true;
     }
 }

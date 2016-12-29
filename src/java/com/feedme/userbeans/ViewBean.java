@@ -7,6 +7,11 @@ package com.feedme.userbeans;
 
 import com.feedme.global.GlobalBean;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
@@ -16,7 +21,7 @@ import javax.faces.bean.ViewScoped;
  */
 @ManagedBean
 @ViewScoped
-public class ViewBean implements Serializable{
+public class ViewBean implements Serializable {
 
     private String currentPage;
 
@@ -80,7 +85,7 @@ public class ViewBean implements Serializable{
             return "";
         }
     }
-    
+
     public String doGetFavicoUrl() {
         String logo = GlobalBean.getPropertyValue("store_favico");
         if (logo != null) {
@@ -90,5 +95,36 @@ public class ViewBean implements Serializable{
             return logo;
         }
         return "";
+    }
+
+    public String doGetOpenTimeContext() {
+        if (GlobalBean.getPropertyValue("system_opened").equals("0")) {
+            return "Chúng tôi tạm thời không nhận các đơn đặt hàng";
+        }
+
+        String fromStr, toStr;
+        fromStr = GlobalBean.getPropertyValue("store_open");
+        toStr = GlobalBean.getPropertyValue("store_close");
+        if (fromStr.equals(toStr)) {
+            return "Chúng tôi tạm thời không nhận các đơn đặt hàng";
+        }
+
+        Date from, to;
+        SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
+        try {
+            from = fmt.parse(fromStr);
+            to = fmt.parse(toStr);
+            fmt = new SimpleDateFormat(GlobalBean.getPropertyValue("format_time"));
+        } catch (ParseException ex) {
+            return "";
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("Thời gian nhận đơn hàng<br/>")
+                .append("Từ ")
+                .append(fmt.format(from))
+                .append(" đến ")
+                .append(fmt.format(to));
+        return sb.toString();
     }
 }

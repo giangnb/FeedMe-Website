@@ -85,25 +85,25 @@
                         </div>
                         <hr/>
                         
-                        <div class="well">
-                            <h4>Quá trình xử lý</h4>
-                            <h:outputText value="#{orderBean.doGetTraceContext()}" escape="false"/>
-                        </div>
-                        
                         <p:fragment rendered="#{orderBean.doCheckRatingAvailable()}">
                             <hr/>
                             <h4><strong>Đánh giá chất lượng dịch vụ</strong></h4>
-                            <blockquote><p><h:outputText value="#{globalBean.doGetProperty('context_review')}" escape="false"/></p></blockquote>
+                            <blockquote><small><h:outputText value="#{globalBean.doGetProperty('context_review')}" escape="false"/></small></blockquote>
                             <span class="control-label">Nhận xét <sup><span class="glyphicon glyphicon-asterisk"></span></sup></span>
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             <p:rating value="#{orderBean.rating}" stars="5" required="true" requiredMessage="Quý khách cần phải chọn đánh giá"/>
                             <br/>
                             <span class="control-label">Ý kiến &amp; góp ý</span>
-                            <h:inputText class="form-control" value="#{orderBean.comment}" required="false"/>
+                            <h:inputTextarea class="form-control" value="#{orderBean.comment}" required="false"/>
                             <br/>
                             <p:commandLink class="btn btn-warning" value="Gửi đánh giá"
                                            update="trackingDetail" action="#{orderBean.doSubmitRating()}"/>
                         </p:fragment>
+                        
+                        <div class="well">
+                            <h4>Quá trình xử lý</h4>
+                            <h:outputText value="#{orderBean.doGetTraceContext()}" escape="false"/>
+                        </div>
 
                         <p:dialog header="Sản phẩm trong Đơn hàng" modal="true" position="top" showEffect="fade" hideEffect="fade"
                                   widgetVar="dlgTrackOrder" draggable="false" minWidth="200" minHeight="150" width="560">

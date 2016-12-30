@@ -87,14 +87,16 @@
                 </h:form>
 
                 <p:dialog header="Thông tin sản phẩm" widgetVar="dlgProduct" modal="true"
-                          showEffect="fade" hideEffect="fade" minHeight="250" minWidth="250"
-                          height="250" width="550" draggable="false">
+                          showEffect="fade" hideEffect="fade" minHeight="250" minWidth="250" fitViewport="true"
+                          height="250" width="550" draggable="true" position="top" closeOnEscape="true">
                     <h:form id="product">
                         <p:outputPanel id="productDetail">
                             <p:panelGrid rendered="#{not empty productsBean.selectedProduct}" columnClasses="label,value">
                                 <div class="row">
                                     <div class="col-sm-7" style="text-align:center;">
-                                        <img id="cart-image-carousel" src="#{productsBean.doGetFirstImageUrl(item)}"/>
+                                        <div class="text-center">
+                                            <img id="cart-image-carousel" class="img-responsive" src="#{productsBean.doGetFirstImageUrl(item)}"/>
+                                        </div>
                                         <br/>
                                         <div class="row">
                                             <ui:repeat value="#{productsBean.doGetImageUrls(productsBean.selectedProduct)}" var="img">

@@ -276,7 +276,7 @@ public class ProductsBean implements Serializable {
             }
 
             // Paging
-            int from = 12 * (page - 1), to = 12 * page - 1;
+            int from = 12 * (page - 1), to = 12 * page;
             prod = prod.subList(from > size ? size - 1 : from, to > size ? size : to);
             productListSize = prod.size();
             if (productListSize <= 0) {

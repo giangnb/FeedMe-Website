@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -46,6 +47,7 @@ public class GlobalBean {
 
     @PostConstruct
     private void applicationInitialization() {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+7:00"));
         startTimer();
     }
 

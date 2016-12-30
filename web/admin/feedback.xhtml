@@ -1,0 +1,377 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                Phản hồi của khách hàng
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="salesForm">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <span class="control-label">Thời gian bắt đầu</span>
+                            <p:calendar value="#{orderManaBean.fromTime}" mask="true"
+                                        pattern="dd/MM/yyyy HH:mm"
+                                        required="true" requiredMessage="Cần chọn thời gian bắt đầu"/>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="control-label">Thời gian kết thúc</span>
+                            <p:calendar value="#{orderManaBean.toTime}" mask="true"
+                                        pattern="dd/MM/yyyy HH:mm"
+                                        required="true" requiredMessage="Cần chọn thời gian kết thúc"/>
+                        </div>
+                        <div class="col-sm-4">
+                            <p:commandLink class="btn btn-warning" value="Tìm kiếm" ajax="true"
+                                           update="salesForm,alertBox" action="#{orderManaBean.doGetOrderDetail()}"/>
+                        </div>
+                    </div>
+                    <hr/>
+
+                    <p:fragment rendered="#{orderManaBean.orderDetailList!=null}">
+                        <p:tabView dynamic="true" cache="true">
+                            <p:tab title="Tổng hợp">
+                                <div style="text-align:center;">
+                                    <h4><strong>#{orderManaBean.doGetRatingsCount()}</strong>/#{orderManaBean.orderDetailList.size()} đơn hàng được đánh giá</h4>
+                                    Điểm đánh giá trung bình: <strong>#{orderManaBean.ratingPercentage/20}</strong><br/>
+                                    <p:knob foregroundColor="#b68903" backgroundColor="#333" 
+                                            labelTemplate="{value}%" value="#{orderManaBean.ratingPercentage}"
+                                            disabled="true" max="100" min="0" />
+                                </div>
+                            </p:tab>
+                            <p:tab title="Đánh giá 1*">
+                                <p:dataTable var="item" value="#{orderManaBean.doGetOrderDetailListByRating(1)}"
+                                             paginator="true" rows="25" emptyMessage="Không có đơn hàng nào"
+                                             paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="25,50,100">
+                                    <p:column style="width:32px">
+                                        <p:rowToggler />
+                                    </p:column>
+                                    <p:column headerText="#" width="10%">
+                                        <h:outputText value="#{item.id}" />
+                                    </p:column>
+                                    <p:column headerText="Thời gian">
+                                        <h:outputText value="#{globalBean.doFormatDateTime(orderManaBean.doGetOrderTime(item))}" />
+                                    </p:column>
+                                    <p:column headerText="Nhân viên">
+                                        <h:outputText value="#{item.employee.username}" />
+                                    </p:column>
+                                    <p:column headerText="Thành tiền">
+                                        <h:outputText value="#{globalBean.doFormatPrice(orderManaBean.doGetOrderPrice(item))}" />
+                                    </p:column>
+                                    <p:column headerText="SL" width="10%">
+                                        <h:outputText value="#{orderManaBean.doGetOrderQuantity(item)}" />
+                                    </p:column>
+                                    <p:column headerText="Trạng thái">
+                                        <h:outputText value="#{item.status.name}" />
+                                    </p:column>
+                                    <p:column headerText="Đánh giá">
+                                        <h:outputText value="#{item.rating}" />
+                                    </p:column>
+
+                                    <p:rowExpansion>
+                                        <div class="row">
+                                            <h:outputText class="col-md-3" value="Mã vận đơn:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetTrackingCode(item.ordertime)}" />
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Trước giảm giá:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(item.subtotal)}"/>
+
+                                            <h:outputText class="col-md-3" value="Giảm giá SP:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(orderManaBean.doGetOrderDiscount(item))}" />
+
+                                            <h:outputText class="col-md-3" value="Giảm giá HĐ:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(item.discount - orderManaBean.doGetOrderDiscount(item))}" />
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Khách hàng" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetCustomerContext(item)}" escape="false"/>
+
+                                            <p:fragment rendered="#{item.rating>0}">
+                                                <h:outputText class="col-md-3" value="Đánh giá" />
+                                                <h:outputText class="col-md-9" value="Điểm: #{item.rating} | Nhận xét: #{item.comment}" escape="false"/>
+                                            </p:fragment>
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Sản phẩm:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetProductsContext(item)}" escape="false"/>
+
+                                            <h:outputText class="col-md-3" value="Lưu vết:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetTraceContext(item)}" escape="false"/>
+                                        </div>
+                                    </p:rowExpansion>
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab title="Đánh giá 2*">
+                                <p:dataTable var="item" value="#{orderManaBean.doGetOrderDetailListByRating(2)}"
+                                             paginator="true" rows="25" emptyMessage="Không có đơn hàng nào"
+                                             paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="25,50,100">
+                                    <p:column style="width:32px">
+                                        <p:rowToggler />
+                                    </p:column>
+                                    <p:column headerText="#" width="10%">
+                                        <h:outputText value="#{item.id}" />
+                                    </p:column>
+                                    <p:column headerText="Thời gian">
+                                        <h:outputText value="#{globalBean.doFormatDateTime(orderManaBean.doGetOrderTime(item))}" />
+                                    </p:column>
+                                    <p:column headerText="Nhân viên">
+                                        <h:outputText value="#{item.employee.username}" />
+                                    </p:column>
+                                    <p:column headerText="Thành tiền">
+                                        <h:outputText value="#{globalBean.doFormatPrice(orderManaBean.doGetOrderPrice(item))}" />
+                                    </p:column>
+                                    <p:column headerText="SL" width="10%">
+                                        <h:outputText value="#{orderManaBean.doGetOrderQuantity(item)}" />
+                                    </p:column>
+                                    <p:column headerText="Trạng thái">
+                                        <h:outputText value="#{item.status.name}" />
+                                    </p:column>
+                                    <p:column headerText="Đánh giá">
+                                        <h:outputText value="#{item.rating}" />
+                                    </p:column>
+
+                                    <p:rowExpansion>
+                                        <div class="row">
+                                            <h:outputText class="col-md-3" value="Mã vận đơn:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetTrackingCode(item.ordertime)}" />
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Trước giảm giá:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(item.subtotal)}"/>
+
+                                            <h:outputText class="col-md-3" value="Giảm giá SP:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(orderManaBean.doGetOrderDiscount(item))}" />
+
+                                            <h:outputText class="col-md-3" value="Giảm giá HĐ:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(item.discount - orderManaBean.doGetOrderDiscount(item))}" />
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Khách hàng" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetCustomerContext(item)}" escape="false"/>
+
+                                            <p:fragment rendered="#{item.rating>0}">
+                                                <h:outputText class="col-md-3" value="Đánh giá" />
+                                                <h:outputText class="col-md-9" value="Điểm: #{item.rating} | Nhận xét: #{item.comment}" escape="false"/>
+                                            </p:fragment>
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Sản phẩm:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetProductsContext(item)}" escape="false"/>
+
+                                            <h:outputText class="col-md-3" value="Lưu vết:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetTraceContext(item)}" escape="false"/>
+                                        </div>
+                                    </p:rowExpansion>
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab title="Đánh giá 3*">
+                                <p:dataTable var="item" value="#{orderManaBean.doGetOrderDetailListByRating(3)}"
+                                             paginator="true" rows="25" emptyMessage="Không có đơn hàng nào"
+                                             paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="25,50,100">
+                                    <p:column style="width:32px">
+                                        <p:rowToggler />
+                                    </p:column>
+                                    <p:column headerText="#" width="10%">
+                                        <h:outputText value="#{item.id}" />
+                                    </p:column>
+                                    <p:column headerText="Thời gian">
+                                        <h:outputText value="#{globalBean.doFormatDateTime(orderManaBean.doGetOrderTime(item))}" />
+                                    </p:column>
+                                    <p:column headerText="Nhân viên">
+                                        <h:outputText value="#{item.employee.username}" />
+                                    </p:column>
+                                    <p:column headerText="Thành tiền">
+                                        <h:outputText value="#{globalBean.doFormatPrice(orderManaBean.doGetOrderPrice(item))}" />
+                                    </p:column>
+                                    <p:column headerText="SL" width="10%">
+                                        <h:outputText value="#{orderManaBean.doGetOrderQuantity(item)}" />
+                                    </p:column>
+                                    <p:column headerText="Trạng thái">
+                                        <h:outputText value="#{item.status.name}" />
+                                    </p:column>
+                                    <p:column headerText="Đánh giá">
+                                        <h:outputText value="#{item.rating}" />
+                                    </p:column>
+
+                                    <p:rowExpansion>
+                                        <div class="row">
+                                            <h:outputText class="col-md-3" value="Mã vận đơn:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetTrackingCode(item.ordertime)}" />
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Trước giảm giá:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(item.subtotal)}"/>
+
+                                            <h:outputText class="col-md-3" value="Giảm giá SP:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(orderManaBean.doGetOrderDiscount(item))}" />
+
+                                            <h:outputText class="col-md-3" value="Giảm giá HĐ:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(item.discount - orderManaBean.doGetOrderDiscount(item))}" />
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Khách hàng" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetCustomerContext(item)}" escape="false"/>
+
+                                            <p:fragment rendered="#{item.rating>0}">
+                                                <h:outputText class="col-md-3" value="Đánh giá" />
+                                                <h:outputText class="col-md-9" value="Điểm: #{item.rating} | Nhận xét: #{item.comment}" escape="false"/>
+                                            </p:fragment>
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Sản phẩm:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetProductsContext(item)}" escape="false"/>
+
+                                            <h:outputText class="col-md-3" value="Lưu vết:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetTraceContext(item)}" escape="false"/>
+                                        </div>
+                                    </p:rowExpansion>
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab title="Đánh giá 4*">
+                                <p:dataTable var="item" value="#{orderManaBean.doGetOrderDetailListByRating(4)}"
+                                             paginator="true" rows="25" emptyMessage="Không có đơn hàng nào"
+                                             paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="25,50,100">
+                                    <p:column style="width:32px">
+                                        <p:rowToggler />
+                                    </p:column>
+                                    <p:column headerText="#" width="10%">
+                                        <h:outputText value="#{item.id}" />
+                                    </p:column>
+                                    <p:column headerText="Thời gian">
+                                        <h:outputText value="#{globalBean.doFormatDateTime(orderManaBean.doGetOrderTime(item))}" />
+                                    </p:column>
+                                    <p:column headerText="Nhân viên">
+                                        <h:outputText value="#{item.employee.username}" />
+                                    </p:column>
+                                    <p:column headerText="Thành tiền">
+                                        <h:outputText value="#{globalBean.doFormatPrice(orderManaBean.doGetOrderPrice(item))}" />
+                                    </p:column>
+                                    <p:column headerText="SL" width="10%">
+                                        <h:outputText value="#{orderManaBean.doGetOrderQuantity(item)}" />
+                                    </p:column>
+                                    <p:column headerText="Trạng thái">
+                                        <h:outputText value="#{item.status.name}" />
+                                    </p:column>
+                                    <p:column headerText="Đánh giá">
+                                        <h:outputText value="#{item.rating}" />
+                                    </p:column>
+
+                                    <p:rowExpansion>
+                                        <div class="row">
+                                            <h:outputText class="col-md-3" value="Mã vận đơn:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetTrackingCode(item.ordertime)}" />
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Trước giảm giá:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(item.subtotal)}"/>
+
+                                            <h:outputText class="col-md-3" value="Giảm giá SP:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(orderManaBean.doGetOrderDiscount(item))}" />
+
+                                            <h:outputText class="col-md-3" value="Giảm giá HĐ:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(item.discount - orderManaBean.doGetOrderDiscount(item))}" />
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Khách hàng" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetCustomerContext(item)}" escape="false"/>
+
+                                            <p:fragment rendered="#{item.rating>0}">
+                                                <h:outputText class="col-md-3" value="Đánh giá" />
+                                                <h:outputText class="col-md-9" value="Điểm: #{item.rating} | Nhận xét: #{item.comment}" escape="false"/>
+                                            </p:fragment>
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Sản phẩm:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetProductsContext(item)}" escape="false"/>
+
+                                            <h:outputText class="col-md-3" value="Lưu vết:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetTraceContext(item)}" escape="false"/>
+                                        </div>
+                                    </p:rowExpansion>
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab title="Đánh giá 5*">
+                                <p:dataTable var="item" value="#{orderManaBean.doGetOrderDetailListByRating(5)}"
+                                             paginator="true" rows="25" emptyMessage="Không có đơn hàng nào"
+                                             paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="25,50,100">
+                                    <p:column style="width:32px">
+                                        <p:rowToggler />
+                                    </p:column>
+                                    <p:column headerText="#" width="10%">
+                                        <h:outputText value="#{item.id}" />
+                                    </p:column>
+                                    <p:column headerText="Thời gian">
+                                        <h:outputText value="#{globalBean.doFormatDateTime(orderManaBean.doGetOrderTime(item))}" />
+                                    </p:column>
+                                    <p:column headerText="Nhân viên">
+                                        <h:outputText value="#{item.employee.username}" />
+                                    </p:column>
+                                    <p:column headerText="Thành tiền">
+                                        <h:outputText value="#{globalBean.doFormatPrice(orderManaBean.doGetOrderPrice(item))}" />
+                                    </p:column>
+                                    <p:column headerText="SL" width="10%">
+                                        <h:outputText value="#{orderManaBean.doGetOrderQuantity(item)}" />
+                                    </p:column>
+                                    <p:column headerText="Trạng thái">
+                                        <h:outputText value="#{item.status.name}" />
+                                    </p:column>
+                                    <p:column headerText="Đánh giá">
+                                        <h:outputText value="#{item.rating}" />
+                                    </p:column>
+
+                                    <p:rowExpansion>
+                                        <div class="row">
+                                            <h:outputText class="col-md-3" value="Mã vận đơn:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetTrackingCode(item.ordertime)}" />
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Trước giảm giá:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(item.subtotal)}"/>
+
+                                            <h:outputText class="col-md-3" value="Giảm giá SP:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(orderManaBean.doGetOrderDiscount(item))}" />
+
+                                            <h:outputText class="col-md-3" value="Giảm giá HĐ:" />
+                                            <h:outputText class="col-md-9" value="#{globalBean.doFormatPrice(item.discount - orderManaBean.doGetOrderDiscount(item))}" />
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Khách hàng" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetCustomerContext(item)}" escape="false"/>
+
+                                            <p:fragment rendered="#{item.rating>0}">
+                                                <h:outputText class="col-md-3" value="Đánh giá" />
+                                                <h:outputText class="col-md-9" value="Điểm: #{item.rating} | Nhận xét: #{item.comment}" escape="false"/>
+                                            </p:fragment>
+                                            <hr class="col-md-12"/>
+
+                                            <h:outputText class="col-md-3" value="Sản phẩm:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetProductsContext(item)}" escape="false"/>
+
+                                            <h:outputText class="col-md-3" value="Lưu vết:" />
+                                            <h:outputText class="col-md-9" value="#{orderManaBean.doGetTraceContext(item)}" escape="false"/>
+                                        </div>
+                                    </p:rowExpansion>
+                                </p:dataTable>
+                            </p:tab>
+                        </p:tabView>
+                    </p:fragment>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

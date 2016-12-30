@@ -14,9 +14,36 @@
                 <p:fragment/>
                 Trang Quản lý
             </ui:define>
-            
+
             <ui:define name="content">
-                hehe
+                <h5>Xin chào <strong>#{accountBean.manager.username}</strong>,</h5>
+                <p class="text-warning" style="font-size:large;">#{adminBean.doGreeting()}</p>
+                <hr/>
+                <h4><strong>Lời nhắn từ người điều hành</strong></h4>
+                <p>
+                    <p:fragment id="contextShow">
+                        <h:outputText value="#{globalBean.doGetProperty('context_admin')}"
+                                      escape="false"/>
+                    </p:fragment>
+                </p>
+                <br/>
+                <p:fragment rendered="#{accountBean.priviledgeManager()}">
+                    <hr/>
+                    <button type="button" class="btn btn-default btn-sm" onclick="PF('dlgEditMessage').show();">
+                        <span class="glyphicon glyphicon-pencil">&nbsp;</span> Sửa nội dung
+                    </button>
+                    <p:dialog widgetVar="dlgEditMessage" header="Sửa nội dung bài viết" position="top"
+                              modal="true" showEffect="fade" hideEffect="fade">
+                        <h:form id="contextEdit" rendered="#{accountBean.priviledgeManager()}">
+                            <p:editor value="#{adminBean.adminContext}"
+                                      required="true" requiredMessage="Hãy điền nội dung!"/>
+                            <br/>
+                            <p:commandButton value="Cập nhật nội dung" action="#{adminBean.doUpdateAdminContext()}"
+                                             update="contextEdit,contextShow,alertBox"
+                                             oncomplete="PF('dlgEditMessage').hide();alert('Nội dung sẽ được cập nhật trong vòng 1 phút.')"/>
+                        </h:form>
+                    </p:dialog>
+                </p:fragment>
             </ui:define>
 
         </ui:composition>

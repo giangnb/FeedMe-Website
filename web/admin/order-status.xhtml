@@ -39,7 +39,7 @@
                         <p:column headerText="Kết thúc ĐH">
                             <p:selectBooleanCheckbox value="#{item.isStopped}" disabled="true"/>
                         </p:column>
-                        <p:column style="width:10%;text-align: center">
+                        <p:column style="width:10%;text-align: center" exportable="false">
                             <p:commandButton update=":form:statusDetail" oncomplete="PF('dlgStatus').show();"
                                              icon="ui-icon-search" title="Chi tiết" action="#{orderManaBean.doLoadStatus(item.id)}">
                             </p:commandButton>

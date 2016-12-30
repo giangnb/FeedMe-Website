@@ -51,12 +51,12 @@
                                                 <h:outputText value="#{accountBean.manager.username}"/> <span class="caret"></span>
                                             </a>
                                             <ul class="dropdown-menu" role="menu">
-                                                <li><a href="#">Tài khoản</a></li>
+                                                <li><h:link value="Tài khoản" outcome="current-account" onclick="PF('ajaxStatusDialog').show();"/></li>
                                                 <li class="divider"></li>
-                                                <li><a href="#">Đổi mật khẩu</a></li>
+                                                <li><h:link value="Đổi mật khẩu" outcome="current-account" fragment="achor-change-password" onclick="PF('ajaxStatusDialog').show();"/></li>
                                             </ul>
                                         </li>
-                                        <li><h:commandLink value="Đăng xuất" action="#{accountBean.doLogout()}"/></li>
+                                        <li><h:commandLink value="Đăng xuất" action="#{accountBean.doLogout()}" onclick="PF('ajaxStatusDialog').show();"/></li>
                                     </ul>
                                 </ui:fragment>
                             </div>
@@ -105,10 +105,10 @@
                                         Bán hàng <span class="caret"></span>
                                     </a>
                                     <ul id="sidenav-1" class="submenu collapse">
-                                        <li><a href="#">Hóa đơn</a></li>
+                                        <li><a href="#"><h:commandLink value="Hóa đơn" action="#{adminBean.doNavigate('sales')}" onclick="PF('ajaxStatusDialog').show();"/></a></li>
                                         <li class="divider"></li>
-                                        <li><a href="#">Doanh số</a></li>
-                                        <li><a href="#">Phản hồi</a></li>
+                                        <li><a href="#"><h:commandLink value="Doanh số" action="#{adminBean.doNavigate('stats')}" onclick="PF('ajaxStatusDialog').show();"/></a></li>
+                                        <li><a href="#"><h:commandLink value="Phản hồi khách hàng" action="#{adminBean.doNavigate('feedback')}" onclick="PF('ajaxStatusDialog').show();"/></a></li>
                                     </ul>
                                 </li>
                             </ui:fragment>

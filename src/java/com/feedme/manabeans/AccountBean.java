@@ -29,7 +29,6 @@ public class AccountBean implements Serializable{
     private String pass;
     private ManagerDTO manager;
     private PriviledgeDTO priv;
-    private Timer tmr;
 
     /**
      * Creates a new instance of AccountBean
@@ -144,5 +143,58 @@ public class AccountBean implements Serializable{
 
     public void setUser(String user) {
         this.user = user;
+    }
+    
+    /* CURRENT ACCOUNT MANAGEMENTS */
+    public String accountInfo, newPass, rePass;
+
+    public String getAccountInfo() {
+        accountInfo = manager.getInfo();
+        return accountInfo;
+    }
+
+    public void setAccountInfo(String accountInfo) {
+        this.accountInfo = accountInfo;
+    }
+
+    public String getNewPass() {
+        return newPass;
+    }
+
+    public void setNewPass(String newPass) {
+        this.newPass = newPass;
+    }
+
+    public String getRePass() {
+        return rePass;
+    }
+
+    public void setRePass(String rePass) {
+        this.rePass = rePass;
+    }
+    
+    public void doUpdateAccountInfo() {
+        manager.setInfo(accountInfo);
+        boolean result = Methods.updateManager(manager);
+        if (result) {
+            FacesContext.getCurrentInstance().addMessage("", new FacesMessage("Thành công", "Đã thay đổi thông tin cá nhân"));
+        } else {
+            FacesContext.getCurrentInstance().addMessage("", new FacesMessage("Thất bại", "Hãy thử lại"));
+        }
+    }
+    
+    public void doUpdateAccountPassword() {
+        if (!newPass.equals(rePass)) {
+            FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Mật khẩu không trùng nhau", "Hãy kiểm tra và nhập lại mật khẩu mới"));
+            return;
+        }
+        ManagerDTO m = Methods.loginManager(user, pass);
+        if (m==null) {
+            FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sai mật khẩu", "Hãy kiểm tra và nhập lại mật khẩu cũ"));
+        } else {
+            m.setPassword(newPass);
+            Methods.updateManagerPassword(m);
+            FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Thành công", "Đổi mật khẩu thành công"));
+        }
     }
 }

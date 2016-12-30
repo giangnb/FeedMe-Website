@@ -21,7 +21,7 @@
                                      >
                     </p:commandButton> | 
                     <h:commandButton class="btn btn-link" value="Xuất Excel">
-                        <p:dataExporter type="xls" target="managerDT" fileName="quan-ly-cua-hang" pageOnly="false"/>
+                        <p:dataExporter type="xls" target="managerDT" fileName="accounts-quan-ly-cua-hang" pageOnly="false"/>
                     </h:commandButton>
                     <hr/>
 
@@ -38,7 +38,7 @@
                         <p:column headerText="Quyền hạn">
                             <h:outputText value="#{item.priviledge.name}"/>
                         </p:column>
-                        <p:column style="width:10%;text-align: center">
+                        <p:column style="width:10%;text-align: center" exportable="false">
                             <p:commandButton update=":form:managerDetail" oncomplete="PF('dlgManager').show();"
                                              icon="ui-icon-search" title="Chi tiết"
                                              action="#{personnelBean.doLoadManager(item.id)}" ajax="true">

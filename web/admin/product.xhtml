@@ -44,12 +44,8 @@
                         <p:column headerText="Hiện" style="width: 6%">
                             <p:selectBooleanCheckbox value="#{item.isActive}" disabled="true"/>
                         </p:column>
-                        <p:column style="width:10%;text-align: center">
+                        <p:column style="width:10%;text-align: center" exportable="false">
                             <p:commandButton icon="ui-icon-search" title="Chi tiết" action="#{productManaBean.doLoadProduct(item.id)}" ajax="false" onclick="PF('ajaxStatusDialog').show();"/>
-                            <!--                            <p:commandButton update=":form:productDetail" onsuccess="PF('dlgProduct').show();PF('dlgProduct').content.scrollTop('5');"
-                                                                         icon="ui-icon-search" title="Chi tiết" actionListener="#productManaBean.setProduct(item)}">
-                                                            
-                                                        </p:commandButton>-->
                         </p:column>
                     </p:dataTable>
                 </h:form>

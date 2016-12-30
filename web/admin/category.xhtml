@@ -39,7 +39,7 @@
                         <p:column headerText="Mô tả">
                             <h:outputText value="#{adminBean.doSubString(item.description, 45, '...')}"/>
                         </p:column>
-                        <p:column style="width:10%;text-align: center">
+                        <p:column style="width:10%;text-align: center" exportable="false">
                             <p:commandButton update=":form:categoryDetail" oncomplete="PF('dlgCategory').show();PF('dlgCategory').content.scrollTop('0');"
                                              icon="ui-icon-search" title="Chi tiết">
                                 <f:setPropertyActionListener value="#{item}" target="#{productManaBean.category}" />

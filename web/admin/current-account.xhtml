@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                <span class="glyphicon glyphicon-lock">&nbsp;</span>
+                Tài khoản của tôi
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="accountInfo">
+                    <div class="row">
+                        <div class="col-md-3">Tên đăng nhập</div>
+                        <div class="col-md-9">
+                            <strong>#{accountBean.manager.username}</strong>
+                        </div>
+                        <div class="col-md-3">Quyền hạn</div>
+                        <div class="col-md-9">
+                            <strong>#{accountBean.manager.priviledge.name}</strong>
+                        </div>
+                        <div class="col-md-3">Thông tin cá nhân</div>
+                        <div class="col-md-9">
+                            <p:editor value="#{accountBean.accountInfo}" controls="bold italic underline"/>
+                        </div>
+                    </div>
+                    <p:commandButton value="Cập nhật thông tin" action="#{accountBean.doUpdateAccountInfo()}"
+                                     update="accountInfo,alertBox"/>
+                </h:form>
+                <hr/><br/><br/>
+                <h3 class="text-warning" id="achor-change-password"><strong>Đổi mật khẩu</strong></h3>
+                <h:form id="accountPassword">
+                    <div class="row">
+                        <div class="col-md-3">Mật khẩu cũ</div>
+                        <div class="col-md-9">
+                            <p:password value="#{accountBean.pass}" required="true" feedback="false">
+                                <f:validateLength minimum="5" maximum="128"/>
+                            </p:password>
+                        </div>
+                        <div class="col-md-3">Mật khẩu mới</div>
+                        <div class="col-md-9">
+                            <p:password id="pswd-new" value="#{accountBean.newPass}" required="true" feedback="true"
+                                        goodLabel="Tốt" weakLabel="Yếu" strongLabel="Mạnh" promptLabel="Hãy nhập mật khẩu">
+                                <f:validateLength minimum="5" maximum="128"/>
+                            </p:password>
+                        </div>
+                        <div class="col-md-3">Nhập lại</div>
+                        <div class="col-md-9">
+                            <p:password id="pswd-re" value="#{accountBean.rePass}" required="true" feedback="false"
+                                        onkeydown="checkNewPassword()">
+                                <f:validateLength minimum="5" maximum="128"/>
+                            </p:password><br/>
+                            <span id="lbl-err-pswd" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <p:commandButton value="Đổi mật khẩu" action="#{accountBean.doUpdateAccountPassword()}"
+                                     update="accountPassword,alertBox"/>
+                </h:form>
+
+                <script type="text/javascript">
+                    function checkNewPassword() {
+                        if ($('#pswd-new').val() !== $('#pswd-re').val()) {
+                            $('#lbl-err-pswd').text('Mật khẩu không trùng nhau');
+                        } else {
+                            $('#lbl-err-pswd').text('');
+                        }
+                    }
+                </script>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

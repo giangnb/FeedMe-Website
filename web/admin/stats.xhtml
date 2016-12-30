@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./AdminTemplate.xhtml">
+
+            <ui:define name="title">
+                Doanh số &amp; Phân tích
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="statsForm">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <span class="control-label">Thời gian bắt đầu</span>
+                            <p:calendar value="#{statsBean.from}" mask="true"
+                                        pattern="dd/MM/yyyy HH:mm"
+                                        required="true" requiredMessage="Cần chọn thời gian bắt đầu"/>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="control-label">Thời gian kết thúc</span>
+                            <p:calendar value="#{statsBean.to}" mask="true"
+                                        pattern="dd/MM/yyyy HH:mm"
+                                        required="true" requiredMessage="Cần chọn thời gian kết thúc"/>
+                        </div>
+                        <div class="col-sm-4">
+                            <p:commandLink class="btn btn-warning" value="Tìm kiếm" ajax="true"
+                                           update="statsChart,alertBox" action="#{statsBean.doGetOrderDetail()}"/>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h:outputText rendered="#{statsBean.selectedEmployee!=null}"
+                                          value="Chọn nhân viên: #{statsBean.selectedEmployee.username}"/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <p:commandLink rendered="#{statsBean.selectedEmployee!=null}"
+                                             value="(Bỏ chọn)" action="#{statsBean.doSelectEmployee(null)}"
+                                             update="statsForm,statsChart,alertBox"/>
+                        </div>
+                        <div class="col-sm-4">
+                            <p:commandButton value="Chọn nhân viên" ajax="true" oncomplete="PF('dlgEmployee').show();"
+                                           update="statsChart,empTable,alertBox" action="#{statsBean.doLoadEmployees()}"/>
+                        </div>
+                    </div>
+                    <hr/>
+                </h:form>
+
+                <h:form id="statsChart" rendered="#{statsBean.barModel!=null}">
+                    <h:outputText value="Số đơn hàng được đặt: #{statsBean.doGetCountOrders()}"/> | 
+                    <p:commandButton type="button" value="Tải đồ thị" icon="ui-icon-extlink" onclick="exportChart()"/><br/>
+
+                    <p:chart type="bar" model="#{statsBean.barModel}" style="height:560px" responsive="true" widgetVar="chart"/>
+                </h:form>
+
+                <p:dialog widgetVar="dlgEmployee" showEffect="fade" modal="true"
+                          header="Chọn nhân viên" resizable="true">
+                    <h:form id="empTable">
+                        <p:dataTable rendered="#{not empty statsBean.employees}" id="employeeDT" var="item" value="#{statsBean.employees}" resizableColumns="true"
+                                     paginator="true" rows="10" emptyMessage="Không có nhân viên nào"
+                                     paginatorTemplate="{FirstPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="10,15,20">
+                            <p:column headerText="#" style="width:10%">
+                                <h:outputText value="#{item.id}" />
+                            </p:column>
+                            <p:column headerText="Mã NV">
+                                <h:outputText value="#{item.username}" />
+                            </p:column>
+                            <p:column headerText="Quản lý">
+                                <h:outputText value="#{item.manager.username}"/>
+                            </p:column>
+                            <p:column style="width:10%;text-align: center" exportable="false">
+                                <p:commandButton update="statsForm,statsChart" onsuccess="PF('dlgEmployee').hide();"
+                                                 action="#{statsBean.doSelectEmployee(item)}" title="Chọn">
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog widgetVar="dlgImgExport" showEffect="fade" modal="true" header="Xuất đồ thị dưới dạng ảnh" resizable="false">
+                    <h:outputText value="Nhấn chuột phải vào hình ảnh và chọn Lưu ảnh..."/><br/>
+                    <p:outputPanel id="output" layout="block" class="img-responsive" style="width:500px;height:300px" autoUpdate="true"/>
+                </p:dialog>
+
+                <script type="text/javascript">
+                    function exportChart() {
+                        $('#output').empty().append(PF('chart').exportAsImage());
+                        PF('dlgImgExport').show();
+                    }
+                </script>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

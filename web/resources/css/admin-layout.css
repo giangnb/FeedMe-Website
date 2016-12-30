@@ -103,3 +103,7 @@ ul.submenu > li.divider {
 ul.submenu > li:last-child {
     border-bottom: none;
 }
+
+.ui-growl-item-container {
+    margin-top: 55px !important;
+}

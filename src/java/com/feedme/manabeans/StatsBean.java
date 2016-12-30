@@ -192,11 +192,11 @@ public class StatsBean implements Serializable {
         barModel.setLegendPosition("ne");
 
         Axis xAxis = barModel.getAxis(AxisType.X);
-        xAxis.setLabel("Giá trị");
+        xAxis.setLabel("Thời gian");
         xAxis.setTickAngle(-50);
 
         Axis yAxis = barModel.getAxis(AxisType.Y);
-        yAxis.setLabel("Thời gian");
+        yAxis.setLabel("Giá trị");
         yAxis.setMin(0);
         yAxis.setMax(maxAxis + 10);
     }

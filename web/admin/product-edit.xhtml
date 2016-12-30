@@ -231,7 +231,7 @@
                         </h:inputText>
                         <hr/>
                         <p:commandButton value="Thêm ảnh" action="#{productManaBean.doSetImageUrl()}" 
-                                         update=":imgUrl,:form:imgView" oncomplete="PF('dlgImageUrl').show();"/>
+                                         update=":imgUrl,:form:imgView" oncomplete="PF('dlgImageUrl').hide();"/>
                     </h:form>
                 </p:dialog>
 
